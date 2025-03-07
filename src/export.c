@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 20:48:26 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/07 21:14:04 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void sort_env_vars(t_env_var *head)
 
 		while (ptr1->next != lptr)
 		{
-			if (strcmp(ptr1->name, ptr1->next->name) > 0)
+			if (ft_strcmp(ptr1->name, ptr1->next->name) > 0)
 			{
 				swap_env_vars(ptr1, ptr1->next);
 				swapped = 1;

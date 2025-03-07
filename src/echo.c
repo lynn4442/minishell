@@ -6,111 +6,69 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 20:58:53 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/07 21:17:55 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_env_var *get_env_var(t_exec *exec, const char *name)
+char *get_env_value(t_env_var *env_list, char *var_name)
 {
-	t_env_var *current = exec->env_list;
-	while (current)
+	while (env_list)
 	{
-		if (strcmp(current->name, name) == 0)
-			return current;
-		current = current->next;
+		if (ft_strcmp(env_list->name, var_name) == 0)
+			return env_list->value;
+		env_list = env_list->next;
 	}
-	return NULL;
+	return "(unknown)";
 }
 
-void update_env_var(t_exec *exec, const char *name, const char *value)
+void print_arg(char *arg, t_env_var *env)
 {
-	t_env_var *var = get_env_var(exec, name);
-	if (var)
-	{
-		free(var->value);
-		var->value = strdup(value);
-	}
-	else
-	{
-		t_env_var *new_var = malloc(sizeof(t_env_var));
-		new_var->name = strdup(name);
-		new_var->value = strdup(value);
-		new_var->next = exec->env_list;
-		new_var->prev = NULL;
-		if (exec->env_list)
-			exec->env_list->prev = new_var;
-		exec->env_list = new_var;
-	}
+    char *env_value;
+
+    if (arg[0] == '$')
+    {
+        env_value = get_env_value(env, arg + 1);
+        if (env_value)
+            write(1, env_value, ft_strlen(env_value));
+    }
+    else
+        write(1, arg, ft_strlen(arg));
 }
 
-int change_directory(const char *path, t_exec *exec)
+void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 {
-	if (!path || *path == '\0')
-	{
-		fprintf(stderr, "cd: OLDPWD not set\n");
-		exec->exit_status = 1;
-		return 1;
-	}
-	if (chdir(path) != 0)
-	{
-		perror("minishell");
-		exec->exit_status = 1;
-		return 1;
-	}
-	return 0;
-}
+    int i;
+    int newline;
+    int no_newline;
 
-static void update_pwd_vars(t_exec *exec, const char *old_pwd)
-{
-	char cwd[1024];
-	if (!getcwd(cwd, sizeof(cwd)))
-	{
-		perror("cd");
-		exec->exit_status = 1;
-		return;
-	}
-	update_env_var(exec, "OLDPWD", old_pwd);
-	update_env_var(exec, "PWD", cwd);
-	exec->exit_status = 0;
-}
+    i = 1;
+    newline = 1;
+    no_newline = 0;
 
-int execute_cd(t_exec *exec, const char *arg)
-{
-	char *old_pwd;
-	t_env_var *pwd_var = get_env_var(exec, "PWD");
+    if (!cmd || !cmd->arr || !cmd->arr[0])
+        return;
 
-	if (pwd_var)
-	  old_pwd = pwd_var->value;
-	else
-	  old_pwd = "";
-	if (!arg || strcmp(arg, "~") == 0)
-	{
-		t_env_var *home_var = get_env_var(exec, "HOME");
-		if (!home_var || !home_var->value)
-		{
-			fprintf(stderr, "cd: HOME not set\n");
-			exec->exit_status = 1;
-			return 1;
-		}
-		arg = home_var->value;
-	}
-	else if (strcmp(arg, "-") == 0)
-	{
-		t_env_var *oldpwd_var = get_env_var(exec, "OLDPWD");
-		if (!oldpwd_var || !oldpwd_var->value)
-		{
-			fprintf(stderr, "cd: OLDPWD not set\n");
-			exec->exit_status = 1;
-			return 1;
-		}
-		printf("%s\n", oldpwd_var->value);
-		arg = oldpwd_var->value;
-	}
+    // Check for multiple `-n` flags
+    while (cmd->arr[i] && ft_strcmp(cmd->arr[i], "-n") == 0)
+    {
+        no_newline = 1;
+        i++;
+    }
 
-	if (change_directory(arg, exec) == 0)
-		update_pwd_vars(exec, old_pwd);
+    while (cmd->arr[i])
+    {
+        print_arg(cmd->arr[i], env);
+        if (cmd->arr[i + 1])
+            write(1, " ", 1);
+        i++;
+    }
 
-	return 1;
+    // Only print newline if no `-n` flag was set
+    if (!no_newline)
+        write(1, "\n", 1);
+
+    // Set exit status in the exec structure
+    exec->exit_status = 0;
 }

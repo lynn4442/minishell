@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 19:53:58 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/07 20:42:40 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ void free_cmd_list(t_cmd_node *cmd)
 				free(tmp->arr[i]);
 			free(tmp->arr);
 		}
-
 		free(tmp->in);
 		free(tmp->out);
 		free(tmp->heredoc);

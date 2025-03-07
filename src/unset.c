@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:05:08 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 20:23:04 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/07 20:33:35 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,12 @@ void free_env_var(t_exec *exec, t_env_var *node)
 	}
 	else
 		exec->exit_status = 0;
+}
+
+void unset_env_var(t_exec *exec, const char *name)
+{
+	t_env_var *node_to_remove;
+
+	node_to_remove = remove_env_var(exec, name);
+	free_env_var(exec, node_to_remove);
 }

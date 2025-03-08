@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 17:31:28 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:29:45 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void print_arg(char *arg, t_env_var *env)
 
 	if (!arg)
 		return ;
-	if (arg[0] == '$')
+	if (arg[0] == '$' && arg[1] != '\0')
 	{
 		env_value = get_env_value(env, arg + 1);
 		if (env_value)

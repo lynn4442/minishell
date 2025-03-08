@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 17:30:43 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 19:13:59 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int change_dir(const char *path, t_exec *exec)
 	}
 	if (chdir(path) != 0)
 	{
-		perror("minishell");
+		perror("minishell cd:");
 		exec->exit_status = 1;
 		return 1;
 	}
@@ -110,6 +110,7 @@ int ft_cd(t_exec *exec, const char *arg)
 		printf("%s\n", oldpwd_var->value);
 		arg = oldpwd_var->value;
 	}
+	printf("Changing directory to: %s\n", arg);
 	if (change_dir(arg, exec) == 0)
 	{
 		update_pwd_vars(exec, old_pwd);

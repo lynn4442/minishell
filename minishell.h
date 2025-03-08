@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 21:05:09 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 16:45:11 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,11 @@ typedef struct s_exec{
 t_env_var	*create_env_var(char *name, char *value);
 void		free_env_list(t_env_var *env);
 t_cmd_node	*create_cmd_node(char **args);
-void		free_cmd_list(t_cmd_node *cmd);
+void		free_cmd_node(t_cmd_node *cmd);
 void		free_elem_list(t_elem *elem);
 t_exec		*init_exec();
+void		free_exec(t_exec *exec);
+void		add_env_var(t_exec *exec, char *name, char *value);
 
 //echo
 char		*get_env_value(t_env_var *env_list, char *var_name);
@@ -79,7 +81,7 @@ void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 t_env_var	*get_env_var(t_exec *exec, const char *name);
 void		update_env_var(t_exec *exec, const char *name, const char *value);
 int			change_dir(const char *path, t_exec *exec);
-static void	update_pwd_vars(t_exec *exec, const char *old_pwd);
+void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 int			ft_cd(t_exec *exec, const char *arg);
 
 //export
@@ -96,7 +98,10 @@ void		unset_env_var(t_exec *exec, const char *name);
 char		*get_current_directory(void);
 void		execute_pwd(t_exec *exec);
 
+//env
+void		ft_env(t_exec *exec);
+
 //main
-int main();
+int			main();
 
 #endif

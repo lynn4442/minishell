@@ -1,6 +1,6 @@
 # Compiler and flags
-CC      = cc
-CFLAGS  = -Wall -Wextra -Werror
+CC		= cc
+CFLAGS	= -Wall -Wextra -Werror
 
 # Directories
 SRC_DIR = src
@@ -11,32 +11,32 @@ INCLUDES = -I headers -I libft
 LIBFT   = libft/libft.a
 
 # Source and object files
-SRCS    = $(wildcard $(SRC_DIR)/*.c)
-OBJS    = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+SRCS	= $(wildcard $(SRC_DIR)/*.c)
+OBJS	= $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Final executable
-NAME    = minishell
+NAME	= minishell
 
 # Rules
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-    $(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-    mkdir -p $(OBJ_DIR)
-    $(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
-    make -C libft
+	make -C libft
 
 clean:
-    rm -rf $(OBJ_DIR)
-    make -C libft clean
+	rm -rf $(OBJ_DIR)
+	make -C libft clean
 
 fclean: clean
-    rm -f $(NAME)
-    make -C libft fclean
+	rm -f $(NAME)
+	make -C libft fclean
 
 re: fclean all
 

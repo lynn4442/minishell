@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:16:48 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 19:52:18 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 16:55:57 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,29 @@
 
 char *get_current_directory(void)
 {
-	char	buf[1024];
-
-	return (getcwd(buf, sizeof(buf)));
+	char *buf = malloc(1024);
+	if (!buf)
+		return (NULL);
+	if (!getcwd(buf, 1024))
+	{
+		free(buf);
+		return (NULL);
+	}
+	return buf;
 }
 
 void execute_pwd(t_exec *exec)
 {
-	char		*cwd;
-	t_env_var	*pwd_var;
-
-	cwd = get_current_directory();
+	char *cwd = get_current_directory();
 	if (cwd)
 	{
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd("\n", 1);
+		free(cwd);
 	}
 	else
 	{
-		pwd_var = get_env_var(exec, "PWD");
+		t_env_var *pwd_var = get_env_var(exec, "PWD");
 		if (pwd_var && pwd_var->value)
 		{
 			ft_putstr_fd(pwd_var->value, 1);

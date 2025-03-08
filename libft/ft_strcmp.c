@@ -6,13 +6,13 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 10:44:30 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 10:47:36 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 15:16:45 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_strcmp(char *s1, char *s2)
+int	ft_strcmp(const char *s1, const char *s2)
 {
 	int	i;
 

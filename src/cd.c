@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 21:12:36 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 17:30:43 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int change_dir(const char *path, t_exec *exec)
 	return 0;
 }
 
-static void update_pwd_vars(t_exec *exec, const char *old_pwd)
+void update_pwd_vars(t_exec *exec, const char *old_pwd)
 {
 	char cwd[1024];
 	if (!getcwd(cwd, sizeof(cwd)))
@@ -80,6 +80,7 @@ int ft_cd(t_exec *exec, const char *arg)
 {
 	char		*old_pwd;
 	t_env_var	*pwd_var;
+	t_env_var *home_var;
 
 	pwd_var = get_env_var(exec, "PWD");
 	if (pwd_var)
@@ -88,10 +89,10 @@ int ft_cd(t_exec *exec, const char *arg)
 	  old_pwd = "";
 	if (!arg || ft_strcmp(arg, "~") == 0)
 	{
-		t_env_var *home_var = get_env_var(exec, "HOME");
+		home_var = get_env_var(exec, "HOME");
 		if (!home_var || !home_var->value)
 		{
-			write(2, "cd: OLDPWD not set\n", 19);
+			write(2, "cd: HOME not set\n", 17);
 			exec->exit_status = 1;
 			return 1;
 		}
@@ -110,6 +111,9 @@ int ft_cd(t_exec *exec, const char *arg)
 		arg = oldpwd_var->value;
 	}
 	if (change_dir(arg, exec) == 0)
+	{
 		update_pwd_vars(exec, old_pwd);
-	return 1;
+		return (0);
+	}
+	return (1);
 }

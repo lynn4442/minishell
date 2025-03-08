@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 20:42:40 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 16:27:01 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@ t_cmd_node *create_cmd_node(char **args)
 {
 	t_cmd_node *cmd = malloc(sizeof(t_cmd_node));
 	int count;
+	int i;
 
+	i = 0;
 	count = 0;
 	if (!cmd)
 		return NULL;
@@ -57,8 +59,11 @@ t_cmd_node *create_cmd_node(char **args)
 	cmd->arr = malloc((count + 1) * sizeof(char *));
 	if (!cmd->arr)
 		return (free(cmd), NULL);
-	for (int i = 0; i < count; i++)
+	while (i < count)
+	{
 		cmd->arr[i] = ft_strdup(args[i]);
+		i++;
+	}
 	cmd->arr[count] = NULL;
 	cmd->in = NULL;
 	cmd->out = NULL;
@@ -71,7 +76,7 @@ t_cmd_node *create_cmd_node(char **args)
 	return cmd;
 }
 
-void free_cmd_list(t_cmd_node *cmd)
+void free_cmd_node(t_cmd_node *cmd)
 {
 	t_cmd_node *tmp;
 	while (cmd)
@@ -120,6 +125,25 @@ void free_exec(t_exec *exec)
 	if (!exec)
 		return;
 	free_env_list(exec->env_list);
-	free_cmd_list(exec->cmd_list);
+	free_cmd_node(exec->cmd_list);
 	free(exec);
+}
+
+void add_env_var(t_exec *exec, char *name, char *value)
+{
+	t_env_var *new_var;
+
+	new_var = create_env_var(name, value);
+	if (!new_var)
+		return;
+	if (!exec->env_list)
+		exec->env_list = new_var;
+	else
+	{
+		t_env_var *temp = exec->env_list;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = new_var;
+		new_var->prev = temp;
+	}
 }

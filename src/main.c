@@ -6,39 +6,59 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 19:53:54 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 17:28:03 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
-int main()
+int main(void)
 {
-    t_env_var *env_list = create_env_var("USER", "john");
-    env_list->next = create_env_var("HOME", "/home/john");
-    env_list->next->prev = env_list;
-    env_list->next->next = create_env_var("SHELL", "/bin/bash");
-    env_list->next->next->prev = env_list->next;
+	t_exec *exec = init_exec();
+	if (!exec)
+	{
+		fprintf(stderr, "Failed to initialize exec structure\n");
+		return 1;
+	}
 
-    char *test1[] = {"echo", "--n", NULL};
-    char *test2[] = {"echo", "-n", NULL};
-    char *test3[] = {"echo", "-----nnnn", "-n", NULL};
+	// Add initial environment variables
+	add_env_var(exec, "HOME", "/home/user");
+	add_env_var(exec, "PWD", "/home/user");
+	add_env_var(exec, "OLDPWD", "/home/user/old");
+	add_env_var(exec, "USER", "testuser");
 
-    printf("Test 1: ");
-    ft_echo(create_cmd_node(test1), env_list, NULL);
-    printf("\n");
+	// Test cd
+	printf("Testing cd:\n");
+	ft_cd(exec, "/tmp");  // Should succeed if /tmp exists
+	ft_cd(exec, "~");     // Should change to home directory
+	ft_cd(exec, "-");     // Should change to OLDPWD
 
-    printf("Test 2: ");
-    ft_echo(create_cmd_node(test2), env_list, NULL);
-    printf("\n");
+	// Test echo
+	printf("\nTesting echo:\n");
+	char *echo_args[] = {"echo", "-n", "Hello, $USER!", NULL};
+	t_cmd_node *echo_cmd = create_cmd_node(echo_args);
+	ft_echo(echo_cmd, exec->env_list, exec);
+	free_cmd_node(echo_cmd);
 
-    printf("Test 3: ");
-    ft_echo(create_cmd_node(test3), env_list, NULL);
-    printf("\n");
+	// Test env
+	printf("\nTesting env:\n");
+	ft_env(exec);
 
-	free_env_list(env_list);
-    free_cmd_node(create_cmd_node(test1));
-    free_cmd_node(create_cmd_node(test2));
-    free_cmd_node(create_cmd_node(test3));
-    return 0;
+	// Test export
+	printf("\nTesting export:\n");
+	export_no_options(exec->env_list);
+
+	// Test unset
+	printf("\nTesting unset:\n");
+	unset_env_var(exec, "OLDPWD");
+	ft_env(exec);  // Should not show OLDPWD
+
+	// Test pwd
+	printf("\nTesting pwd:\n");
+	execute_pwd(exec);
+
+	// Free everything
+	free_exec(exec);
+
+	return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 15:06:43 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 15:10:15 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/08 15:12:15 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,19 @@ void ft_env(t_exec *exec)
 			printf("%s=\n", current->name);
 		current = current->next;
 	}
+}
+
+int main()
+{
+	t_exec exec;
+	exec.env_list = NULL;
+
+	add_env_var(&exec, "USER", "john");
+	add_env_var(&exec, "HOME", "/home/john");
+	add_env_var(&exec, "SHELL", "/bin/bash");
+	add_env_var(&exec, "EMPTY", "");
+	add_env_var(&exec, "NULLVALUE", NULL);
+	printf("Environment Variables:\n");
+	ft_env(&exec);
+	return 0;
 }

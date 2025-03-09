@@ -6,22 +6,25 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 19:29:45 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/09 19:08:22 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *get_env_value(t_env_var *env_list, char *var_name)
-{
-	while (env_list)
+char *get_env_value(t_env_var *env_list, char *var_name) {
+	t_env_var *current;
+
+	current = env_list;
+	while (current)
 	{
-		if (ft_strcmp(env_list->name, var_name) == 0)
-			return env_list->value;
-		env_list = env_list->next;
+		if (ft_strcmp(current->name, var_name) == 0)
+			return current->value;
+		current = current->next;
 	}
-	return "(unknown)";
+	return (NULL, printf("Environment variable not found.\n"));
 }
+
 
 void print_arg(char *arg, t_env_var *env)
 {
@@ -64,3 +67,4 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 		write(1, "\n", 1);
 	exec->exit_status = 0;
 }
+

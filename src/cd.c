@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 19:13:59 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/09 19:21:02 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,3 +118,70 @@ int ft_cd(t_exec *exec, const char *arg)
 	}
 	return (1);
 }
+
+//#include <stdio.h>
+//#include <stdlib.h>
+//#include <unistd.h>
+//#include <string.h>
+//#include <assert.h>
+
+//// Assuming t_exec and t_env_var are defined in your header
+//typedef struct s_env_var {
+//	char *name;
+//	char *value;
+//	struct s_env_var *next;
+//	struct s_env_var *prev;
+//} t_env_var;
+
+//typedef struct s_exec {
+//	t_env_var *env_list;
+//	int exit_status;
+//} t_exec;
+
+//void test_cd_home_set() {
+//	t_exec exec = {0}; // Initialize env_list to NULL and exit_status to 0
+//	char cwd_before[1024];
+
+//	// 1. Get current working directory before test
+//	if (getcwd(cwd_before, sizeof(cwd_before)) == NULL) {
+//		perror("getcwd");
+//		exit(EXIT_FAILURE);
+//	}
+
+//	// 2. Setup environment variables
+//	update_env_var(&exec, "HOME", "/tmp");       // Set HOME
+//	update_env_var(&exec, "PWD", cwd_before);    // Set initial PWD
+
+//	// 3. Execute "cd" with no arguments
+//	ft_cd(&exec, NULL);
+
+//	// 4. Verify new working directory
+//	char cwd_after[1024];
+//	if (getcwd(cwd_after, sizeof(cwd_after)) == NULL) {
+//		perror("getcwd");
+//		exit(EXIT_FAILURE);
+//	}
+
+//	// 5. Check environment variable updates
+//	t_env_var *pwd = get_env_var(&exec, "PWD");
+//	t_env_var *oldpwd = get_env_var(&exec, "OLDPWD");
+
+//	// Assertions
+//	assert(pwd != NULL && "PWD should exist");
+//	assert(strcmp(pwd->value, "/tmp") == 0 && "PWD should match HOME");
+
+//	assert(oldpwd != NULL && "OLDPWD should exist");
+//	assert(strcmp(oldpwd->value, cwd_before) == 0 && "OLDPWD should match initial PWD");
+
+//	assert(exec.exit_status == 0 && "Exit status should be 0");
+
+//	// 6. Cleanup - free allocated memory
+//	t_env_var *current = exec.env_list;
+//	while (current != NULL) {
+//		t_env_var *next = current->next;
+//		free(current->name);
+//		free(current->value);
+//		free(current);
+//		current = next;
+//	}
+//}

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 16:45:11 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/09 18:37:51 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # include <readline/history.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <ctype.h>
+# include <unistd.h>
+# include <limits.h>
 # include <string.h>
 # include <stdlib.h>
 # include "libft/libft.h"
@@ -96,10 +99,14 @@ void		unset_env_var(t_exec *exec, const char *name);
 
 //pwd
 char		*get_current_directory(void);
-void		execute_pwd(t_exec *exec);
+void		ft_pwd(t_exec *exec);
 
 //env
 void		ft_env(t_exec *exec);
+
+//exit
+int			is_numeric(const char *str);
+void		ft_exit(char **args, int last_exit_status);
 
 //main
 int			main();

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:16:48 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 16:55:57 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/09 18:32:20 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char *get_current_directory(void)
 	return buf;
 }
 
-void execute_pwd(t_exec *exec)
+void ft_pwd(t_exec *exec)
 {
 	char *cwd = get_current_directory();
 	if (cwd)

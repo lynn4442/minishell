@@ -6,13 +6,11 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 19:35:23 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/09 18:33:38 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-#include <stdlib.h> // for getenv
 
 int main(void)
 {
@@ -66,7 +64,7 @@ int main(void)
 
     // Test pwd
     printf("\nTesting pwd:\n");
-    execute_pwd(exec);
+    ft_pwd(exec);
 
     // Free everything
     free_exec(exec);

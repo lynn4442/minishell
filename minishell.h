@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/09 18:37:51 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 09:49:32 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,14 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <stdio.h>
+# include <fcntl.h>
 # include <stdlib.h>
 # include <ctype.h>
 # include <unistd.h>
 # include <limits.h>
 # include <string.h>
 # include <stdlib.h>
+# include <sys/wait.h>
 # include "libft/libft.h"
 
 //t_elem: la kel token
@@ -90,7 +92,7 @@ int			ft_cd(t_exec *exec, const char *arg);
 //export
 void		swap_env_vars(t_env_var *a, t_env_var *b);
 void		sort_env_vars(t_env_var *head);
-void		export_no_options(t_env_var *env_list);
+void		ft_export(t_env_var *env_list);
 
 //unset
 t_env_var	*remove_env_var(t_exec *exec, const char *name);
@@ -109,6 +111,7 @@ int			is_numeric(const char *str);
 void		ft_exit(char **args, int last_exit_status);
 
 //main
+void parse_and_execute(t_exec *exec, char *input);
 int			main();
 
 #endif

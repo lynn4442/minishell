@@ -9,6 +9,7 @@ INCLUDES = -I headers -I libft
 
 # Libraries
 LIBFT   = libft/libft.a
+LDFLAGS = -Llibft -lft -lreadline -lncurses
 
 # Source and object files
 SRCS	= $(wildcard $(SRC_DIR)/*.c)
@@ -21,7 +22,7 @@ NAME	= minishell
 all: $(NAME)
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	mkdir -p $(OBJ_DIR)

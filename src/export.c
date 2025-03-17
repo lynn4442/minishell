@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 21:14:04 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 09:49:43 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void sort_env_vars(t_env_var *head)
 	}
 }
 
-void export_no_options(t_env_var *env_list)
+void ft_export(t_env_var *env_list)
 {
 	t_env_var *temp;
 
@@ -62,9 +62,14 @@ void export_no_options(t_env_var *env_list)
 	sort_env_vars(env_list);
 	while (temp)
 	{
+		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(temp->name, 1);
-		ft_putstr_fd("=", 1);
-		ft_putstr_fd(temp->value, 1);
+		if (temp->value)
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(temp->value, 1);
+			ft_putstr_fd("\"", 1);
+		}
 		ft_putstr_fd("\n", 1);
 		temp = temp->next;
 	}

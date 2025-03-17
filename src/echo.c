@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/09 19:08:22 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 09:25:48 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ char *get_env_value(t_env_var *env_list, char *var_name) {
 			return current->value;
 		current = current->next;
 	}
-	return (NULL, printf("Environment variable not found.\n"));
+	printf("Environment variable not found.\n");
+	return (NULL);
 }
 
 

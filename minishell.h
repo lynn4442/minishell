@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 10:34:04 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:47:24 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef enum e_type {
 	SMP_CMD,
 }	t_type;
 
+//add int metel flag ta it is = or not
 typedef struct s_env_var {
 	char	*name;
 	char	*value;

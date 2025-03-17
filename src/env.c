@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 15:06:43 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 16:26:57 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 15:49:55 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ void ft_env(t_exec *exec)
 	current = exec->env_list;
 	while (current)
 	{
-		if (current->value)
+		if (current->value && *current->value != '\0')
 			printf("%s=%s\n", current->name, current->value);
-		else
+		else if (current->value)
 			printf("%s=\n", current->name);
 		current = current->next;
 	}

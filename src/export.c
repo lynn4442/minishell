@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 16:23:55 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:07:27 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void swap_env_vars(t_env_var *a, t_env_var *b)
 	char *temp_name;
 	char *temp_value;
 
-	temp_name = a->name;
-	a->name = b->name;
-	b->name = temp_name;
+	temp_name = a->key;
+	a->key = b->key;
+	b->key = temp_name;
 
 	temp_value = a->value;
 	a->value = b->value;
@@ -29,58 +29,60 @@ void swap_env_vars(t_env_var *a, t_env_var *b)
 void sort_env_vars(t_env_var *head)
 {
 	int swapped;
-	t_env_var *ptr1;
-	t_env_var *lptr;
+	t_env_var *current;
+	t_env_var *last_unsorted;
 
-	lptr = NULL;
+	last_unsorted = NULL;
 	if (head == NULL)
 		return;
 	swapped = 1;
 	while (swapped)
 	{
 		swapped = 0;
-		ptr1 = head;
+		current = head;
 
-		while (ptr1->next != lptr)
+		while (current->next != last_unsorted)
 		{
-			if (ft_strcmp(ptr1->name, ptr1->next->name) > 0)
+			if (ft_strcmp(current->key, current->next->key) > 0)
 			{
-				swap_env_vars(ptr1, ptr1->next);
+				swap_env_vars(current, current->next);
 				swapped = 1;
 			}
-			ptr1 = ptr1->next;
+			current = current->next;
 		}
-		lptr = ptr1;
+		last_unsorted = current;
 	}
 }
 
 void add_or_update_env_var(t_env_var **env_list, char *name, char *value)
 {
-	t_env_var *temp = *env_list;
+    t_env_var *temp = *env_list;
 
-	while (temp)
-	{
-		if (ft_strcmp(temp->name, name) == 0)
-		{
-			free(temp->value);
-			if (value) {
-				temp->value = ft_strdup(value);
-			} else {
-				temp->value = ft_strdup("");
-			}
-			return;
-		}
-		temp = temp->next;
-	}
-	t_env_var *new_var = malloc(sizeof(t_env_var));
-	new_var->name = ft_strdup(name);
-	if (value) {
-		new_var->value = ft_strdup(value);
-	} else {
+    while (temp)
+    {
+        if (ft_strcmp(temp->key, name) == 0)
+        {
+            free(temp->value);
+            if (value == NULL || ft_strcmp(value, "") == 0)
+            {
+                temp->value = ft_strdup("");
+            }
+            else
+            {
+                temp->value = ft_strdup(value);
+            }
+            return;
+        }
+        temp = temp->next;
+    }
+    t_env_var *new_var = malloc(sizeof(t_env_var));
+    new_var->key = ft_strdup(name);
+    if (value == NULL || ft_strcmp(value, "") == 0)
 		new_var->value = ft_strdup("");
-	}
-	new_var->next = *env_list;
-	*env_list = new_var;
+    else
+		new_var->value = ft_strdup(value);
+    new_var->next = *env_list;
+    *env_list = new_var;
 }
 
 //treke l sort abel ma taamle iteration aal list
@@ -97,25 +99,24 @@ void ft_export(t_env_var *env_list)
     while (temp)
     {
         ft_putstr_fd("declare -x ", 1);
-        ft_putstr_fd(temp->name, 1);
+        ft_putstr_fd(temp->key, 1);
 
-        // Only print ="\"\" if the value is explicitly an empty string.
-        if (temp->value == NULL || ft_strcmp(temp->value, "") == 0)
+        // If the value is an empty string, print =""; otherwise, just print the value.
+        if (temp->value && ft_strcmp(temp->value, "") == 0)
         {
-            ft_putstr_fd("\n", 1); // No value printed
+            ft_putstr_fd("=\"\"", 1);
         }
-        else
+        else if (temp->value && ft_strcmp(temp->value, "") != 0)
         {
             ft_putstr_fd("=\"", 1);
             ft_putstr_fd(temp->value, 1);
             ft_putstr_fd("\"", 1);
-            ft_putstr_fd("\n", 1); // Print the value with quotes
         }
 
+        ft_putstr_fd("\n", 1); // Always print a newline after each entry
         temp = temp->next;
     }
 }
-
 
 int is_valid_var_name(const char *name)
 {

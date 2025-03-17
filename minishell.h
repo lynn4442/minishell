@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 15:47:24 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 17:14:01 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <sys/wait.h>
+# include <stdbool.h>
 # include "libft/libft.h"
 
 //t_elem: la kel token
@@ -44,11 +45,13 @@ typedef enum e_type {
 
 //add int metel flag ta it is = or not
 typedef struct s_env_var {
-	char	*name;
-	char	*value;
-	struct s_env_var	*next;
-	struct s_env_var	*prev;
-}	t_env_var;
+    char                *key;
+	bool 				equal;
+    char                *value;
+	char				*all;
+    struct s_env_var	*next;
+    struct s_env_var	*prev;
+} t_env_var;
 
 typedef struct s_cmd_node {
 	char				**arr;

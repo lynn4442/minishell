@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 11:07:36 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 16:54:40 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,33 +228,43 @@ void parse_and_execute(t_exec *exec, char *input)
 }
 
 
-int main()
+int main(int ac,char **av,char **envp)
 {
-    t_exec *exec = init_exec();
-    if (!exec)
-    {
-        printf("Error: Failed to initialize execution structure\n");
-        return 1;
-    }
-    add_env_var(exec, "PATH", "/usr/local/bin:/usr/bin:/bin");
-    add_env_var(exec, "HOME", "/home/user");
-    add_env_var(exec, "USER", "user");
-    char *input;
-    while (1)
-    {
-        input = readline("minishell> ");
-        if (!input)
-        {
-            printf("exit\n");
-            break;
-        }
-        if (strlen(input) > 0)
-        {
-            add_history(input);
-            parse_and_execute(exec, input);
-        }
-        free(input);
-    }
-    free_exec(exec);
-    return 0;
+	(void)ac;
+	(void)av;
+    //t_exec *exec = init_exec();
+    //if (!exec)
+    //{
+    //    printf("Error: Failed to initialize execution structure\n");
+    //    return 1;
+    //}
+    //add_env_var(exec, "PATH", "/usr/local/bin:/usr/bin:/bin");
+    //add_env_var(exec, "HOME", "/home/user");
+    //add_env_var(exec, "USER", "user");
+    //char *input;
+    //while (1)
+    //{
+    //    input = readline("minishell> ");
+    //    if (!input)
+    //    {
+    //        printf("exit\n");
+    //        break;
+    //    }
+    //    if (strlen(input) > 0)
+    //    {
+    //        add_history(input);
+    //        parse_and_execute(exec, input);
+    //    }
+    //    free(input);
+    //}
+    //free_exec(exec);
+    //return 0;
+	int i = 0;
+	while(envp[i])
+	{
+		printf("%s\n",envp[i]);
+		i++;
+	}
 }
+
+//split aa ases li aam bekhdo bel env w asemo la 3 parts 1 the key 2 the boolean eza le2a = aw lae 3 the value li after the =

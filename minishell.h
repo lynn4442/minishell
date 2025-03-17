@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 09:49:32 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 10:34:04 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,9 @@ int			change_dir(const char *path, t_exec *exec);
 void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 int			ft_cd(t_exec *exec, const char *arg);
 
-//export
+//export'
+void		add_or_update_env_var(t_env_var **env_list, char *name, char *value);
+void		handle_export(char *cmd, t_env_var **env_list);
 void		swap_env_vars(t_env_var *a, t_env_var *b);
 void		sort_env_vars(t_env_var *head);
 void		ft_export(t_env_var *env_list);

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 09:49:39 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/17 11:07:36 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,45 +72,161 @@
 //    return 0;
 //}
 
+//void parse_and_execute(t_exec *exec, char *input)
+//{
+//    // Here you would parse the input and create the command list
+//    // For simplicity, let's assume the input is a simple command without pipes or redirections
+//    char **args = ft_split(input, ' ');
+//    t_cmd_node *cmd = create_cmd_node(args);
+//    if (!cmd)
+//    {
+//        printf("Error: Failed to create command node\n");
+//        return;
+//    }
+
+//    // Add the command to the execution structure
+//    exec->cmd_list = cmd;
+
+//    // Execute the command
+//    if (ft_strcmp(cmd->arr[0], "echo") == 0)
+//        ft_echo(cmd, exec->env_list, exec);
+//    else if (ft_strcmp(cmd->arr[0], "cd") == 0)
+//        ft_cd(exec, cmd->arr[1]);
+//    else if (ft_strcmp(cmd->arr[0], "pwd") == 0)
+//        ft_pwd(exec);
+//    else if (ft_strcmp(cmd->arr[0], "env") == 0)
+//        ft_env(exec);
+//    else if (ft_strcmp(cmd->arr[0], "export") == 0)
+//		ft_export(exec->env_list);
+//    else if (ft_strcmp(cmd->arr[0], "unset") == 0)
+//        unset_env_var(exec, cmd->arr[1]);
+//    else if (ft_strcmp(cmd->arr[0], "exit") == 0)
+//        ft_exit(cmd->arr, exec->exit_status);
+//    else
+//    {
+//        printf("minishell: command not found: %s\n", cmd->arr[0]);
+//        exec->exit_status = 127; // Command not found
+//    }
+//    // Free the command node after execution
+//    free_cmd_node(cmd);
+//    exec->cmd_list = NULL;
+//}
+
+//void parse_and_execute(t_exec *exec, char *input)
+//{
+//    // Here you would parse the input and create the command list
+//    // For simplicity, let's assume the input is a simple command without pipes or redirections
+//    char **args = ft_split(input, ' ');
+//    t_cmd_node *cmd = create_cmd_node(args);
+//    if (!cmd)
+//    {
+//        printf("Error: Failed to create command node\n");
+//        return;
+//    }
+
+//    // Add the command to the execution structure
+//    exec->cmd_list = cmd;
+
+//    // Handling the export command
+//    if (ft_strncmp(cmd->arr[0], "export", 6) == 0)
+//    {
+//        // If export is followed by a space or something else, handle normally
+//        char *arg = cmd->arr[0] + 6;
+//        while (*arg == ' ') // Skip any leading spaces after the command
+//            arg++;
+
+//        if (*arg == '\0') // If no argument, list environment variables
+//        {
+//            ft_export(exec->env_list);
+//        }
+//        else // If there is an argument, handle it as a variable assignment
+//        {
+//            handle_export(arg, &exec->env_list);
+//        }
+//    }
+//    // Execute other commands
+//    else if (ft_strcmp(cmd->arr[0], "echo") == 0)
+//        ft_echo(cmd, exec->env_list, exec);
+//    else if (ft_strcmp(cmd->arr[0], "cd") == 0)
+//        ft_cd(exec, cmd->arr[1]);
+//    else if (ft_strcmp(cmd->arr[0], "pwd") == 0)
+//        ft_pwd(exec);
+//    else if (ft_strcmp(cmd->arr[0], "env") == 0)
+//        ft_env(exec);
+//    else if (ft_strcmp(cmd->arr[0], "unset") == 0)
+//        unset_env_var(exec, cmd->arr[1]);
+//    else if (ft_strcmp(cmd->arr[0], "exit") == 0)
+//        ft_exit(cmd->arr, exec->exit_status);
+//    else
+//    {
+//        printf("minishell: command not found: %s\n", cmd->arr[0]);
+//        exec->exit_status = 127; // Command not found
+//    }
+
+//    // Free the command node after execution
+//    free_cmd_node(cmd);
+//    exec->cmd_list = NULL;
+//}
+
 void parse_and_execute(t_exec *exec, char *input)
 {
-    // Here you would parse the input and create the command list
-    // For simplicity, let's assume the input is a simple command without pipes or redirections
-    char **args = ft_split(input, ' ');
-    t_cmd_node *cmd = create_cmd_node(args);
-    if (!cmd)
+    if (ft_strncmp(input, "export", 6) == 0)
     {
-        printf("Error: Failed to create command node\n");
-        return;
+        // If export is followed by a space or something else, handle normally
+        char *arg = input + 6;
+        while (*arg == ' ') // Skip any leading spaces after the command
+            arg++;
+
+        if (*arg == '\0') // If no argument, list environment variables
+        {
+            ft_export(exec->env_list); // This should print the environment only if `export` has no arguments.
+        }
+        else // If there is an argument, handle it as a variable assignment
+        {
+            handle_export(arg, &exec->env_list); // This should handle the variable assignment
+        }
     }
-
-    // Add the command to the execution structure
-    exec->cmd_list = cmd;
-
-    // Execute the command
-    if (ft_strcmp(cmd->arr[0], "echo") == 0)
-        ft_echo(cmd, exec->env_list, exec);
-    else if (ft_strcmp(cmd->arr[0], "cd") == 0)
-        ft_cd(exec, cmd->arr[1]);
-    else if (ft_strcmp(cmd->arr[0], "pwd") == 0)
-        ft_pwd(exec);
-    else if (ft_strcmp(cmd->arr[0], "env") == 0)
-        ft_env(exec);
-    else if (ft_strcmp(cmd->arr[0], "export") == 0)
-		ft_export(exec->env_list);
-    else if (ft_strcmp(cmd->arr[0], "unset") == 0)
-        unset_env_var(exec, cmd->arr[1]);
-    else if (ft_strcmp(cmd->arr[0], "exit") == 0)
-        ft_exit(cmd->arr, exec->exit_status);
     else
     {
-        printf("minishell: command not found: %s\n", cmd->arr[0]);
-        exec->exit_status = 127; // Command not found
+        // Other commands...
+        char **args = ft_split(input, ' ');
+        t_cmd_node *cmd = create_cmd_node(args);
+        if (!cmd)
+        {
+            printf("Error: Failed to create command node\n");
+            return;
+        }
+
+        // Add the command to the execution structure
+        exec->cmd_list = cmd;
+
+        // Execute the command
+        if (ft_strcmp(cmd->arr[0], "echo") == 0)
+            ft_echo(cmd, exec->env_list, exec);
+        else if (ft_strcmp(cmd->arr[0], "cd") == 0)
+            ft_cd(exec, cmd->arr[1]);
+        else if (ft_strcmp(cmd->arr[0], "pwd") == 0)
+            ft_pwd(exec);
+        else if (ft_strcmp(cmd->arr[0], "env") == 0)
+            ft_env(exec);
+        else if (ft_strcmp(cmd->arr[0], "export") == 0)
+            ft_export(exec->env_list); // You may want to ensure this case is covered by your earlier check
+        else if (ft_strcmp(cmd->arr[0], "unset") == 0)
+            unset_env_var(exec, cmd->arr[1]);
+        else if (ft_strcmp(cmd->arr[0], "exit") == 0)
+            ft_exit(cmd->arr, exec->exit_status);
+        else
+        {
+            printf("minishell: command not found: %s\n", cmd->arr[0]);
+            exec->exit_status = 127; // Command not found
+        }
+
+        // Free the command node after execution
+        free_cmd_node(cmd);
+        exec->cmd_list = NULL;
     }
-    // Free the command node after execution
-    free_cmd_node(cmd);
-    exec->cmd_list = NULL;
 }
+
 
 int main()
 {

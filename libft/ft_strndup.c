@@ -1,30 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:06:43 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 10:12:05 by lyoussef         ###   ########.fr       */
+/*   Created: 2025/03/18 10:27:57 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/03/18 11:36:17 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "libft.h"
 
-void ft_env(t_exec *exec)
+char	*ft_strndup(char *s, size_t len)
 {
-	t_env_var *current;
+	char	*dup_str;
 
-	if (!exec || !exec->env_list)
-		return ;
-	current = exec->env_list;
-	while (current)
-	{
-		if (current->value && *current->value != '\0')
-			printf("%s=%s\n", current->key, current->value);
-		else if (current->value)
-			printf("%s=\n", current->key);
-		current = current->next;
-	}
+	dup_str = malloc(len + 1);
+	if (!dup_str)
+		return (NULL);
+	ft_strncpy(dup_str, s, len);
+	dup_str[len] = '\0';
+	return (dup_str);
 }

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:54:34 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 16:35:00 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 11:36:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ char			*ft_strtrim(char const *s1, char const *set);
 char			**ft_split(char const *s, char c);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char			*ft_strdup(const char *src);
+char			*ft_strncpy(char *dest, char *src, unsigned int n);
+char			*ft_strndup(char *s, size_t len);
 
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
 void			ft_putchar_fd(char c, int fd);

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:05:08 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/07 20:33:35 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:12:57 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 	prev = NULL;
 	while (current)
 	{
-		if (ft_strcmp(current->name, name) == 0)
+		if (ft_strcmp(current->key, name) == 0)
 		{
 			if (prev == NULL)
 			{
@@ -48,7 +48,7 @@ void free_env_var(t_exec *exec, t_env_var *node)
 {
 	if (node)
 	{
-		free(node->name);
+		free(node->key);
 		free(node->value);
 		free(node);
 		exec->exit_status = 0;

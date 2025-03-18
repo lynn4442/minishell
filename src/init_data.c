@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/08 16:27:01 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:12:42 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,11 @@ t_env_var *create_env_var(char *name, char *value)
 	t_env_var *env = malloc(sizeof(t_env_var));
 	if (!env)
 		return NULL;
-	env->name = ft_strdup(name);
+	env->key = ft_strdup(name);
 	env->value = ft_strdup(value);
-	if (!env->name || !env->value)
+	if (!env->key || !env->value)
 	{
-		free(env->name);
+		free(env->key);
 		free(env->value);
 		free(env);
 		return NULL;
@@ -38,7 +38,7 @@ void free_env_list(t_env_var *env)
 	{
 		tmp = env;
 		env = env->next;
-		free(tmp->name);
+		free(tmp->key);
 		free(tmp->value);
 		free(tmp);
 	}

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 17:14:01 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:17:34 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ typedef enum e_type {
 	SMP_CMD,
 }	t_type;
 
-//add int metel flag ta it is = or not
+//split aa ases li aam bekhdo bel env w asemo la 3 parts 1 the key
+//2 the boolean eza le2a = aw lae
+//3 the value li after the =
 typedef struct s_env_var {
     char                *key;
 	bool 				equal;
@@ -88,7 +90,7 @@ void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
 t_env_var	*get_env_var(t_exec *exec, const char *name);
-void		update_env_var(t_exec *exec, const char *name, const char *value);
+void update_env_var(t_exec *exec, const char *key, const char *value, bool equal);
 int			change_dir(const char *path, t_exec *exec);
 void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 int			ft_cd(t_exec *exec, const char *arg);
@@ -117,7 +119,7 @@ int			is_numeric(const char *str);
 void		ft_exit(char **args, int last_exit_status);
 
 //main
-void parse_and_execute(t_exec *exec, char *input);
-int			main();
+void		parse_and_execute(t_exec *exec, char *input);
+int			main(int ac,char **av,char **envp);
 
 #endif

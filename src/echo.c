@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 09:25:48 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:11:47 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char *get_env_value(t_env_var *env_list, char *var_name) {
 	current = env_list;
 	while (current)
 	{
-		if (ft_strcmp(current->name, var_name) == 0)
+		if (ft_strcmp(current->key, var_name) == 0)
 			return current->value;
 		current = current->next;
 	}

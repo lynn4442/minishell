@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   ft_strncpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/08 15:06:43 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 10:12:05 by lyoussef         ###   ########.fr       */
+/*   Created: 2025/03/18 10:31:00 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/03/18 10:31:38 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "libft.h"
 
-void ft_env(t_exec *exec)
+char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {
-	t_env_var *current;
+	unsigned int	i;
 
-	if (!exec || !exec->env_list)
-		return ;
-	current = exec->env_list;
-	while (current)
+	i = 0;
+	while (src[i] != '\0' && i < n)
 	{
-		if (current->value && *current->value != '\0')
-			printf("%s=%s\n", current->key, current->value);
-		else if (current->value)
-			printf("%s=\n", current->key);
-		current = current->next;
+		dest[i] = src[i];
+		i++;
 	}
+	while (i < n)
+	{
+		dest[i] = '\0';
+		i++;
+	}
+	return (dest);
 }

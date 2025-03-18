@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 10:17:34 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 19:59:29 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
 t_env_var	*get_env_var(t_exec *exec, const char *name);
-void update_env_var(t_exec *exec, const char *key, const char *value, bool equal);
+void		update_env_var(t_exec *exec, const char *key, const char *value, bool equal);
 int			change_dir(const char *path, t_exec *exec);
 void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 int			ft_cd(t_exec *exec, const char *arg);

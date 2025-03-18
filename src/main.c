@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 11:31:59 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/18 20:38:43 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,11 +196,7 @@ void parse_and_execute(t_exec *exec, char *input)
 			printf("Error: Failed to create command node\n");
 			return;
 		}
-
-		// Add the command to the execution structure
 		exec->cmd_list = cmd;
-
-		// Execute the command
 		if (ft_strcmp(cmd->arr[0], "echo") == 0)
 			ft_echo(cmd, exec->env_list, exec);
 		else if (ft_strcmp(cmd->arr[0], "cd") == 0)
@@ -217,7 +213,7 @@ void parse_and_execute(t_exec *exec, char *input)
 			ft_exit(cmd->arr, exec->exit_status);
 		else
 		{
-			printf("minishell: command not found: %s\n", cmd->arr[0]);
+			printf("%s: command not found\n", cmd->arr[0]);
 			exec->exit_status = 127;
 		}
 		free_cmd_node(cmd);

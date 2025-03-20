@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 16:17:16 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:25:01 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,21 @@
 # include <sys/wait.h>
 # include <stdbool.h>
 # include "libft/libft.h"
+
+typedef struct s_mem_node
+{
+	void				*ptr;
+	struct s_mem_node	*next;
+}	t_mem_node;
+
+typedef struct s_garbage_collector
+{
+	t_mem_node	*head;
+}	t_gc;
+
+void	*gc_malloc(t_gc *gc, size_t size);
+void	gc_free(t_gc *gc, void *ptr);
+void	gc_free_all(t_gc *gc);
 
 //t_elem: la kel token
 //t_type: type tabaa l command
@@ -123,5 +138,10 @@ void		ft_exit(char **args, int last_exit_status);
 //main
 void		parse_and_execute(t_exec *exec, char *input);
 int			main(int ac,char **av,char **envp);
+
+
+//utils
+void		*ft_malloc(t_gc *var, size_t size);
+void		ft_free(t_gc *var, void *ptr);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 16:35:41 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/20 18:41:19 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,7 @@ char *get_home_path(t_exec *exec)
 		exec->exit_status = 1;
 		return NULL;
 	}
-	return home_var->value;
+	return (home_var->value);
 }
 
 char *expand_home_path(t_exec *exec, const char *arg)
@@ -163,7 +163,7 @@ char *expand_home_path(t_exec *exec, const char *arg)
 		perror("malloc");
 		exec->exit_status = 1;
 	}
-	return expanded;
+	return (expanded);
 }
 
 char *handle_oldpwd(t_exec *exec)
@@ -176,7 +176,7 @@ char *handle_oldpwd(t_exec *exec)
 		return NULL;
 	}
 	printf("%s\n", oldpwd_var->value);
-	return oldpwd_var->value;
+	return (oldpwd_var->value);
 }
 
 int ft_cd(t_exec *exec, const char *arg)
@@ -201,5 +201,5 @@ int ft_cd(t_exec *exec, const char *arg)
 	if (change_dir(expanded_path ? expanded_path : arg, exec) == 0)
 		update_pwd_vars(exec, old_pwd);
 	free(expanded_path);
-	return exec->exit_status;
+	return (exec->exit_status);
 }

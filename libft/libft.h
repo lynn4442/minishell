@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:54:34 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 11:36:28 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 00:46:10 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+#include "../minishell.h"
+
+typedef struct s_garbage_collector t_gc;
 
 unsigned int	ft_strlcpy(char *dest, char *src, unsigned int size);
 
@@ -35,13 +38,14 @@ char			*ft_strchr(const char *s, int c);
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strnstr(const char *big, const char *little, size_t len);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
-char			*ft_strjoin(char const *s1, char const *s2);
+char			*ft_strjoin(const char *s1, const char *s2, t_gc *x);
 char			*ft_strtrim(char const *s1, char const *set);
-char			**ft_split(char const *s, char c);
+char			**ft_split(char const *s, char c,t_gc *free);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
-char			*ft_strdup(const char *src);
+char			*ft_strdup(t_gc *gc, const char *src);
 char			*ft_strncpy(char *dest, char *src, unsigned int n);
-char			*ft_strndup(char *s, size_t len);
+char			*ft_strcpy(char *dest, char *src);
+char			*ft_strndup(t_gc *free ,char *s, size_t len);
 
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
 void			ft_putchar_fd(char c, int fd);

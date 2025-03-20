@@ -6,15 +6,15 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:16:48 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/09 18:32:20 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 00:33:23 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *get_current_directory(void)
+char *get_current_directory(t_exec *exec)
 {
-	char *buf = malloc(1024);
+	char *buf = ft_malloc(&exec->gc, 1024);
 	if (!buf)
 		return (NULL);
 	if (!getcwd(buf, 1024))
@@ -27,12 +27,12 @@ char *get_current_directory(void)
 
 void ft_pwd(t_exec *exec)
 {
-	char *cwd = get_current_directory();
+	char *cwd = get_current_directory(exec);
 	if (cwd)
 	{
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd("\n", 1);
-		free(cwd);
+		//free(cwd);
 	}
 	else
 	{

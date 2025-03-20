@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 18:25:01 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 01:28:26 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,8 @@ typedef struct s_garbage_collector
 	t_mem_node	*head;
 }	t_gc;
 
-void	*gc_malloc(t_gc *gc, size_t size);
-void	gc_free(t_gc *gc, void *ptr);
-void	gc_free_all(t_gc *gc);
+void	*ft_malloc(t_gc *gc, size_t size);
+void	ft_free_all(t_gc *gc);
 
 //t_elem: la kel token
 //t_type: type tabaa l command
@@ -88,16 +87,13 @@ typedef struct s_exec{
 	t_cmd_node	*cmd_list;
 	t_env_var	*env_list;
 	int			exit_status;
+	t_gc		gc;
 }	t_exec;
 
 //init_data
-t_env_var	*create_env_var(char *name, char *value);
-void		free_env_list(t_env_var *env);
-t_cmd_node	*create_cmd_node(char **args);
-void		free_cmd_node(t_cmd_node *cmd);
-void		free_elem_list(t_elem *elem);
-t_exec		*init_exec();
-void		free_exec(t_exec *exec);
+t_env_var	*create_env_var(t_exec *exec, char *name, char *value);
+t_cmd_node	*create_cmd_node(t_exec *exec, char **args);
+void		init_exec(t_exec *exec);
 void		add_env_var(t_exec *exec, char *name, char *value);
 
 //echo
@@ -113,19 +109,18 @@ void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 int			ft_cd(t_exec *exec, const char *arg);
 
 //export'
-void		add_or_update_env_var(t_env_var **env_list, char *name, char *value);
-void		handle_export(char *cmd, t_env_var **env_list);
+void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value);
+void 		handle_export(char *cmd, t_env_var **env_list,t_gc *gc);
 void		swap_env_vars(t_env_var *a, t_env_var *b);
 void		sort_env_vars(t_env_var *head);
 void		ft_export(t_env_var *env_list);
 
 //unset
 t_env_var	*remove_env_var(t_exec *exec, const char *name);
-void		free_env_var(t_exec *exec, t_env_var *node);
 void		unset_env_var(t_exec *exec, const char *name);
 
 //pwd
-char		*get_current_directory(void);
+char *get_current_directory(t_exec *exec);
 void		ft_pwd(t_exec *exec);
 
 //env
@@ -142,6 +137,6 @@ int			main(int ac,char **av,char **envp);
 
 //utils
 void		*ft_malloc(t_gc *var, size_t size);
-void		ft_free(t_gc *var, void *ptr);
+void		ft_free_all(t_gc *gc);
 
 #endif

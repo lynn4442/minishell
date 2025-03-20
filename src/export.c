@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/17 17:07:27 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 00:28:39 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void sort_env_vars(t_env_var *head)
 	}
 }
 
-void add_or_update_env_var(t_env_var **env_list, char *name, char *value)
+void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
 {
     t_env_var *temp = *env_list;
 
@@ -62,25 +62,25 @@ void add_or_update_env_var(t_env_var **env_list, char *name, char *value)
     {
         if (ft_strcmp(temp->key, name) == 0)
         {
-            free(temp->value);
+            //free(temp->value);
             if (value == NULL || ft_strcmp(value, "") == 0)
             {
-                temp->value = ft_strdup("");
+                temp->value = ft_strdup(gc, "");
             }
             else
             {
-                temp->value = ft_strdup(value);
+                temp->value = ft_strdup(gc, value);
             }
             return;
         }
         temp = temp->next;
     }
-    t_env_var *new_var = malloc(sizeof(t_env_var));
-    new_var->key = ft_strdup(name);
+    t_env_var *new_var = ft_malloc(gc, sizeof(t_env_var));
+    new_var->key = ft_strdup(gc,name);
     if (value == NULL || ft_strcmp(value, "") == 0)
-		new_var->value = ft_strdup("");
+		new_var->value = ft_strdup(gc,"");
     else
-		new_var->value = ft_strdup(value);
+		new_var->value = ft_strdup(gc,value);
     new_var->next = *env_list;
     *env_list = new_var;
 }
@@ -136,7 +136,7 @@ int ft_isspace(char c)
 }
 
 
-void handle_export(char *cmd, t_env_var **env_list)
+void handle_export(char *cmd, t_env_var **env_list, t_gc *gc)
 {
 	char *equal_sign;
 	char *start;
@@ -154,7 +154,7 @@ void handle_export(char *cmd, t_env_var **env_list)
 	{
 		if (!is_valid_var_name(start))
 			return;
-		add_or_update_env_var(env_list, start, NULL);
+		add_or_update_env_var(gc,env_list, start, NULL);
 		return;
 	}
 	*equal_sign = '\0';
@@ -162,5 +162,5 @@ void handle_export(char *cmd, t_env_var **env_list)
 	char *value = equal_sign + 1;
 	if (!is_valid_var_name(name))
 		return;
-	add_or_update_env_var(env_list, name, value);
+	add_or_update_env_var(gc,env_list, name, value);
 }

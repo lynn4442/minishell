@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 18:41:19 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/20 22:23:26 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,42 +29,37 @@ void update_env_var(t_exec *exec, const char *key, const char *value, bool equal
 	t_env_var *var = get_env_var(exec, key);
 	if (var)
 	{
-		free(var->value);
-		var->value = ft_strdup(value);
+		var->value = ft_strdup(&exec->gc, value);
 		var->equal = equal;
-		free(var->all);
 		if (equal)
-			var->all = ft_strjoin(ft_strjoin(var->key, "="), var->value);
+			var->all = ft_strjoin(ft_strjoin(var->key, "=", &exec->gc), var->value, &exec->gc);
 		else
-			var->all = ft_strdup(var->key);
+			var->all = ft_strdup(&exec->gc, var->key);
 	}
 	else
 	{
-		t_env_var *new_var = malloc(sizeof(t_env_var));
+		t_env_var *new_var = ft_malloc(&exec->gc, sizeof(t_env_var));
 		if (!new_var)
 		{
 			perror("malloc");
 			return;
 		}
-		new_var->key = ft_strdup(key);
+		new_var->key = ft_strdup(&exec->gc, key);
 		if (!new_var->key) {
 			perror("malloc");
-			free(new_var);
 			return;
 		}
 		new_var->equal = equal;
-		new_var->value = ft_strdup(value);
+		new_var->value = ft_strdup(&exec->gc, value);
 		if (!new_var->value && equal)
 		{
 			perror("malloc");
-			free(new_var->key);
-			free(new_var);
 			return;
 		}
 		if (equal)
-			new_var->all = ft_strjoin(ft_strjoin(new_var->key, "="), new_var->value);
+			new_var->all = ft_strjoin(ft_strjoin(new_var->key, "=", &exec->gc), new_var->value, &exec->gc);
 		else
-			new_var->all = ft_strdup(new_var->key);
+			new_var->all = ft_strdup(&exec->gc, new_var->key);
 		new_var->next = NULL;
 		if (!exec->env_list)
 		{
@@ -87,7 +82,7 @@ void update_pwd_vars(t_exec *exec, const char *old_pwd)
 	char *cwd = NULL;
 	size_t len = 1024;
 
-	cwd = (char *)malloc(len * sizeof(char));
+	cwd = (char *)ft_malloc(&exec->gc,len * sizeof(char));
 	if (!cwd)
 	{
 		perror("malloc");
@@ -97,14 +92,12 @@ void update_pwd_vars(t_exec *exec, const char *old_pwd)
 	if (!getcwd(cwd, len))
 	{
 		perror("getcwd");
-		free(cwd);
 		exec->exit_status = 1;
 		return;
 	}
 	update_env_var(exec, "OLDPWD", old_pwd, true);
 	update_env_var(exec, "PWD", cwd, true);
 	exec->exit_status = 0;
-	free(cwd);
 }
 // no need for all these just to be like bash in this case
 // > cd makefile
@@ -157,7 +150,7 @@ char *expand_home_path(t_exec *exec, const char *arg)
 
 	if (!home)
 		return NULL;
-	expanded = ft_strjoin(home, arg + 1);
+	expanded = ft_strjoin(home, arg + 1,&exec->gc);
 	if (!expanded)
 	{
 		perror("malloc");
@@ -200,6 +193,5 @@ int ft_cd(t_exec *exec, const char *arg)
 		return (1);
 	if (change_dir(expanded_path ? expanded_path : arg, exec) == 0)
 		update_pwd_vars(exec, old_pwd);
-	free(expanded_path);
 	return (exec->exit_status);
 }

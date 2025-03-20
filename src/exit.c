@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 18:25:53 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/09 18:28:28 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 01:44:05 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ int is_numeric(const char *str)
 
 void ft_exit(char **args, int last_exit_status)
 {
+	(void)last_exit_status;
 	printf("exit\n");
 	if (!args[1])
-		exit(last_exit_status);
+		exit(1);
 	if (is_numeric(args[1]))
 	{
 		if (args[2])
@@ -38,7 +39,7 @@ void ft_exit(char **args, int last_exit_status)
 			printf("exit: too many arguments\n");
 			return ;
 		}
-		exit(atoi(args[1]) % 256);
+		exit(ft_atoi(args[1]) % 256);
 	}
 	else
 	{

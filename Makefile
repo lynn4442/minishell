@@ -7,7 +7,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 INCLUDES = -I headers -I libft
 
-# Libraries
+## Libraries
 LIBFT   = libft/libft.a
 LDFLAGS = -Llibft -lft -lreadline -lncurses
 

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:05:08 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 10:12:57 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/20 23:11:55 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,23 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 	return NULL;
 }
 
-void free_env_var(t_exec *exec, t_env_var *node)
-{
-	if (node)
-	{
-		free(node->key);
-		free(node->value);
-		free(node);
-		exec->exit_status = 0;
-	}
-	else
-		exec->exit_status = 0;
-}
+//void free_env_var(t_exec *exec, t_env_var *node)
+//{
+//	if (node)
+//	{
+//		//free(node->key);
+//		//free(node->value);
+//		//free(node);
+//		exec->exit_status = 0;
+//	}
+//	else
+//		exec->exit_status = 0;
+//}
 
 void unset_env_var(t_exec *exec, const char *name)
 {
 	t_env_var *node_to_remove;
-
+	(void)node_to_remove;
 	node_to_remove = remove_env_var(exec, name);
-	free_env_var(exec, node_to_remove);
+	//free_env_var(exec, node_to_remove);
 }

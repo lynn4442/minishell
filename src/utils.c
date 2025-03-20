@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 18:19:58 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 18:25:46 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 01:27:04 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,29 +32,21 @@ void	*ft_malloc(t_gc *var, size_t size)
 	return (ptr);
 }
 
-void	ft_free(t_gc *var, void *ptr)
+void	ft_free_all(t_gc *gc)
 {
-	t_mem_node	*prev;
 	t_mem_node	*curr;
+	t_mem_node	*tmp;
 
-	if (!var || !ptr)
+	if (!gc || !gc->head)
 		return ;
-	curr = var->head;
-	prev = NULL;
+	curr = gc->head;
+	gc->head = NULL;
 	while (curr)
 	{
-		if (curr->ptr == ptr)
-		{
-			if (prev)
-				prev->next = curr->next;
-			else
-				var->head = curr->next;
-			free(curr->ptr);
-			free(curr);
-			return ;
-		}
-		prev = curr;
+		tmp = curr;
 		curr = curr->next;
+		if (tmp->ptr)
+			free(tmp->ptr);
+		free(tmp);
 	}
 }
-

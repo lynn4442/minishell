@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/08 15:06:43 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 16:26:34 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 01:38:35 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,10 @@ void ft_env(t_exec *exec, char **args)
 		char *equal_sign = ft_strchr(args[i], '=');
 		if (equal_sign)
 		{
-			char *key = ft_strndup(args[i], equal_sign - args[i]);
-			char *value = ft_strdup(equal_sign + 1);
+			char *key = ft_strndup(&exec->gc,args[i], equal_sign - args[i]);
+			char *value = ft_strdup(&exec->gc, equal_sign + 1);
 			if (key)
-			{
 				update_env_var(exec, key, value, true);
-				free(key);
-				free(value);
-			}
 		}
 		else
 		{

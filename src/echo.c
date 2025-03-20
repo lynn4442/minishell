@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 10:11:47 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/20 16:02:41 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,13 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 	no_newline = 0;
 	if (!cmd || !cmd->arr || !cmd->arr[0])
 		return;
-	while (cmd->arr[i] && ft_strcmp(cmd->arr[i], "-n") == 0)
+	while (cmd->arr[i] && cmd->arr[i][0] == '-' && cmd->arr[i][1] == 'n')
 	{
+		int j = 1;
+		while (cmd->arr[i][j] == 'n')
+			j++;
+		if (cmd->arr[i][j] != '\0')
+			break;
 		no_newline = 1;
 		i++;
 	}

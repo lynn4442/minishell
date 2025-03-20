@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/18 19:59:29 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/20 16:17:16 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@
 //t_env_var: lal env ta asema
 //t_cmd_node: la kel command
 
+//int g_signal_received = 0;
+
 typedef struct s_elem {
 	char			*token;
 	int				space_after;
@@ -47,12 +49,12 @@ typedef enum e_type {
 //2 the boolean eza le2a = aw lae
 //3 the value li after the =
 typedef struct s_env_var {
-    char                *key;
+	char				*key;
 	bool 				equal;
-    char                *value;
+	char				*value;
 	char				*all;
-    struct s_env_var	*next;
-    struct s_env_var	*prev;
+	struct s_env_var	*next;
+	struct s_env_var	*prev;
 } t_env_var;
 
 typedef struct s_cmd_node {
@@ -112,7 +114,7 @@ char		*get_current_directory(void);
 void		ft_pwd(t_exec *exec);
 
 //env
-void		ft_env(t_exec *exec);
+void		ft_env(t_exec *exec, char **args);
 
 //exit
 int			is_numeric(const char *str);

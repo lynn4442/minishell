@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 03:51:39 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 07:18:21 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ int			is_numeric(const char *str);
 void		ft_exit(char **args, int last_exit_status);
 
 //main
-void		parse_and_execute(t_exec *exec, char *input);
+void		parse_and_execute(t_exec *exec, t_cmd_node *cmd);
 int			main(int ac,char **av,char **envp);
 
 

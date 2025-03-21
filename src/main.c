@@ -6,11 +6,44 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 07:12:37 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 07:26:45 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void handle_non_builtin_commands(t_exec *exec, t_cmd_node *cmd)
+{
+    char **path_dirs = get_path_from_env(exec);
+    if (!path_dirs) {
+        printf("minihell: %s: command not found\n", cmd->arr[0]);
+        exec->exit_status = 127;
+        return;
+    }
+    int found = 0;
+    int i = 0;
+    while (path_dirs[i])
+	{
+        char *full_path = ft_join(path_dirs[i], "/", cmd->arr[0], &exec->gc);
+        if (!full_path) {
+            printf("minihell: memory allocation failed\n");
+            exec->exit_status = 1;
+            return;
+        }
+        if (access(full_path, X_OK) == 0) {
+            execute_command(cmd, &exec->gc, full_path);
+            found = 1;
+            break;
+        }
+        i++;
+    }
+    if (!found)
+	{
+        printf("minihell: %s: command not found\n", cmd->arr[0]);
+        exec->exit_status = 127;
+    }
+}
+
 // 1
 
 //void parse_and_execute(t_exec *exec, char *input)

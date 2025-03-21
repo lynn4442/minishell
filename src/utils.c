@@ -6,11 +6,13 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 18:19:58 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 01:27:04 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 07:16:52 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../minishell.h"
+
+//my malloc and my free
 
 void	*ft_malloc(t_gc *var, size_t size)
 {

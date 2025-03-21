@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 00:27:16 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 02:19:50 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,27 @@
 
 t_env_var *create_env_var(t_exec *exec, char *name, char *value)
 {
-	t_env_var *env = ft_malloc(&exec->gc, sizeof(t_env_var));
+	t_env_var *env;
+
+	env = ft_malloc(&exec->gc, sizeof(t_env_var));
 	if (!env)
 		return NULL;
 	env->key = ft_strdup(&exec->gc, name);
 	env->value = ft_strdup(&exec->gc, value);
 	if (!env->key || !env->value)
-	{
-		//free(env->key);
-		//free(env->value);
-		//free(env);
 		return NULL;
-	}
 	env->next = NULL;
 	env->prev = NULL;
 	return env;
 }
 
-//void free_env_list(t_env_var *env)
-//{
-//	t_env_var *tmp;
-//	while (env)
-//	{
-//		tmp = env;
-//		env = env->next;
-//		//free(tmp->key);
-//		//free(tmp->value);
-//		//free(tmp);
-//	}
-//}
-
 t_cmd_node *create_cmd_node(t_exec *exec, char **args)
 {
-	t_cmd_node *cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
+	t_cmd_node *cmd;
 	int count;
 	int i;
 
+	cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
 	i = 0;
 	count = 0;
 	if (!cmd)
@@ -57,8 +42,6 @@ t_cmd_node *create_cmd_node(t_exec *exec, char **args)
 	while (args && args[count])
 		count++;
 	cmd->arr = ft_malloc(&exec->gc, (count + 1) * sizeof(char *));
-	//if (!cmd->arr)
-	//	return (free(cmd), NULL);
 	while (i < count)
 	{
 		cmd->arr[i] = ft_strdup(&exec->gc, args[i]);
@@ -73,43 +56,9 @@ t_cmd_node *create_cmd_node(t_exec *exec, char **args)
 	cmd->err = 0;
 	cmd->ex_heredoc = 0;
 	cmd->next = NULL;
-	return cmd;
+	return (cmd);
 }
 
-//void free_cmd_node(t_cmd_node *cmd)
-//{
-//	t_cmd_node *tmp;
-//	while (cmd)
-//	{
-//		tmp = cmd;
-//		cmd = cmd->next;
-
-//		if (tmp->arr)
-//		{
-//			for (int i = 0; tmp->arr[i]; i++)
-//				free(tmp->arr[i]);
-//			free(tmp->arr);
-//		}
-//		//free(tmp->in);
-//		//free(tmp->out);
-//		//free(tmp->heredoc);
-//		//free(tmp);
-//	}
-//}
-
-//void free_elem_list(t_elem *elem)
-//{
-//	t_elem *tmp;
-//	while (elem)
-//	{
-//		tmp = elem;
-//		elem = elem->next;
-//		free(tmp->token);
-//		free(tmp);
-//	}
-//}
-
-//no idea chou lezim naamul
 void init_exec(t_exec *exec)
 {
 	exec->cmd_list = NULL;
@@ -118,19 +67,10 @@ void init_exec(t_exec *exec)
 	exec->gc.head = NULL;
 }
 
-
-//void free_exec(t_exec *exec)
-//{
-//	if (!exec)
-//		return;
-//	free_env_list(exec->env_list);
-//	free_cmd_node(exec->cmd_list);
-//	free(exec);
-//}
-
 void add_env_var(t_exec *exec, char *name, char *value)
 {
-	t_env_var *new_var;
+	t_env_var	*new_var;
+	t_env_var	*temp;
 
 	new_var = create_env_var(exec, name, value);
 	if (!new_var)
@@ -139,7 +79,7 @@ void add_env_var(t_exec *exec, char *name, char *value)
 		exec->env_list = new_var;
 	else
 	{
-		t_env_var *temp = exec->env_list;
+		temp = exec->env_list;
 		while (temp->next)
 			temp = temp->next;
 		temp->next = new_var;

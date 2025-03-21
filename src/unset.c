@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:05:08 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 23:11:55 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 06:08:41 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,25 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 
 	current = exec->env_list;
 	prev = NULL;
-	while (current)
-	{
+	while (current) {
 		if (ft_strcmp(current->key, name) == 0)
 		{
 			if (prev == NULL)
 			{
 				exec->env_list = current->next;
 				if (current->next)
+				{
 					current->next->prev = NULL;
-			}
-			else if (current->next)
-			{
-				prev->next = current->next;
-				current->next->prev = prev;
+				}
 			}
 			else
-				prev->next = NULL;
+			{
+				prev->next = current->next;
+				if (current->next)
+				{
+					current->next->prev = prev;
+				}
+			}
 			return current;
 		}
 		prev = current;
@@ -44,23 +46,14 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 	return NULL;
 }
 
-//void free_env_var(t_exec *exec, t_env_var *node)
-//{
-//	if (node)
-//	{
-//		//free(node->key);
-//		//free(node->value);
-//		//free(node);
-//		exec->exit_status = 0;
-//	}
-//	else
-//		exec->exit_status = 0;
-//}
+void unset_env_var(t_exec *exec, const char *name) {
+	t_env_var *node_to_remove = remove_env_var(exec, name);
 
-void unset_env_var(t_exec *exec, const char *name)
-{
-	t_env_var *node_to_remove;
-	(void)node_to_remove;
-	node_to_remove = remove_env_var(exec, name);
-	//free_env_var(exec, node_to_remove);
+	if (node_to_remove)
+	{
+		ft_free(&exec->gc, node_to_remove->key);
+		ft_free(&exec->gc, node_to_remove->value);
+		ft_free(&exec->gc, node_to_remove->all);
+		ft_free(&exec->gc, node_to_remove);
+	}
 }

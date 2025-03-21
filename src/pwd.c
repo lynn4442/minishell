@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:16:48 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 00:33:23 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 06:14:18 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void ft_pwd(t_exec *exec)
 	{
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd("\n", 1);
-		//free(cwd);
 	}
 	else
 	{

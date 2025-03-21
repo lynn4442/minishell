@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 01:26:10 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 05:50:25 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,15 +62,13 @@ int main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	t_gc hello = {0};
-		t_exec *exec = ft_malloc(&hello,sizeof(t_exec));
+	t_exec *exec = ft_malloc(&hello,sizeof(t_exec));
 	if (!exec)
 	{
 		perror("malloc");
 		return 1;
 	}
-	exec->cmd_list = NULL;
-	exec->env_list = NULL;
-	exec->gc = hello;
+	init_exec(&exec);
 	int i = 0;
 	while (envp[i])
 	{

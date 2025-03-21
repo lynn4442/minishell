@@ -6,13 +6,14 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 16:02:41 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 06:10:13 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char *get_env_value(t_env_var *env_list, char *var_name) {
+char *get_env_value(t_env_var *env_list, char *var_name)
+{
 	t_env_var *current;
 
 	current = env_list;
@@ -26,21 +27,32 @@ char *get_env_value(t_env_var *env_list, char *var_name) {
 	return (NULL);
 }
 
-
-void print_arg(char *arg, t_env_var *env)
+void print_arg(char *arg, t_env_var *env, t_exec *exec)
 {
 	char *env_value;
+	char *exit_code_str;
 
 	if (!arg)
-		return ;
+		return;
 	if (arg[0] == '$' && arg[1] != '\0')
 	{
-		env_value = get_env_value(env, arg + 1);
-		if (env_value)
-			write(1, env_value, ft_strlen(env_value));
+		if (arg[1] == '?')
+		{
+			exit_code_str = ft_itoa(exec->exit_status);
+			printf("%s", exit_code_str);
+			//heyde chou lezim aamoul fiya eza free aade aw ft_free_all
+			free(exit_code_str);
+			exec->exit_status = 0;
+		}
+		else
+		{
+			env_value = get_env_value(env, arg + 1);
+			if (env_value)
+				printf("%s", env_value);
+		}
 	}
 	else
-		write(1, arg, ft_strlen(arg));
+		printf("%s", arg);
 }
 
 void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
@@ -64,13 +76,13 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 	}
 	while (cmd->arr[i])
 	{
-		print_arg(cmd->arr[i], env);
+		print_arg(cmd->arr[i], env, exec);
 		if (cmd->arr[i + 1])
 			write(1, " ", 1);
 		i++;
 	}
 	if (!no_newline)
-		write(1, "\n", 1);
+		printf("\n");
 	exec->exit_status = 0;
 }
 

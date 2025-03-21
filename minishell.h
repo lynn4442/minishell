@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 01:28:26 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 03:51:39 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void		add_env_var(t_exec *exec, char *name, char *value);
 
 //echo
 char		*get_env_value(t_env_var *env_list, char *var_name);
-void		print_arg(char *arg, t_env_var *env);
+void		print_arg(char *arg, t_env_var *env, t_exec *exec);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
@@ -120,7 +120,7 @@ t_env_var	*remove_env_var(t_exec *exec, const char *name);
 void		unset_env_var(t_exec *exec, const char *name);
 
 //pwd
-char *get_current_directory(t_exec *exec);
+char		*get_current_directory(t_exec *exec);
 void		ft_pwd(t_exec *exec);
 
 //env
@@ -140,3 +140,4 @@ void		*ft_malloc(t_gc *var, size_t size);
 void		ft_free_all(t_gc *gc);
 
 #endif
+

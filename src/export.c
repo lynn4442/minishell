@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 00:28:39 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/21 02:15:13 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,66 +56,54 @@ void sort_env_vars(t_env_var *head)
 
 void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
 {
-    t_env_var *temp = *env_list;
+	t_env_var *temp = *env_list;
 
-    while (temp)
-    {
-        if (ft_strcmp(temp->key, name) == 0)
-        {
-            //free(temp->value);
-            if (value == NULL || ft_strcmp(value, "") == 0)
-            {
-                temp->value = ft_strdup(gc, "");
-            }
-            else
-            {
-                temp->value = ft_strdup(gc, value);
-            }
-            return;
-        }
-        temp = temp->next;
-    }
-    t_env_var *new_var = ft_malloc(gc, sizeof(t_env_var));
-    new_var->key = ft_strdup(gc,name);
-    if (value == NULL || ft_strcmp(value, "") == 0)
+	while (temp)
+	{
+		if (ft_strcmp(temp->key, name) == 0)
+		{
+			if (value == NULL || ft_strcmp(value, "") == 0)
+				temp->value = ft_strdup(gc, "");
+			else
+				temp->value = ft_strdup(gc, value);
+			return;
+		}
+		temp = temp->next;
+	}
+	t_env_var *new_var = ft_malloc(gc, sizeof(t_env_var));
+	new_var->key = ft_strdup(gc,name);
+	if (value == NULL || ft_strcmp(value, "") == 0)
 		new_var->value = ft_strdup(gc,"");
-    else
+	else
 		new_var->value = ft_strdup(gc,value);
-    new_var->next = *env_list;
-    *env_list = new_var;
+	new_var->next = *env_list;
+	*env_list = new_var;
 }
 
 //treke l sort abel ma taamle iteration aal list
 void ft_export(t_env_var *env_list)
 {
-    t_env_var *temp;
+	t_env_var *temp;
 
-    if (env_list == NULL)
-        return;
-
-    sort_env_vars(env_list);
-    temp = env_list;
-
-    while (temp)
-    {
-        ft_putstr_fd("declare -x ", 1);
-        ft_putstr_fd(temp->key, 1);
-
-        // If the value is an empty string, print =""; otherwise, just print the value.
-        if (temp->value && ft_strcmp(temp->value, "") == 0)
-        {
-            ft_putstr_fd("=\"\"", 1);
-        }
-        else if (temp->value && ft_strcmp(temp->value, "") != 0)
-        {
-            ft_putstr_fd("=\"", 1);
-            ft_putstr_fd(temp->value, 1);
-            ft_putstr_fd("\"", 1);
-        }
-
-        ft_putstr_fd("\n", 1); // Always print a newline after each entry
-        temp = temp->next;
-    }
+	if (env_list == NULL)
+		return;
+	sort_env_vars(env_list);
+	temp = env_list;
+	while (temp)
+	{
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(temp->key, 1);
+		if (temp->value && ft_strcmp(temp->value, "") == 0)
+			ft_putstr_fd("=\"\"", 1);
+		else if (temp->value && ft_strcmp(temp->value, "") != 0)
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(temp->value, 1);
+			ft_putstr_fd("\"", 1);
+		}
+		ft_putstr_fd("\n", 1);
+		temp = temp->next;
+	}
 }
 
 int is_valid_var_name(const char *name)
@@ -141,6 +129,8 @@ void handle_export(char *cmd, t_env_var **env_list, t_gc *gc)
 	char *equal_sign;
 	char *start;
 	char *end;
+	char *value;
+	char *name;
 
 	start = cmd;
 	while (*start && ft_isspace(*start))
@@ -154,12 +144,12 @@ void handle_export(char *cmd, t_env_var **env_list, t_gc *gc)
 	{
 		if (!is_valid_var_name(start))
 			return;
-		add_or_update_env_var(gc,env_list, start, NULL);
+		add_or_update_env_var( gc, env_list, start, NULL);
 		return;
 	}
 	*equal_sign = '\0';
-	char *name = start;
-	char *value = equal_sign + 1;
+	name = start;
+	value = equal_sign + 1;
 	if (!is_valid_var_name(name))
 		return;
 	add_or_update_env_var(gc,env_list, name, value);

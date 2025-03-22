@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/20 22:23:26 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 13:42:01 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,6 +177,7 @@ int ft_cd(t_exec *exec, const char *arg)
 	char *old_pwd;
 	t_env_var *pwd_var;
 	char *expanded_path = NULL;
+	const char *path;
 
 	pwd_var = get_env_var(exec, "PWD");
 	if (pwd_var)
@@ -189,9 +190,13 @@ int ft_cd(t_exec *exec, const char *arg)
 		expanded_path = expand_home_path(exec, arg);
 	else if (ft_strcmp(arg, "-") == 0)
 		arg = handle_oldpwd(exec);
-	if (!arg) //this was handled above too
+	if (!arg) // This was handled above too
 		return (1);
-	if (change_dir(expanded_path ? expanded_path : arg, exec) == 0)
+	path = expanded_path;
+	if (!path)
+		path = arg;
+	if (change_dir(path, exec) == 0)
 		update_pwd_vars(exec, old_pwd);
 	return (exec->exit_status);
 }
+

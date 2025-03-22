@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 19:55:04 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 05:43:49 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 13:47:20 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void ft_input_red(t_cmd_node *cmd, t_gc *gc)
 }
 
 // >>
-void output_append(t_cmd_node *cmd, t_gc *gc)
+void ft_output_append(t_cmd_node *cmd, t_gc *gc)
 {
 	if (cmd->out && cmd->append)
 	{
@@ -49,7 +49,7 @@ void output_append(t_cmd_node *cmd, t_gc *gc)
 }
 
 // >
-void output_truncate(t_cmd_node *cmd, t_gc *gc)
+void ft_output_truncate(t_cmd_node *cmd, t_gc *gc)
 {
 	if (cmd->out && !cmd->append)
 	{
@@ -68,8 +68,8 @@ void output_truncate(t_cmd_node *cmd, t_gc *gc)
 void handle_redirection(t_cmd_node *cmd, t_gc *gc)
 {
 	ft_input_redirection(cmd, gc);
-	output_append(cmd, gc);
-	output_truncate(cmd, gc);
+	ft_output_append(cmd, gc);
+	ft_output_truncate(cmd, gc);
 }
 
 void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)

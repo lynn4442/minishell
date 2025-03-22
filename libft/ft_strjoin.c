@@ -22,7 +22,7 @@ char	*ft_strjoin(const char *s1, const char *s2,t_gc *x)
 	i = 0;
 	lens1 = ft_strlen(s1);
 	lens2 = ft_strlen(s2);
-	result = ft_malloc(x,sizeof(char) * (lens1 + lens2 + 1));
+	result = ft_malloc( x, sizeof(char) * (lens1 + lens2 + 1));
 	if (!s1 || !s2)
 		return (NULL);
 	if (!result)

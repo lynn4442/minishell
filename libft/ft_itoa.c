@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/15 17:55:17 by lyoussef          #+#    #+#             */
-/*   Updated: 2024/06/20 09:30:55 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 19:15:21 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,13 @@ static void	ft_ans(char *str, int n, size_t size)
 		str[0] = '0';
 }
 
-char	*ft_itoa(int n)
+char	*ft_itoa(int n, t_gc *gc)
 {
 	char	*str;
 	size_t	size;
 
 	size = ft_size(n);
-	str = (char *)malloc(size + 1);
+	str = (char *)ft_malloc( gc, size + 1);
 	if (!str)
 		return (NULL);
 	ft_ans(str, n, size);

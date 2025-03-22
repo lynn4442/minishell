@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 07:18:21 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 20:18:57 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,9 +106,12 @@ t_env_var	*get_env_var(t_exec *exec, const char *name);
 void		update_env_var(t_exec *exec, const char *key, const char *value, bool equal);
 int			change_dir(const char *path, t_exec *exec);
 void		update_pwd_vars(t_exec *exec, const char *old_pwd);
+char		*get_home_path(t_exec *exec);
+char		*expand_home_path(t_exec *exec, const char *arg);
+char		*handle_oldpwd(t_exec *exec);
 int			ft_cd(t_exec *exec, const char *arg);
 
-//export'
+//export
 void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value);
 void 		handle_export(char *cmd, t_env_var **env_list,t_gc *gc);
 void		swap_env_vars(t_env_var *a, t_env_var *b);
@@ -131,9 +134,15 @@ int			is_numeric(const char *str);
 void		ft_exit(char **args, int last_exit_status);
 
 //main
-void		parse_and_execute(t_exec *exec, t_cmd_node *cmd);
+void		parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp);
 int			main(int ac,char **av,char **envp);
 
+//redirections
+void		ft_input_redirection(t_cmd_node *cmd, t_gc *gc);
+void		ft_output_append(t_cmd_node *cmd, t_gc *gc);
+void		ft_output_truncate(t_cmd_node *cmd, t_gc *gc);
+void		handle_redirection(t_cmd_node *cmd, t_gc *gc);
+void		execute_command(t_cmd_node *cmd, t_gc *gc, char **envp);
 
 //utils
 void		*ft_malloc(t_gc *var, size_t size);

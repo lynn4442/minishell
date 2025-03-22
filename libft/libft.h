@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 14:54:34 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 00:46:10 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 19:14:58 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int				ft_memcmp(const void *s1, const void *s2, size_t n);
 int				ft_strcmp(const char *s1, const char *s2);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 
-char			*ft_itoa(int n);
+char			*ft_itoa(int n, t_gc *gc);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strrchr(const char *s, int c);
 char			*ft_strnstr(const char *big, const char *little, size_t len);

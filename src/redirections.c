@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 19:55:04 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/22 13:47:20 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 16:03:17 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include "../minishell.h"
 
 // <
-void ft_input_red(t_cmd_node *cmd, t_gc *gc)
+void ft_input_redirection(t_cmd_node *cmd, t_gc *gc)
 {
 	if (cmd->in)
 	{

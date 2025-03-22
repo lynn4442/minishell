@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 15:39:22 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 06:10:13 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/22 15:15:16 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void print_arg(char *arg, t_env_var *env, t_exec *exec)
 	{
 		if (arg[1] == '?')
 		{
-			exit_code_str = ft_itoa(exec->exit_status);
+			exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
 			printf("%s", exit_code_str);
 			//heyde chou lezim aamoul fiya eza free aade aw ft_free_all
 			free(exit_code_str);

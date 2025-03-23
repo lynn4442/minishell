@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/23 18:14:10 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/23 21:34:46 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,11 +105,6 @@ void ft_export(t_env_var *env_list)
 		else if (temp->value && ft_strcmp(temp->value, "") == 0)
 		{
 			ft_putstr_fd("=\"\"", 1);
-		}
-		// Handle the case where the variable has no value (like 'f')
-		else
-		{
-			// Do not print anything after the key if no value exists
 		}
 		ft_putstr_fd("\n", 1);
 		temp = temp->next;

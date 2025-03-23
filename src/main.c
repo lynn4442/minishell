@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/22 15:44:35 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/23 18:09:31 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ int main(int ac, char **av, char **envp)
 	char *input;
 	while (1)
 	{
-		input = readline("minishell> ");
+		input = readline("\033[1;31mminishell>\033[0m ");
 		if (!input)
 		{
 			printf("exit\n");

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 02:15:13 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/23 18:14:10 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *val
 	{
 		if (ft_strcmp(temp->key, name) == 0)
 		{
-			if (value == NULL || ft_strcmp(value, "") == 0)
-				temp->value = ft_strdup(gc, "");
+			if (ft_strcmp(temp->key, name) == 0)
+				temp->value = NULL;
 			else
 				temp->value = ft_strdup(gc, value);
 			return;
@@ -72,10 +72,10 @@ void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *val
 	}
 	t_env_var *new_var = ft_malloc(gc, sizeof(t_env_var));
 	new_var->key = ft_strdup(gc,name);
-	if (value == NULL || ft_strcmp(value, "") == 0)
-		new_var->value = ft_strdup(gc,"");
+	if (value)
+		new_var->value = ft_strdup(gc, value);
 	else
-		new_var->value = ft_strdup(gc,value);
+		new_var->value = NULL;
 	new_var->next = *env_list;
 	*env_list = new_var;
 }
@@ -93,13 +93,23 @@ void ft_export(t_env_var *env_list)
 	{
 		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(temp->key, 1);
-		if (temp->value && ft_strcmp(temp->value, "") == 0)
-			ft_putstr_fd("=\"\"", 1);
-		else if (temp->value && ft_strcmp(temp->value, "") != 0)
+
+		// Handle the case where there is a value for the variable
+		if (temp->value && ft_strcmp(temp->value, "") != 0)
 		{
 			ft_putstr_fd("=\"", 1);
 			ft_putstr_fd(temp->value, 1);
 			ft_putstr_fd("\"", 1);
+		}
+		// Handle the case where the variable has an empty value
+		else if (temp->value && ft_strcmp(temp->value, "") == 0)
+		{
+			ft_putstr_fd("=\"\"", 1);
+		}
+		// Handle the case where the variable has no value (like 'f')
+		else
+		{
+			// Do not print anything after the key if no value exists
 		}
 		ft_putstr_fd("\n", 1);
 		temp = temp->next;

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/22 20:18:57 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/24 16:33:45 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,25 @@ typedef struct s_elem {
 
 typedef enum e_type {
 	PIPE,
-	SMP_CMD,
+	SMP_CMD
 }	t_type;
+
+//typedef enum e_type {
+//	PIPE_T = 0,
+//	SMP_CMD_T = 1
+//}	t_type;
+
+//typedef enum e_special_char {
+//	PIPE = '|',
+//	REDIR_IN = '<',
+//	REDIR_OUT = '>',
+//	DOUBLE_REDIR_IN,
+//	DOUBLE_REDIR_OUT,
+//}	t_special_char;
+
+//int is_special_char(char c) {
+//	return (c == PIPE || c == REDIR_IN || c == REDIR_OUT || c == DOUBLE_REDIR_IN || c == DOUBLE_REDIR_OUT || c == SPACE || c == TAB);
+//}
 
 //split aa ases li aam bekhdo bel env w asemo la 3 parts 1 the key
 //2 the boolean eza le2a = aw lae

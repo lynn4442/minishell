@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/24 16:33:45 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/24 20:22:31 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ char		*handle_oldpwd(t_exec *exec);
 int			ft_cd(t_exec *exec, const char *arg);
 
 //export
+int			ft_isspace(char c);
+int			is_valid_var_name(const char *name);
 void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value);
 void 		handle_export(char *cmd, t_env_var **env_list,t_gc *gc);
 void		swap_env_vars(t_env_var *a, t_env_var *b);

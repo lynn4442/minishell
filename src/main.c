@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/23 21:35:59 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:31:50 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,11 @@ void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 		ft_env(exec, cmd->arr);
 	else if (ft_strcmp(cmd->arr[0], "export") == 0)
 	{
+		//dont change [1]
 		if (cmd->arr[1] == NULL)
-		{
 			ft_export(exec->env_list);
-		}
 		else
-		{
 			handle_export(cmd->arr[1], &exec->env_list, &exec->gc);
-		}
 	}
 	else if (ft_strcmp(cmd->arr[0], "unset") == 0)
 		unset_env_var(exec, cmd->arr[1]);

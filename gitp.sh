@@ -6,6 +6,9 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+# Clean up the build files
+make fclean
+
 # Git commands
 git add .
 git commit -m "$1"

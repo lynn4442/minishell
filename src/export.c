@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 11:18:30 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 12:01:05 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,10 @@ void ft_export(t_env_var *env_list)
 		{
 			ft_putstr_fd("=\"\"", 1);
 		}
+		//else if (temp->value == NULL)
+		//{
+		//	ft_putstr_fd("=\"\"", 1);
+		//}
 		ft_putstr_fd("\n", 1);
 		temp = temp->next;
 	}
@@ -158,13 +162,13 @@ void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 		key = ft_strndup(gc, arg, key_len);
 		value = ft_strdup(gc, equal_sign + 1);
 		if (key && value)
-			add_or_update_env_var(gc, env_list, key, value);  // Pass gc here
+			add_or_update_env_var(gc, env_list, key, value);
 	}
 	else
 	{
 		key = ft_strdup(gc, arg);
 		if (key)
-			add_or_update_env_var(gc, env_list, key, "");  // Pass gc here
+			add_or_update_env_var(gc, env_list, key, NULL);
 	}
 }
 

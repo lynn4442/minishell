@@ -6,32 +6,40 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/24 15:31:50 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 09:45:26 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char **get_path_from_env(t_exec *exec)
+char	**get_path_from_env(t_exec *exec)
 {
-	t_env_var *current = exec->env_list;
+	t_env_var	*current;
 
+	current = exec->env_list;
 	while (current)
 	{
 		if (ft_strcmp(current->key, "PATH") == 0)
-			return ft_split(current->value, ':', &exec->gc);
+			return (ft_split(current->value, ':', &exec->gc));
 		current = current->next;
 	}
-	return NULL;
+	return (NULL);
 }
 
 //before dividing it
-void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
+void	parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 {
+	char	**path_dirs;
+	char	*full_path;
+	int		found;
+	int		i;
+
+	i = 0;
+	found = 0;
 	if (!cmd || !cmd->arr)
 	{
 		printf("Error: Invalid command node\n");
-		return;
+		return ;
 	}
 	if (ft_strcmp(cmd->arr[0], "echo") == 0)
 		ft_echo(cmd, exec->env_list, exec);
@@ -43,7 +51,7 @@ void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 		ft_env(exec, cmd->arr);
 	else if (ft_strcmp(cmd->arr[0], "export") == 0)
 	{
-		//dont change [1]
+		//ma tghayre [1]
 		if (cmd->arr[1] == NULL)
 			ft_export(exec->env_list);
 		else
@@ -55,28 +63,27 @@ void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 		ft_exit(cmd->arr, exec->exit_status);
 	else
 	{
-		char **path_dirs = get_path_from_env(exec);
-		if (!path_dirs) {
+		path_dirs = get_path_from_env(exec);
+		if (!path_dirs)
+		{
 			printf("minihell: %s: command not found\n", cmd->arr[0]);
 			exec->exit_status = 127;
-			return;
+			return ;
 		}
-		int found = 0;
-		int i = 0;
 		while (path_dirs[i])
 		{
-			char *full_path = ft_strjoin(path_dirs[i], "/", &exec->gc);
+			full_path = ft_strjoin(path_dirs[i], "/", &exec->gc);
 			if (!full_path)
 			{
 				printf("minihell: memory allocation failed\n");
 				exec->exit_status = 1;
-				return;
+				return ;
 			}
 			if (access(full_path, X_OK) == 0)
 			{
 				execute_command(cmd, &exec->gc, envp);
 				found = 1;
-				break;
+				break ;
 			}
 			i++;
 		}
@@ -88,60 +95,69 @@ void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 	}
 }
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
+	int			i;
+	t_gc		hello;
+	t_exec		*exec;
+	char		*env_var;
+	char		*equal_sign;
+	char		*key;
+	char		*value;
+	char		*input;
+	size_t		key_len;
+	char		**args;
+	t_cmd_node	*cmd;
+
 	(void)ac;
 	(void)av;
-	t_gc hello = {0};
-	t_exec *exec = ft_malloc(&hello,sizeof(t_exec));
+	i = 0;
+	memset(&hello, 0, sizeof(t_gc));
+	exec = ft_malloc(&hello, sizeof(t_exec));
 	if (!exec)
 	{
 		perror("malloc");
-		return 1;
+		return (1);
 	}
 	init_exec(exec);
-	int i = 0;
 	while (envp[i])
 	{
-		char *env_var = envp[i];
-		char *equal_sign = ft_strchr(env_var, '=');
+		env_var = envp[i];
+		equal_sign = ft_strchr(env_var, '=');
 		if (equal_sign)
 		{
-			size_t key_len = equal_sign - env_var;
-			char *key = ft_strndup(&exec->gc,env_var, key_len);
-			char *value = ft_strdup(&exec->gc, equal_sign + 1);
+			key_len = equal_sign - env_var;
+			key = ft_strndup(&exec->gc, env_var, key_len);
+			value = ft_strdup(&exec->gc, equal_sign + 1);
 			if (key && value)
-			{
 				update_env_var(exec, key, value, true);
-			}
 		}
 		i++;
 	}
-	char *input;
 	while (1)
 	{
 		input = readline("minihell> ");
 		if (!input)
 		{
 			printf("exit\n");
-			break;
+			break ;
 		}
 		if (ft_strlen(input) > 0)
 		{
 			add_history(input);
-			char **args = ft_split(input, ' ', &exec->gc);
+			args = ft_split(input, ' ', &exec->gc);
 			if (args)
 			{
-				t_cmd_node *cmd = create_cmd_node(exec, args);
+				cmd = create_cmd_node(exec, args);
 				parse_and_execute(exec, cmd, envp);
 			}
 		}
 		if (ft_strcmp(input, "stop") == 0)
 		{
 			printf("hello");
-			break;
+			break ;
 		}
 	}
 	ft_free_all(&exec->gc);
-	return 0;
+	return (0);
 }

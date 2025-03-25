@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/24 20:22:31 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 09:53:33 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ int			ft_isspace(char c);
 int			is_valid_var_name(const char *name);
 void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value);
 void 		handle_export(char *cmd, t_env_var **env_list,t_gc *gc);
+//void		handle_export(t_exec *exec, char *arg);
+
 void		swap_env_vars(t_env_var *a, t_env_var *b);
 void		sort_env_vars(t_env_var *head);
 void		ft_export(t_env_var *env_list);

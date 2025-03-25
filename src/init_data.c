@@ -6,39 +6,39 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/21 02:19:50 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 09:26:05 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_env_var *create_env_var(t_exec *exec, char *name, char *value)
+t_env_var	*create_env_var(t_exec *exec, char *name, char *value)
 {
-	t_env_var *env;
+	t_env_var	*env;
 
 	env = ft_malloc(&exec->gc, sizeof(t_env_var));
 	if (!env)
-		return NULL;
+		return (NULL);
 	env->key = ft_strdup(&exec->gc, name);
 	env->value = ft_strdup(&exec->gc, value);
 	if (!env->key || !env->value)
-		return NULL;
+		return (NULL);
 	env->next = NULL;
 	env->prev = NULL;
-	return env;
+	return (env);
 }
 
-t_cmd_node *create_cmd_node(t_exec *exec, char **args)
+t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
 {
-	t_cmd_node *cmd;
-	int count;
-	int i;
+	t_cmd_node	*cmd;
+	int			count;
+	int			i;
 
 	cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
 	i = 0;
 	count = 0;
 	if (!cmd)
-		return NULL;
+		return (NULL);
 	while (args && args[count])
 		count++;
 	cmd->arr = ft_malloc(&exec->gc, (count + 1) * sizeof(char *));
@@ -59,7 +59,7 @@ t_cmd_node *create_cmd_node(t_exec *exec, char **args)
 	return (cmd);
 }
 
-void init_exec(t_exec *exec)
+void	init_exec(t_exec *exec)
 {
 	exec->cmd_list = NULL;
 	exec->env_list = NULL;
@@ -67,14 +67,14 @@ void init_exec(t_exec *exec)
 	exec->gc.head = NULL;
 }
 
-void add_env_var(t_exec *exec, char *name, char *value)
+void	add_env_var(t_exec *exec, char *name, char *value)
 {
 	t_env_var	*new_var;
 	t_env_var	*temp;
 
 	new_var = create_env_var(exec, name, value);
 	if (!new_var)
-		return;
+		return ;
 	if (!exec->env_list)
 		exec->env_list = new_var;
 	else

@@ -6,16 +6,16 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/24 20:30:37 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 09:53:18 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
-void swap_env_vars(t_env_var *a, t_env_var *b)
+void	swap_env_vars(t_env_var *a, t_env_var *b)
 {
-	char *temp_name;
-	char *temp_value;
+	char	*temp_name;
+	char	*temp_value;
 
 	temp_name = a->key;
 	a->key = b->key;
@@ -26,21 +26,20 @@ void swap_env_vars(t_env_var *a, t_env_var *b)
 	b->value = temp_value;
 }
 
-void sort_env_vars(t_env_var *head)
+void	sort_env_vars(t_env_var *head)
 {
-	int swapped;
-	t_env_var *current;
-	t_env_var *last_unsorted;
+	int			swapped;
+	t_env_var	*current;
+	t_env_var	*last_unsorted;
 
 	last_unsorted = NULL;
-	if (head == NULL)
-		return;
 	swapped = 1;
+	if (head == NULL)
+		return ;
 	while (swapped)
 	{
 		swapped = 0;
 		current = head;
-
 		while (current->next != last_unsorted)
 		{
 			if (ft_strcmp(current->key, current->next->key) > 0)
@@ -54,23 +53,31 @@ void sort_env_vars(t_env_var *head)
 	}
 }
 
-void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
+void	add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
 {
-	t_env_var *temp = *env_list;
+	t_env_var	*temp;
+	t_env_var	*new_var;
 
+	temp = *env_list;
 	while (temp)
 	{
 		if (ft_strcmp(temp->key, name) == 0)
 		{
 			free(temp->value);
-			temp->value = value ? ft_strdup(gc, value) : NULL;
-			return;
+			if (value)
+				temp->value = ft_strdup(gc, value);
+			else
+				temp->value = NULL;
+			return ;
 		}
 		temp = temp->next;
 	}
-	t_env_var *new_var = ft_malloc(gc, sizeof(t_env_var));
+	new_var = ft_malloc(gc, sizeof(t_env_var));
 	new_var->key = ft_strdup(gc, name);
-	new_var->value = value ? ft_strdup(gc, value) : NULL;
+	if (value)
+		new_var->value = ft_strdup(gc, value);
+	else
+		new_var->value = NULL;
 	new_var->next = *env_list;
 	new_var->prev = NULL;
 	if (*env_list)
@@ -78,40 +85,14 @@ void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *val
 	*env_list = new_var;
 }
 
-void handle_export(char *arg, t_env_var **env_list, t_gc *gc)
+void	ft_export(t_env_var *env_list)
 {
-	char *equal_sign;
-	char *name;
-	char *value;
+	t_env_var	*temp;
 
-	equal_sign = ft_strchr(arg, '=');
-	if (!equal_sign)
-	{
-		if (!is_valid_var_name(arg))
-			return;
-		add_or_update_env_var(gc, env_list, arg, NULL);
-		return;
-	}
-
-	*equal_sign = '\0';
-	name = arg;
-	value = equal_sign + 1;
-
-	if (!is_valid_var_name(name))
-		return;
-
-	add_or_update_env_var(gc, env_list, name, value);
-}
-
-void ft_export(t_env_var *env_list)
-{
-	t_env_var *temp = env_list;
-
+	temp = env_list;
 	if (env_list == NULL)
-		return;
-
+		return ;
 	sort_env_vars(env_list);
-
 	while (temp)
 	{
 		ft_putstr_fd("declare -x ", 1);
@@ -131,19 +112,78 @@ void ft_export(t_env_var *env_list)
 	}
 }
 
-int is_valid_var_name(const char *name)
+int	is_valid_var_name(const char *name)
 {
+	int	i;
+
+	i = 1;
 	if (!name || (!ft_isalpha(name[0]) && name[0] != '_'))
 		return (0);
-	for (int i = 1; name[i]; i++)
+	while (name[i])
 	{
 		if (!ft_isalnum(name[i]) && name[i] != '_')
 			return (0);
+		i++;
 	}
 	return (1);
 }
 
-int ft_isspace(char c)
+int	ft_isspace(char c)
 {
-	return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f');
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\r' || c == '\v' || c == '\f');
+}
+
+void	handle_export(char *arg, t_env_var **env_list, t_gc *gc)
+{
+	char	*equal_sign;
+	char	*name;
+	char	*value;
+
+	equal_sign = ft_strchr(arg, '=');
+	if (!equal_sign)
+	{
+		if (!is_valid_var_name(arg))
+			return ;
+		add_or_update_env_var(gc, env_list, arg, NULL);
+		return ;
+	}
+	*equal_sign = '\0';
+	name = arg;
+	value = equal_sign + 1;
+	if (!is_valid_var_name(name))
+		return ;
+	add_or_update_env_var(gc, env_list, name, value);
+}
+
+int execute_export(t_cmd_node *node, t_exec *exec)
+{
+	int	i;
+	int	invalid;
+
+	invalid = 0;
+
+	if (!node->arr[1])
+	{
+		ft_export(exec->env_list);
+		exec->exit_status = 0;
+		return (1);
+	}
+	i = 1;
+	while (node->arr[i])
+	{
+		if (!is_valid_var_name(node->arr[i]) && !ft_strchr(node->arr[i], '='))
+		{
+			printf("export: `%s': not a valid identifier\n", node->arr[i]);
+			invalid = 1;
+		}
+		else
+			handle_export(node->arr[i], &exec->env_list, &exec->gc);
+		i++;
+	}
+	if (invalid)
+		exec->exit_status = 1;
+	else
+		exec->exit_status = 0;
+	return 1;
 }

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 12:01:05 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 12:48:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,14 @@ void ft_export(t_env_var *env_list)
 			ft_putstr_fd(temp->value, 1);
 			ft_putstr_fd("\"", 1);
 		}
-		else if (temp->value && ft_strcmp(temp->value, "") == 0)
-		{
-			ft_putstr_fd("=\"\"", 1);
-		}
-		//else if (temp->value == NULL)
+		//else if (temp->value && ft_strcmp(temp->value, "") == 0)
 		//{
 		//	ft_putstr_fd("=\"\"", 1);
 		//}
+		else if (temp->value == NULL)
+		{
+			ft_putstr_fd("=\"\"", 1);
+		}
 		ft_putstr_fd("\n", 1);
 		temp = temp->next;
 	}

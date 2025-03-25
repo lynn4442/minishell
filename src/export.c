@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 09:53:18 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 11:18:30 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,16 +85,25 @@ void	add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *val
 	*env_list = new_var;
 }
 
-void	ft_export(t_env_var *env_list)
+void ft_export(t_env_var *env_list)
 {
-	t_env_var	*temp;
+	t_env_var *temp;
 
-	temp = env_list;
 	if (env_list == NULL)
+	{
+		printf("No environment variables to export.\n");
 		return ;
+	}
+	temp = env_list;
 	sort_env_vars(env_list);
+
 	while (temp)
 	{
+		if (temp->key == NULL)
+		{
+			printf("Error: Found environment variable with NULL key.\n");
+			return ;
+		}
 		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(temp->key, 1);
 		if (temp->value && ft_strcmp(temp->value, "") != 0)
@@ -111,6 +120,7 @@ void	ft_export(t_env_var *env_list)
 		temp = temp->next;
 	}
 }
+
 
 int	is_valid_var_name(const char *name)
 {
@@ -134,26 +144,28 @@ int	ft_isspace(char c)
 		|| c == '\r' || c == '\v' || c == '\f');
 }
 
-void	handle_export(char *arg, t_env_var **env_list, t_gc *gc)
+void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 {
-	char	*equal_sign;
-	char	*name;
-	char	*value;
+	char *key;
+	char *value;
+	char *equal_sign;
+	size_t key_len;
 
 	equal_sign = ft_strchr(arg, '=');
-	if (!equal_sign)
+	if (equal_sign)
 	{
-		if (!is_valid_var_name(arg))
-			return ;
-		add_or_update_env_var(gc, env_list, arg, NULL);
-		return ;
+		key_len = equal_sign - arg;
+		key = ft_strndup(gc, arg, key_len);
+		value = ft_strdup(gc, equal_sign + 1);
+		if (key && value)
+			add_or_update_env_var(gc, env_list, key, value);  // Pass gc here
 	}
-	*equal_sign = '\0';
-	name = arg;
-	value = equal_sign + 1;
-	if (!is_valid_var_name(name))
-		return ;
-	add_or_update_env_var(gc, env_list, name, value);
+	else
+	{
+		key = ft_strdup(gc, arg);
+		if (key)
+			add_or_update_env_var(gc, env_list, key, "");  // Pass gc here
+	}
 }
 
 int execute_export(t_cmd_node *node, t_exec *exec)
@@ -165,7 +177,10 @@ int execute_export(t_cmd_node *node, t_exec *exec)
 
 	if (!node->arr[1])
 	{
-		ft_export(exec->env_list);
+		if (exec->env_list)
+			ft_export(exec->env_list);
+		else
+			printf("No environment variables available.\n");
 		exec->exit_status = 0;
 		return (1);
 	}
@@ -178,7 +193,7 @@ int execute_export(t_cmd_node *node, t_exec *exec)
 			invalid = 1;
 		}
 		else
-			handle_export(node->arr[i], &exec->env_list, &exec->gc);
+			handle_export(&exec->gc, &exec->env_list, node->arr[i]);
 		i++;
 	}
 	if (invalid)

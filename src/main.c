@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 11:37:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 09:45:26 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/03/25 11:11:53 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,24 @@ void	parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 		ft_env(exec, cmd->arr);
 	else if (ft_strcmp(cmd->arr[0], "export") == 0)
 	{
-		//ma tghayre [1]
 		if (cmd->arr[1] == NULL)
 			ft_export(exec->env_list);
 		else
-			handle_export(cmd->arr[1], &exec->env_list, &exec->gc);
+		{
+			int i = 1;
+			while (cmd->arr[i])
+			{
+				if (ft_strchr(cmd->arr[i], '=') == NULL)
+				{
+					handle_export(&exec->gc, &exec->env_list, ft_strjoin(cmd->arr[i], "=", &exec->gc));
+				}
+				else
+				{
+					handle_export(&exec->gc, &exec->env_list, cmd->arr[i]);
+				}
+				i++;
+			}
+		}
 	}
 	else if (ft_strcmp(cmd->arr[0], "unset") == 0)
 		unset_env_var(exec, cmd->arr[1]);
@@ -130,7 +143,7 @@ int	main(int ac, char **av, char **envp)
 			key = ft_strndup(&exec->gc, env_var, key_len);
 			value = ft_strdup(&exec->gc, equal_sign + 1);
 			if (key && value)
-				update_env_var(exec, key, value, true);
+				handle_export(&exec->gc, &exec->env_list, env_var);
 		}
 		i++;
 	}

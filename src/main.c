@@ -110,21 +110,14 @@ void	parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 
 int	main(int ac, char **av, char **envp)
 {
-	int			i;
 	t_gc		hello;
 	t_exec		*exec;
-	char		*env_var;
-	char		*equal_sign;
-	char		*key;
-	char		*value;
 	char		*input;
-	size_t		key_len;
 	char		**args;
 	t_cmd_node	*cmd;
 
 	(void)ac;
 	(void)av;
-	i = 0;
 	memset(&hello, 0, sizeof(t_gc));
 	exec = ft_malloc(&hello, sizeof(t_exec));
 	if (!exec)
@@ -133,20 +126,7 @@ int	main(int ac, char **av, char **envp)
 		return (1);
 	}
 	init_exec(exec);
-	while (envp[i])
-	{
-		env_var = envp[i];
-		equal_sign = ft_strchr(env_var, '=');
-		if (equal_sign)
-		{
-			key_len = equal_sign - env_var;
-			key = ft_strndup(&exec->gc, env_var, key_len);
-			value = ft_strdup(&exec->gc, equal_sign + 1);
-			if (key && value)
-				handle_export(&exec->gc, &exec->env_list, env_var);
-		}
-		i++;
-	}
+	init_env(exec, envp);
 	while (1)
 	{
 		input = readline("minihell> ");

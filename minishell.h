@@ -146,6 +146,7 @@ char		*get_current_directory(t_exec *exec);
 void		ft_pwd(t_exec *exec);
 
 //env
+void		init_env(t_exec *exec, char **envp);
 void		ft_env(t_exec *exec, char **args);
 
 //exit

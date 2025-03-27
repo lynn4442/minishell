@@ -55,6 +55,7 @@ t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
 	cmd->append = 0;
 	cmd->err = 0;
 	cmd->ex_heredoc = 0;
+	cmd->exec = exec;
 	cmd->next = NULL;
 	return (cmd);
 }

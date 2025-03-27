@@ -10,7 +10,41 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
+
+char *get_env_value(t_env_var *env_list, char *var_name)
+{
+	t_env_var *current;
+
+	if (!env_list || !var_name)
+		return (NULL);
+
+	current = env_list;
+	while (current)
+	{
+		if (ft_strcmp(current->key, var_name) == 0)
+			return (current->value);
+		current = current->next;
+	}
+	return (NULL);
+}
+
+t_env_var *get_env_var(t_exec *exec, const char *key)
+{
+	t_env_var *current;
+
+	if (!exec || !key)
+		return (NULL);
+
+	current = exec->env_list;
+	while (current)
+	{
+		if (ft_strcmp(current->key, key) == 0)
+			return (current);
+		current = current->next;
+	}
+	return (NULL);
+}
 
 void init_env(t_exec *exec, char **envp)
 {
@@ -20,6 +54,9 @@ void init_env(t_exec *exec, char **envp)
 	char *key;
 	char *value;
 	size_t key_len;
+
+	if (!exec || !envp)
+		return;
 
 	i = 0;
 	while (envp[i])
@@ -42,6 +79,9 @@ char **get_path_from_env(t_exec *exec)
 {
 	t_env_var *current;
 
+	if (!exec)
+		return (NULL);
+
 	current = exec->env_list;
 	while (current)
 	{
@@ -58,11 +98,14 @@ void ft_env(t_exec *exec, char **args)
 
 	if (!exec || !exec->env_list)
 		return;
+
 	if (args && args[1])
 	{
 		printf("env: '%s': No such file or directory\n", args[1]);
+		exec->exit_status = 1;
 		return;
 	}
+
 	current = exec->env_list;
 	while (current)
 	{
@@ -70,5 +113,6 @@ void ft_env(t_exec *exec, char **args)
 			printf("%s=%s\n", current->key, current->value);
 		current = current->next;
 	}
+	exec->exit_status = 0;
 }
 

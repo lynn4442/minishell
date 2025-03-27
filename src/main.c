@@ -12,102 +12,6 @@
 
 #include "../minishell.h"
 
-char	**get_path_from_env(t_exec *exec)
-{
-	t_env_var	*current;
-
-	current = exec->env_list;
-	while (current)
-	{
-		if (ft_strcmp(current->key, "PATH") == 0)
-			return (ft_split(current->value, ':', &exec->gc));
-		current = current->next;
-	}
-	return (NULL);
-}
-
-//before dividing it
-void	parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
-{
-	char	**path_dirs;
-	char	*full_path;
-	int		found;
-	int		i;
-
-	i = 0;
-	found = 0;
-	if (!cmd || !cmd->arr)
-	{
-		printf("Error: Invalid command node\n");
-		return ;
-	}
-	if (ft_strcmp(cmd->arr[0], "echo") == 0)
-		ft_echo(cmd, exec->env_list, exec);
-	else if (ft_strcmp(cmd->arr[0], "cd") == 0)
-		ft_cd(exec, cmd->arr[1]);
-	else if (ft_strcmp(cmd->arr[0], "pwd") == 0)
-		ft_pwd(exec);
-	else if (ft_strcmp(cmd->arr[0], "env") == 0)
-		ft_env(exec, cmd->arr);
-	else if (ft_strcmp(cmd->arr[0], "export") == 0)
-	{
-		if (cmd->arr[1] == NULL)
-			ft_export(exec->env_list);
-		else
-		{
-			int i = 1;
-			while (cmd->arr[i])
-			{
-				if (ft_strchr(cmd->arr[i], '=') == NULL)
-				{
-					handle_export(&exec->gc, &exec->env_list, ft_strjoin(cmd->arr[i], "=", &exec->gc));
-				}
-				else
-				{
-					handle_export(&exec->gc, &exec->env_list, cmd->arr[i]);
-				}
-				i++;
-			}
-		}
-	}
-	else if (ft_strcmp(cmd->arr[0], "unset") == 0)
-		unset_env_var(exec, cmd->arr[1]);
-	else if (ft_strcmp(cmd->arr[0], "exit") == 0)
-		ft_exit(cmd->arr, exec->exit_status);
-	else
-	{
-		path_dirs = get_path_from_env(exec);
-		if (!path_dirs)
-		{
-			printf("minihell: %s: command not found\n", cmd->arr[0]);
-			exec->exit_status = 127;
-			return ;
-		}
-		while (path_dirs[i])
-		{
-			full_path = ft_strjoin(path_dirs[i], "/", &exec->gc);
-			if (!full_path)
-			{
-				printf("minihell: memory allocation failed\n");
-				exec->exit_status = 1;
-				return ;
-			}
-			if (access(full_path, X_OK) == 0)
-			{
-				execute_command(cmd, &exec->gc, envp);
-				found = 1;
-				break ;
-			}
-			i++;
-		}
-		if (!found)
-		{
-			printf("minihell: %s: command not found\n", cmd->arr[0]);
-			exec->exit_status = 127;
-		}
-	}
-}
-
 int	main(int ac, char **av, char **envp)
 {
 	t_gc		hello;
@@ -138,11 +42,33 @@ int	main(int ac, char **av, char **envp)
 		if (ft_strlen(input) > 0)
 		{
 			add_history(input);
-			args = ft_split(input, ' ', &exec->gc);
-			if (args)
+			
+			// Check if command contains pipe
+			if (ft_strchr(input, '|'))
 			{
-				cmd = create_cmd_node(exec, args);
-				parse_and_execute(exec, cmd, envp);
+				char ***commands = split_by_pipe(input, exec);
+				if (commands && commands[0] && commands[1])
+				{
+					execute_pipe(exec, commands[0], commands[1], envp);
+				}
+				else
+				{
+					ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+					exec->exit_status = 2;
+				}
+			}
+			else
+			{
+				args = ft_split(input, ' ', &exec->gc);
+				if (args)
+				{
+					cmd = create_cmd_node(exec, args);
+					if (cmd)
+					{
+						parse_redirections(cmd, cmd->arr);
+						parse_and_execute(exec, cmd, envp);
+					}
+				}
 			}
 		}
 		if (ft_strcmp(input, "stop") == 0)
@@ -150,6 +76,7 @@ int	main(int ac, char **av, char **envp)
 			printf("hello");
 			break ;
 		}
+		free(input);
 	}
 	ft_free_all(&exec->gc);
 	return (0);

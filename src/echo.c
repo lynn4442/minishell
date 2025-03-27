@@ -12,77 +12,102 @@
 
 #include "../minishell.h"
 
-char *get_env_value(t_env_var *env_list, char *var_name)
-{
-	t_env_var *current;
-
-	current = env_list;
-	while (current)
-	{
-		if (ft_strcmp(current->key, var_name) == 0)
-			return current->value;
-		current = current->next;
-	}
-	printf("Environment variable not found.\n");
-	return (NULL);
-}
-
 void print_arg(char *arg, t_env_var *env, t_exec *exec)
 {
-	char *env_value;
-	char *exit_code_str;
-
 	if (!arg)
 		return;
 	if (arg[0] == '$' && arg[1] != '\0')
 	{
 		if (arg[1] == '?')
 		{
-			exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
-			printf("%s", exit_code_str);
-			//heyde chou lezim aamoul fiya eza free aade aw ft_free_all
-			free(exit_code_str);
-			exec->exit_status = 0;
+			char *exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
+			write(STDOUT_FILENO, exit_code_str, ft_strlen(exit_code_str));
 		}
 		else
 		{
-			env_value = get_env_value(env, arg + 1);
+			char *env_value = get_env_value(env, arg + 1);
 			if (env_value)
-				printf("%s", env_value);
+				write(STDOUT_FILENO, env_value, ft_strlen(env_value));
 		}
 	}
 	else
-		printf("%s", arg);
+	{
+		// Strip quotes if present
+		int len = ft_strlen(arg);
+		if (len >= 2 && ((arg[0] == '"' && arg[len - 1] == '"') ||
+						(arg[0] == '\'' && arg[len - 1] == '\'')))
+		{
+			write(STDOUT_FILENO, arg + 1, len - 2);
+		}
+		else
+		{
+			write(STDOUT_FILENO, arg, len);
+		}
+	}
 }
 
 void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 {
-	int i;
-	int no_newline;
+	int i = 1;
+	int no_newline = 0;
+	int original_stdout = -1;
 
-	i = 1;
-	no_newline = 0;
 	if (!cmd || !cmd->arr || !cmd->arr[0])
 		return;
-	while (cmd->arr[i] && cmd->arr[i][0] == '-' && cmd->arr[i][1] == 'n')
+
+	// Handle output redirection first
+	if (cmd->out)
 	{
-		int j = 1;
-		while (cmd->arr[i][j] == 'n')
-			j++;
-		if (cmd->arr[i][j] != '\0')
-			break;
-		no_newline = 1;
-		i++;
+		int fd;
+		if (cmd->append)
+			fd = open(cmd->out, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		else
+			fd = open(cmd->out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			
+		if (fd == -1)
+		{
+			perror("minishell");
+			exec->exit_status = 1;
+			return;
+		}
+		original_stdout = dup(STDOUT_FILENO);
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
 	}
+
+	// Check for -n option(s)
 	while (cmd->arr[i])
 	{
+		if (ft_strcmp(cmd->arr[i], "-n") == 0)
+		{
+			no_newline = 1;
+			i++;
+		}
+		else
+			break;
+	}
+
+	// Print arguments
+	int first = 1;
+	while (cmd->arr[i])
+	{
+		if (!first)
+			write(STDOUT_FILENO, " ", 1);
 		print_arg(cmd->arr[i], env, exec);
-		if (cmd->arr[i + 1])
-			write(1, " ", 1);
+		first = 0;
 		i++;
 	}
+
 	if (!no_newline)
-		printf("\n");
+		write(STDOUT_FILENO, "\n", 1);
+
+	// Restore original stdout if needed
+	if (original_stdout != -1)
+	{
+		dup2(original_stdout, STDOUT_FILENO);
+		close(original_stdout);
+	}
+
 	exec->exit_status = 0;
 }
 

@@ -1,15 +1,15 @@
-///home/lyoussef/bin/cat
-///usr/local/sbin/cat
-///usr/local/bin/cat
-///usr/sbin/cat
-///usr/bin/cat
-///sbin/cat
-///bin/cat
-///usr/games/cat
-///usr/local/games/cat
-///snap/bin/cat
+/home/lyoussef/bin/cat
+/usr/local/sbin/cat
+/usr/local/bin/cat
+/usr/sbin/cat
+/usr/bin/cat
+/sbin/cat
+/bin/cat
+/usr/games/cat
+/usr/local/games/cat
+/snap/bin/cat
 
-//execve(cmd ,path,envp ) bas you need to do this in a fork why ?? because
+execve(cmd ,path,envp ) bas you need to do this in a fork why ?? because
 
 
 //cat
@@ -106,6 +106,7 @@
 //	free_array(tmp);
 //	return (1);
 //}
+
 
 
 

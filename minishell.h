@@ -97,6 +97,7 @@ typedef struct s_cmd_node {
 	int					append;
 	int					err;
 	int					ex_heredoc;
+	struct s_exec		*exec;
 	struct s_cmd_node	*next;
 }	t_cmd_node;
 
@@ -114,12 +115,10 @@ void		init_exec(t_exec *exec);
 void		add_env_var(t_exec *exec, char *name, char *value);
 
 //echo
-char		*get_env_value(t_env_var *env_list, char *var_name);
 void		print_arg(char *arg, t_env_var *env, t_exec *exec);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
-t_env_var	*get_env_var(t_exec *exec, const char *name);
 void		update_env_var(t_exec *exec, const char *key, const char *value, bool equal);
 int			change_dir(const char *path, t_exec *exec);
 void		update_pwd_vars(t_exec *exec, const char *old_pwd);
@@ -136,8 +135,10 @@ void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
 void		swap_env_vars(t_env_var *a, t_env_var *b);
 void		sort_env_vars(t_env_var *head);
 void		ft_export(t_env_var *env_list);
+int			execute_export(t_cmd_node *node, t_exec *exec);
 
 //unset
+void		ft_unset(t_exec *exec, char **args);
 t_env_var	*remove_env_var(t_exec *exec, const char *name);
 void		unset_env_var(t_exec *exec, const char *name);
 
@@ -148,6 +149,9 @@ void		ft_pwd(t_exec *exec);
 //env
 void		init_env(t_exec *exec, char **envp);
 void		ft_env(t_exec *exec, char **args);
+char		**get_path_from_env(t_exec *exec);
+char		*get_env_value(t_env_var *env_list, char *var_name);
+t_env_var	*get_env_var(t_exec *exec, const char *name);
 
 //exit
 int			is_numeric(const char *str);
@@ -155,6 +159,7 @@ void		ft_exit(char **args, int last_exit_status);
 
 //main
 void		parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp);
+void		parse_redirections(t_cmd_node *cmd, char **args);
 int			main(int ac,char **av,char **envp);
 
 //redirections
@@ -167,6 +172,17 @@ void		execute_command(t_cmd_node *cmd, t_gc *gc, char **envp);
 //utils
 void		*ft_malloc(t_gc *var, size_t size);
 void		ft_free_all(t_gc *gc);
+
+//builtins
+int			handle_builtin_command(t_exec *exec, t_cmd_node *cmd);
+int			is_builtin_command(const char *cmd);
+
+//pipes related
+int		has_pipe(t_cmd_node *cmd);
+void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list, char **envp);
+void	execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp);
+char	***split_by_pipe(char *input, t_exec *exec);
+char    *find_command_path(t_exec *exec, const char *cmd);
 
 #endif
 

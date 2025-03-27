@@ -12,20 +12,6 @@
 
 #include "../minishell.h"
 
-t_env_var	*get_env_var(t_exec *exec, const char *key)
-{
-	t_env_var	*current;
-
-	current = exec->env_list;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-			return (current);
-		current = current->next;
-	}
-	return (NULL);
-}
-
 void	update_env_var(t_exec *exec, const char *key, const char *value, bool equal)
 {
 	t_env_var	*var;

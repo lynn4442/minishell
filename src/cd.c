@@ -175,32 +175,44 @@ char	*handle_oldpwd(t_exec *exec)
 	return (oldpwd_var->value);
 }
 
-int	ft_cd(t_exec *exec, const char *arg)
+int	ft_cd(t_exec *exec, t_cmd_node *cmd)
 {
-	char		*old_pwd;
-	t_env_var	*pwd_var;
-	char		*expanded_path;
-	const char	*path;
+	char *old_pwd;
+	t_env_var *pwd_var;
+	char *expanded_path;
+	const char *path;
+	const char *arg = cmd ? cmd->arr[1] : NULL;
 
-	expanded_path	= NULL;
+	// Check for multiple arguments
+	if (cmd && cmd->arr[2] != NULL)
+	{
+		ft_putstr_fd("bash: cd: too many arguments\n", 2);
+		exec->exit_status = 1;
+		return 1;
+	}
+
 	pwd_var = get_env_var(exec, "PWD");
-	if (pwd_var)
-		old_pwd = pwd_var->value;
-	else
-		old_pwd = "";
-	if (!arg || ft_strcmp(arg, "~") == 0)
-		arg = get_home_path(exec);
+	old_pwd = pwd_var ? pwd_var->value : "";
+
+	// Handle special cases
+	if (!arg || ft_strcmp(arg, "~") == 0 || ft_strcmp(arg, "--") == 0)
+		path = get_home_path(exec);
 	else if (ft_strncmp(arg, "~/", 2) == 0)
+	{
 		expanded_path = expand_home_path(exec, arg);
+		path = expanded_path;
+	}
 	else if (ft_strcmp(arg, "-") == 0)
-		arg = handle_oldpwd(exec);
-	if (!arg)
-		return (1);
-	path = expanded_path;
-	if (!path)
+		path = handle_oldpwd(exec);
+	else
 		path = arg;
+
+	if (!path)
+		return 1;
+
 	if (change_dir(path, exec) == 0)
 		update_pwd_vars(exec, old_pwd);
-	return (exec->exit_status);
+	
+	return exec->exit_status;
 }
 

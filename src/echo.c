@@ -16,33 +16,62 @@ void print_arg(char *arg, t_env_var *env, t_exec *exec)
 {
 	if (!arg)
 		return;
-	if (arg[0] == '$' && arg[1] != '\0')
+
+	int i = 0;
+	int len = ft_strlen(arg);
+
+	// Handle single quotes - print literally without expansion
+	if (len >= 2 && arg[0] == '\'' && arg[len - 1] == '\'')
 	{
-		if (arg[1] == '?')
-		{
-			char *exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
-			write(STDOUT_FILENO, exit_code_str, ft_strlen(exit_code_str));
-		}
-		else
-		{
-			char *env_value = get_env_value(env, arg + 1);
-			if (env_value)
-				write(STDOUT_FILENO, env_value, ft_strlen(env_value));
-		}
+		write(STDOUT_FILENO, arg + 1, len - 2);
+		return;
 	}
-	else
+
+	// Handle double quotes or unquoted text
+	while (i < len)
 	{
-		// Strip quotes if present
-		int len = ft_strlen(arg);
-		if (len >= 2 && ((arg[0] == '"' && arg[len - 1] == '"') ||
-						(arg[0] == '\'' && arg[len - 1] == '\'')))
+		// Skip the opening and closing quotes if they exist
+		if (i == 0 && arg[0] == '"')
 		{
-			write(STDOUT_FILENO, arg + 1, len - 2);
+			i++;
+			continue;
 		}
-		else
+		if (i == len - 1 && arg[len - 1] == '"')
+			break;
+
+		// Handle environment variable expansion
+		if (arg[i] == '$' && arg[i + 1])
 		{
-			write(STDOUT_FILENO, arg, len);
+			// Handle $? special case
+			if (arg[i + 1] == '?')
+			{
+				char *exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
+				write(STDOUT_FILENO, exit_code_str, ft_strlen(exit_code_str));
+				i += 2;
+				continue;
+			}
+
+			// Find the end of the variable name
+			int start = i + 1;
+			int end = start;
+			while (arg[end] && (ft_isalnum(arg[end]) || arg[end] == '_'))
+				end++;
+
+			// Extract and print the variable value
+			if (end > start)
+			{
+				char *var_name = ft_strndup(&exec->gc, arg + start, end - start);
+				char *value = get_env_value(env, var_name);
+				if (value)
+					write(STDOUT_FILENO, value, ft_strlen(value));
+				i = end;
+				continue;
+			}
 		}
+
+		// Print regular character
+		write(STDOUT_FILENO, &arg[i], 1);
+		i++;
 	}
 }
 
@@ -50,26 +79,22 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 {
 	int i = 1;
 	int no_newline = 0;
+	int fd;
 	int original_stdout = -1;
 
 	if (!cmd || !cmd->arr || !cmd->arr[0])
 		return;
 
-	// Handle output redirection first
-	if (cmd->out)
+	// Handle output redirection
+	fd = handle_output_redirection(cmd);
+	if (fd == -1)
 	{
-		int fd;
-		if (cmd->append)
-			fd = open(cmd->out, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else
-			fd = open(cmd->out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			
-		if (fd == -1)
-		{
-			perror("minishell");
-			exec->exit_status = 1;
-			return;
-		}
+		exec->exit_status = 1;
+		return;
+	}
+
+	if (fd != STDOUT_FILENO)
+	{
 		original_stdout = dup(STDOUT_FILENO);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
@@ -78,8 +103,13 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 	// Check for -n option(s)
 	while (cmd->arr[i])
 	{
-		if (ft_strcmp(cmd->arr[i], "-n") == 0)
+		if (cmd->arr[i][0] == '-')
 		{
+			int j = 1;
+			while (cmd->arr[i][j] == 'n')
+				j++;
+			if (cmd->arr[i][j] != '\0')
+				break;
 			no_newline = 1;
 			i++;
 		}

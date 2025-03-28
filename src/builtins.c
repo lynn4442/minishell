@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/27 09:44:04 by marvin           ###   ########.fr       */
+/*   Updated: 2025/03/28 15:51:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int handle_builtin_command(t_exec *exec, t_cmd_node *cmd)
     }
     else if (ft_strcmp(cmd->arr[0], "cd") == 0)
     {
-        ft_cd(exec, cmd->arr[1]);
+        ft_cd(exec, cmd);
         return (1);
     }
     else if (ft_strcmp(cmd->arr[0], "pwd") == 0)

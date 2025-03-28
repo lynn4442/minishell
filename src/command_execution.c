@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/27 13:28:03 by marvin           ###   ########.fr       */
+/*   Updated: 2025/03/28 16:12:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,17 @@ void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 
 void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 {
+	int original_in = -1;
+	int original_out = -1;
+
+	// Setup redirections
+	if (setup_input_redirection(cmd, &original_in) == -1 ||
+		setup_output_redirection(cmd, &original_out) == -1)
+	{
+		cmd->exec->exit_status = 1;
+		return;
+	}
+
 	pid_t pid;
 	int status;
 
@@ -164,4 +175,8 @@ void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 		else if (WIFSIGNALED(status))
 			cmd->exec->exit_status = 128 + WTERMSIG(status);
 	}
+
+	// Restore redirections
+	restore_input_redirection(original_in);
+	restore_output_redirection(original_out);
 }

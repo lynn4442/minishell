@@ -24,6 +24,7 @@
 # include <string.h>
 # include <stdlib.h>
 # include <sys/wait.h>
+#include <sys/stat.h>
 # include <stdbool.h>
 # include "libft/libft.h"
 
@@ -116,6 +117,7 @@ void		add_env_var(t_exec *exec, char *name, char *value);
 
 //echo
 void		print_arg(char *arg, t_env_var *env, t_exec *exec);
+int			handle_output_redirection(t_cmd_node *cmd);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
@@ -125,7 +127,8 @@ void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 char		*get_home_path(t_exec *exec);
 char		*expand_home_path(t_exec *exec, const char *arg);
 char		*handle_oldpwd(t_exec *exec);
-int			ft_cd(t_exec *exec, const char *arg);
+int			ft_cd(t_exec *exec, t_cmd_node *cmd);
+
 
 //export
 int			ft_isspace(char c);
@@ -183,6 +186,12 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list, char **envp);
 void	execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp);
 char	***split_by_pipe(char *input, t_exec *exec);
 char    *find_command_path(t_exec *exec, const char *cmd);
+
+// Add these function prototypes
+int setup_output_redirection(t_cmd_node *cmd, int *original_fd);
+int restore_output_redirection(int original_fd);
+int setup_input_redirection(t_cmd_node *cmd, int *original_fd);
+int restore_input_redirection(int original_fd);
 
 #endif
 

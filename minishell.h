@@ -27,6 +27,9 @@
 #include <sys/stat.h>
 # include <stdbool.h>
 # include "libft/libft.h"
+# include <signal.h>
+
+extern int g_signal_received;
 
 typedef struct s_mem_node
 {
@@ -162,6 +165,7 @@ void		ft_exit(char **args, int last_exit_status);
 
 //main
 void		parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp);
+void		process_and_update_args(t_cmd_node *cmd, char **args);
 void		parse_redirections(t_cmd_node *cmd, char **args);
 int			main(int ac,char **av,char **envp);
 
@@ -192,6 +196,17 @@ int setup_output_redirection(t_cmd_node *cmd, int *original_fd);
 int restore_output_redirection(int original_fd);
 int setup_input_redirection(t_cmd_node *cmd, int *original_fd);
 int restore_input_redirection(int original_fd);
+
+// quotations handling
+int check_quotes(const char *input);
+void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec);
+
+// Add these prototypes
+void setup_interactive_signals(void);
+void setup_child_signals(void);
+void setup_parent_signals(void);
+void handle_eof_signal(t_exec *exec);
+int get_signal_exit_status(int status);
 
 #endif
 

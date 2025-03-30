@@ -43,9 +43,9 @@ char			*ft_strtrim(char const *s1, char const *set);
 char			**ft_split(char const *s, char c,t_gc *free);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char			*ft_strdup(t_gc *gc, const char *src);
-char			*ft_strncpy(char *dest, char *src, unsigned int n);
+char			*ft_strncpy(char *dest, const char *src, unsigned int n);
 char			*ft_strcpy(char *dest, char *src);
-char			*ft_strndup(t_gc *free ,char *s, size_t len);
+char			*ft_strndup(t_gc *free , const char *s, size_t len);
 
 void			ft_striteri(char *s, void (*f)(unsigned int, char*));
 void			ft_putchar_fd(char c, int fd);

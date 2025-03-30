@@ -93,3 +93,65 @@ void handle_redirection(t_cmd_node *cmd, t_gc *gc)
 	ft_output_append(cmd, gc);
 	ft_output_truncate(cmd, gc);
 }
+
+void parse_redirections(t_cmd_node *cmd, char **args)
+{
+	int i;
+	int arg_count;
+
+	i = 0;
+	arg_count = 0;
+
+	// First check for syntax errors
+	while (args[i])
+	{
+		if ((ft_strcmp(args[i], ">") == 0 || 
+			 ft_strcmp(args[i], ">>") == 0 ||
+			 ft_strcmp(args[i], "<") == 0 ||
+			 ft_strcmp(args[i], "<<") == 0))
+		{
+			// Check if there's no argument after redirection operator
+			if (!args[i + 1])
+			{
+				ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+				ft_putstr_fd(args[i], 2);
+				ft_putstr_fd("'\n", 2);
+				cmd->err = 1;
+				cmd->exec->exit_status = 2;
+				return;
+			}
+		}
+		i++;
+	}
+
+	// Reset i for normal parsing
+	i = 0;
+	
+	// Process redirections and count valid arguments
+	while (args[i])
+	{
+		if ((ft_strcmp(args[i], ">") == 0 || 
+			 ft_strcmp(args[i], ">>") == 0 ||
+			 ft_strcmp(args[i], "<") == 0) && args[i + 1])
+		{
+			if (ft_strcmp(args[i], ">") == 0)
+			{
+				cmd->out = args[i + 1];
+				cmd->append = 0;
+			}
+			else if (ft_strcmp(args[i], ">>") == 0)
+			{
+				cmd->out = args[i + 1];
+				cmd->append = 1;
+			}
+			else if (ft_strcmp(args[i], "<") == 0)
+				cmd->in = args[i + 1];
+			i += 2;
+		}
+		else
+		{
+			arg_count++;
+			i++;
+		}
+	}
+}

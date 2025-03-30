@@ -16,63 +16,7 @@ void print_arg(char *arg, t_env_var *env, t_exec *exec)
 {
 	if (!arg)
 		return;
-
-	int i = 0;
-	int len = ft_strlen(arg);
-
-	// Handle single quotes - print literally without expansion
-	if (len >= 2 && arg[0] == '\'' && arg[len - 1] == '\'')
-	{
-		write(STDOUT_FILENO, arg + 1, len - 2);
-		return;
-	}
-
-	// Handle double quotes or unquoted text
-	while (i < len)
-	{
-		// Skip the opening and closing quotes if they exist
-		if (i == 0 && arg[0] == '"')
-		{
-			i++;
-			continue;
-		}
-		if (i == len - 1 && arg[len - 1] == '"')
-			break;
-
-		// Handle environment variable expansion
-		if (arg[i] == '$' && arg[i + 1])
-		{
-			// Handle $? special case
-			if (arg[i + 1] == '?')
-			{
-				char *exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
-				write(STDOUT_FILENO, exit_code_str, ft_strlen(exit_code_str));
-				i += 2;
-				continue;
-			}
-
-			// Find the end of the variable name
-			int start = i + 1;
-			int end = start;
-			while (arg[end] && (ft_isalnum(arg[end]) || arg[end] == '_'))
-				end++;
-
-			// Extract and print the variable value
-			if (end > start)
-			{
-				char *var_name = ft_strndup(&exec->gc, arg + start, end - start);
-				char *value = get_env_value(env, var_name);
-				if (value)
-					write(STDOUT_FILENO, value, ft_strlen(value));
-				i = end;
-				continue;
-			}
-		}
-
-		// Print regular character
-		write(STDOUT_FILENO, &arg[i], 1);
-		i++;
-	}
+	print_with_quote_handling(arg, env, exec);
 }
 
 void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)

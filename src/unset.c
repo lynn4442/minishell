@@ -17,18 +17,30 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 	t_env_var *current;
 	t_env_var *prev;
 
+	if (!exec || !name || !exec->env_list)
+		return NULL;
+
 	current = exec->env_list;
 	prev = NULL;
 	while (current)
 	{
+		// Direct comparison without quote handling
 		if (ft_strcmp(current->key, name) == 0)
 		{
 			if (prev == NULL)
+			{
 				exec->env_list = current->next;
+				if (exec->env_list)
+					exec->env_list->prev = NULL;
+			}
 			else
+			{
 				prev->next = current->next;
-			if (current->next)
-				current->next->prev = prev;
+				if (current->next)
+					current->next->prev = prev;
+			}
+			current->next = NULL;
+			current->prev = NULL;
 			return current;
 		}
 		prev = current;
@@ -37,26 +49,33 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 	return NULL;
 }
 
+// Helper function for error messages
+static void print_unset_error(const char *var_name, t_exec *exec)
+{
+	ft_putstr_fd("minishell: unset: `", 2);
+	ft_putstr_fd(var_name, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+	exec->exit_status = 1;
+}
+
 void unset_env_var(t_exec *exec, const char *name)
 {
 	t_env_var *node_to_remove;
 
-	if (!name)
+	if (!exec || !name)
 		return;
 
 	if (!is_valid_var_name(name))
 	{
-		ft_putstr_fd("minishell: unset: `", 2);
-		ft_putstr_fd(name, 2);
-		ft_putstr_fd("': not a valid identifier\n", 2);
-		exec->exit_status = 1;
+		print_unset_error(name, exec);
 		return;
 	}
 
 	node_to_remove = remove_env_var(exec, name);
 	if (node_to_remove)
 	{
-		free(node_to_remove->key);
+		if (node_to_remove->key)
+			free(node_to_remove->key);
 		if (node_to_remove->value)
 			free(node_to_remove->value);
 		if (node_to_remove->all)
@@ -70,7 +89,7 @@ void ft_unset(t_exec *exec, char **args)
 	int i;
 	int had_error;
 
-	if (!args)
+	if (!exec || !args)
 		return;
 
 	if (!args[1])
@@ -85,9 +104,7 @@ void ft_unset(t_exec *exec, char **args)
 	{
 		if (!is_valid_var_name(args[i]))
 		{
-			ft_putstr_fd("minishell: unset: `", 2);
-			ft_putstr_fd(args[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+			print_unset_error(args[i], exec);
 			had_error = 1;
 		}
 		else

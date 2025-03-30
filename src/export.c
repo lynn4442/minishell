@@ -53,31 +53,45 @@ void	sort_env_vars(t_env_var *head)
 	}
 }
 
-void	add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
+void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
 {
-	t_env_var	*temp;
-	t_env_var	*new_var;
+	t_env_var *temp;
+	t_env_var *new_var;
 
 	temp = *env_list;
 	while (temp)
 	{
 		if (ft_strcmp(temp->key, name) == 0)
 		{
-			free(temp->value);
+			if (temp->value)
+				free(temp->value);
+			if (temp->all)
+				free(temp->all);
+			temp->value = value ? ft_strdup(gc, value) : NULL;
+			temp->equal = (value != NULL);
+			// Update the all field without quotes
 			if (value)
-				temp->value = ft_strdup(gc, value);
+				temp->all = ft_strjoin(ft_strjoin(temp->key, "=", gc), value, gc);
 			else
-				temp->value = NULL;
-			return ;
+				temp->all = ft_strdup(gc, temp->key);
+			return;
 		}
 		temp = temp->next;
 	}
+
 	new_var = ft_malloc(gc, sizeof(t_env_var));
+	if (!new_var)
+		return;
+
 	new_var->key = ft_strdup(gc, name);
+	new_var->value = value ? ft_strdup(gc, value) : NULL;
+	new_var->equal = (value != NULL);
+	// Set the all field without quotes
 	if (value)
-		new_var->value = ft_strdup(gc, value);
+		new_var->all = ft_strjoin(ft_strjoin(new_var->key, "=", gc), value, gc);
 	else
-		new_var->value = NULL;
+		new_var->all = ft_strdup(gc, new_var->key);
+
 	new_var->next = *env_list;
 	new_var->prev = NULL;
 	if (*env_list)
@@ -141,12 +155,18 @@ void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 	char *value;
 	char *equal_sign;
 	size_t key_len;
+	char *unquoted_arg;
 
-	equal_sign = ft_strchr(arg, '=');
+	// First, strip any quotes from the argument
+	unquoted_arg = ft_strtrim(arg, "\"'");
+	if (!unquoted_arg)
+		return;
+
+	equal_sign = ft_strchr(unquoted_arg, '=');
 	if (equal_sign)
 	{
-		key_len = equal_sign - arg;
-		key = ft_strndup(gc, arg, key_len);
+		key_len = equal_sign - unquoted_arg;
+		key = ft_strndup(gc, unquoted_arg, key_len);
 		if (*(equal_sign + 1) == '\0')
 			value = ft_strdup(gc, "");
 		else
@@ -156,10 +176,13 @@ void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 	}
 	else
 	{
-		key = ft_strdup(gc, arg);
+		key = ft_strdup(gc, unquoted_arg);
 		if (key)
 			add_or_update_env_var(gc, env_list, key, NULL);
 	}
+	
+	// Since ft_strtrim allocates new memory, we need to free it
+	free(unquoted_arg);
 }
 
 int execute_export(t_cmd_node *node, t_exec *exec)

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/28 16:12:53 by marvin           ###   ########.fr       */
+/*   Updated: 2025/03/30 16:04:19 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,9 @@ void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 {
 	int original_in = -1;
 	int original_out = -1;
+	pid_t pid;
+	int status;
 
-	// Setup redirections
 	if (setup_input_redirection(cmd, &original_in) == -1 ||
 		setup_output_redirection(cmd, &original_out) == -1)
 	{
@@ -139,18 +140,15 @@ void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 		return;
 	}
 
-	pid_t pid;
-	int status;
-
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
 		return;
 	}
-	
-	if (pid == 0)  // Child process
+	if (pid == 0)
 	{
+		setup_child_signals();
 		handle_redirection(cmd, gc);
 		char *cmd_path = find_command_path(cmd->exec, cmd->arr[0]);
 		if (!cmd_path)
@@ -161,22 +159,34 @@ void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 			ft_free_all(gc);
 			exit(127);
 		}
-
 		execve(cmd_path, cmd->arr, envp);
 		perror("minishell");
 		ft_free_all(gc);
 		exit(126);
 	}
-	else  // Parent process
+	else if (pid > 0)
 	{
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGQUIT)
+			{
+				printf("\nQuit (core dumped)\n");
+				fflush(stdout);
+				cmd->exec->exit_status = 131;
+			}
+			else if (WTERMSIG(status) == SIGINT)
+			{
+				printf("\n");
+				fflush(stdout);
+				cmd->exec->exit_status = 130;
+			}
+		}
+		else
 			cmd->exec->exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			cmd->exec->exit_status = 128 + WTERMSIG(status);
+			
+		setup_interactive_signals();
 	}
-
-	// Restore redirections
 	restore_input_redirection(original_in);
 	restore_output_redirection(original_out);
 }

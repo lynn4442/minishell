@@ -12,41 +12,67 @@
 
 #include "../minishell.h"
 
-static void child_process(t_cmd_node *cmd, int *pipe_fd, int is_input, char **envp)
+void child_process(t_cmd_node *cmd, int *pipe_fd, int is_first, char **envp)
 {
-    if (is_input)
+    int original_fd;
+
+    // Set up pipe
+    if (is_first)
     {
-        // First command writes to pipe
-        close(pipe_fd[0]);
-        dup2(pipe_fd[1], STDOUT_FILENO);
+        close(pipe_fd[0]);  // Close read end
+        if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+        {
+            perror("dup2");
+            exit(1);
+        }
         close(pipe_fd[1]);
     }
     else
     {
-        // Second command reads from pipe
-        close(pipe_fd[1]);
-        dup2(pipe_fd[0], STDIN_FILENO);
+        close(pipe_fd[1]);  // Close write end
+        if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+        {
+            perror("dup2");
+            exit(1);
+        }
         close(pipe_fd[0]);
     }
 
-    // Handle any redirections in the command
-    handle_redirection(cmd, &cmd->exec->gc);
-
-    if (handle_builtin_command(cmd->exec, cmd))
-        exit(cmd->exec->exit_status);
-
-    char *cmd_path = find_command_path(cmd->exec, cmd->arr[0]);
-    if (!cmd_path)
+    // Handle redirections
+    if (cmd->in || cmd->out)
     {
-        ft_putstr_fd("minishell: command not found: ", 2);
-        ft_putstr_fd(cmd->arr[0], 2);
-        ft_putstr_fd("\n", 2);
-        exit(127);
+        if (cmd->in)
+        {
+            if (!setup_input_redirection(cmd, &original_fd))
+                exit(1);
+        }
+        if (cmd->out)
+        {
+            if (!setup_output_redirection(cmd, &original_fd))
+                exit(1);
+        }
     }
 
-    execve(cmd_path, cmd->arr, envp);
-    perror("execve");
-    exit(126);
+    // Execute command
+    if (is_builtin_command(cmd->arr[0]))
+    {
+        handle_builtin_command(cmd->exec, cmd);
+        exit(cmd->exec->exit_status);
+    }
+    else
+    {
+        char *cmd_path = find_command_path(cmd->exec, cmd->arr[0]);
+        if (!cmd_path)
+        {
+            ft_putstr_fd("minishell: ", 2);
+            ft_putstr_fd(cmd->arr[0], 2);
+            ft_putstr_fd(": command not found\n", 2);
+            exit(127);
+        }
+        execve(cmd_path, cmd->arr, envp);
+        perror("execve");
+        exit(1);
+    }
 }
 
 void execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp)
@@ -77,6 +103,14 @@ void execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp)
         close(pipe_fd[1]);
         return;
     }
+
+    // Parse redirections for both commands
+    parse_redirections(cmd1, cmd1->arr);
+    parse_redirections(cmd2, cmd2->arr);
+
+    // Process and update arguments after parsing redirections
+    process_and_update_args(cmd1, cmd1->arr);
+    process_and_update_args(cmd2, cmd2->arr);
 
     // First child process
     pid1 = fork();
@@ -109,36 +143,6 @@ void execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp)
 
     if (WIFEXITED(status))
         exec->exit_status = WEXITSTATUS(status);
-}
-
-// Helper function to split command by pipe
-char ***split_by_pipe(char *input, t_exec *exec)
-{
-    char ***commands = ft_malloc(&exec->gc, 3 * sizeof(char **));
-    if (!commands)
-        return NULL;
-
-    char **parts = ft_split(input, '|', &exec->gc);
-    if (!parts)
-        return NULL;
-
-    // Trim whitespace and split each part
-    int i = 0;
-    while (parts[i] && i < 2)
-    {
-        // Trim whitespace from the command
-        char *trimmed = ft_strtrim(parts[i], " \t");
-        if (!trimmed)
-            return NULL;
-        
-        commands[i] = ft_split(trimmed, ' ', &exec->gc);
-        if (!commands[i])
-            return NULL;
-        i++;
-    }
-    commands[i] = NULL;
-
-    return commands;
 }
 
 // Helper function to check if a command contains a pipe

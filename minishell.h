@@ -190,6 +190,7 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list, char **envp);
 void	execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp);
 char	***split_by_pipe(char *input, t_exec *exec);
 char    *find_command_path(t_exec *exec, const char *cmd);
+char    **split_preserve_quotes(const char *input, t_gc *gc);
 
 // Add these function prototypes
 int setup_output_redirection(t_cmd_node *cmd, int *original_fd);

@@ -53,9 +53,36 @@ void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec)
     int len = ft_strlen(arg);
     char quote_type = '\0';
     int space_start = -1;
+    int escaped = 0;
 
     while (i < len)
     {
+        // Handle escape characters
+        if (arg[i] == '\\' && !escaped)
+        {
+            escaped = 1;
+            i++;
+            continue;
+        }
+        
+        // If we're in an escaped state, handle the escaped character
+        if (escaped)
+        {
+            // For escaped spaces, just print a space
+            if (arg[i] == ' ')
+            {
+                write(STDOUT_FILENO, " ", 1);
+            }
+            // For other escaped characters, print them as is
+            else
+            {
+                write(STDOUT_FILENO, &arg[i], 1);
+            }
+            escaped = 0;
+            i++;
+            continue;
+        }
+        
         // Handle opening quotes
         if (is_quote(arg[i]) && quote_type == '\0')
         {
@@ -108,9 +135,24 @@ int check_quotes(const char *input)
 {
     int i = 0;
     char quote_type = '\0';
+    int escaped = 0;
 
     while (input[i])
     {
+        if (input[i] == '\\' && !escaped)
+        {
+            escaped = 1;
+            i++;
+            continue;
+        }
+        
+        if (escaped)
+        {
+            escaped = 0;
+            i++;
+            continue;
+        }
+        
         if ((input[i] == '\'' || input[i] == '"') && quote_type == '\0')
             quote_type = input[i];
         else if (input[i] == quote_type)

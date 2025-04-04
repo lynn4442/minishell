@@ -1,0 +1,17 @@
+rferigniergiregireg
+ergergregrerwgerreg
+Makefile
+file
+in.txt
+in2.txt
+input.txt
+input2.txt
+input3.txt
+libft
+minishell
+minishell.h
+obj
+out.txt
+out2.txt
+src
+test.c

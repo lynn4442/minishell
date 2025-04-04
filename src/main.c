@@ -21,10 +21,27 @@ static char **split_preserve_quotes(const char *input, t_gc *gc)
 	int start = 0;
 	int count = 0;
 	char quote = 0;
+	int escaped = 0;
 	
 	// First count the number of arguments
 	while (input[i])
 	{
+		// Handle escape characters
+		if (input[i] == '\\' && !escaped)
+		{
+			escaped = 1;
+			i++;
+			continue;
+		}
+		
+		// If we're in an escaped state, just move to the next character
+		if (escaped)
+		{
+			escaped = 0;
+			i++;
+			continue;
+		}
+		
 		// Skip spaces if we're not in quotes
 		while (input[i] && ft_isspace(input[i]) && !quote)
 			i++;
@@ -37,6 +54,22 @@ static char **split_preserve_quotes(const char *input, t_gc *gc)
 		// Process until end of argument
 		while (input[i])
 		{
+			// Handle escape characters
+			if (input[i] == '\\' && !escaped)
+			{
+				escaped = 1;
+				i++;
+				continue;
+			}
+			
+			// If we're in an escaped state, just move to the next character
+			if (escaped)
+			{
+				escaped = 0;
+				i++;
+				continue;
+			}
+			
 			if (input[i] == '\'' || input[i] == '"')
 			{
 				if (!quote)
@@ -64,10 +97,27 @@ static char **split_preserve_quotes(const char *input, t_gc *gc)
 	i = 0;
 	count = 0;
 	quote = 0;
+	escaped = 0;
 
 	// Second pass: copy arguments
 	while (input[i])
 	{
+		// Handle escape characters
+		if (input[i] == '\\' && !escaped)
+		{
+			escaped = 1;
+			i++;
+			continue;
+		}
+		
+		// If we're in an escaped state, just move to the next character
+		if (escaped)
+		{
+			escaped = 0;
+			i++;
+			continue;
+		}
+		
 		while (input[i] && ft_isspace(input[i]) && !quote)
 			i++;
 		if (!input[i])
@@ -76,6 +126,22 @@ static char **split_preserve_quotes(const char *input, t_gc *gc)
 		start = i;
 		while (input[i])
 		{
+			// Handle escape characters
+			if (input[i] == '\\' && !escaped)
+			{
+				escaped = 1;
+				i++;
+				continue;
+			}
+			
+			// If we're in an escaped state, just move to the next character
+			if (escaped)
+			{
+				escaped = 0;
+				i++;
+				continue;
+			}
+			
 			if (input[i] == '\'' || input[i] == '"')
 			{
 				if (!quote)

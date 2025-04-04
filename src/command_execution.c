@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/30 16:04:19 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/03 20:12:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,13 +172,11 @@ void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 			if (WTERMSIG(status) == SIGQUIT)
 			{
 				printf("\nQuit (core dumped)\n");
-				fflush(stdout);
 				cmd->exec->exit_status = 131;
 			}
 			else if (WTERMSIG(status) == SIGINT)
 			{
 				printf("\n");
-				fflush(stdout);
 				cmd->exec->exit_status = 130;
 			}
 		}

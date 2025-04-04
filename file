@@ -1,1 +1,8 @@
+Makefile
 file
+libft
+minishell
+minishell.h
+obj
+src
+test.c

@@ -187,7 +187,7 @@ int			is_builtin_command(const char *cmd);
 //pipes related
 int		has_pipe(t_cmd_node *cmd);
 void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list, char **envp);
-void	execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp);
+void	execute_pipe(t_exec *exec, char ***commands, int cmd_count, char **envp);
 char	***split_by_pipe(char *input, t_exec *exec);
 char    *find_command_path(t_exec *exec, const char *cmd);
 char    **split_preserve_quotes(const char *input, t_gc *gc);

@@ -45,6 +45,15 @@ int main(int ac, char **av, char **envp)
 			handle_eof_signal(exec);
 			break;
 		}
+		
+		// If a signal was received, skip command processing
+		if (g_signal_received)
+		{
+			exec->exit_status = g_signal_received;
+			free(input);
+			continue;
+		}
+		
 		if (ft_strlen(input) > 0)
 		{
 			// Check for unclosed quotes first
@@ -62,9 +71,26 @@ int main(int ac, char **av, char **envp)
 			if (ft_strchr(input, '|'))
 			{
 				char ***commands = split_by_pipe(input, exec);
-				if (commands && commands[0] && commands[1])
+				if (commands && commands[0])
 				{
-					execute_pipe(exec, commands[0], commands[1], envp);
+					// Count the number of commands
+					int cmd_count = 0;
+					while (commands[cmd_count])
+						cmd_count++;
+					
+					if (cmd_count > 1)
+					{
+						// Temporarily ignore SIGINT during command execution
+						setup_parent_signals();
+						execute_pipe(exec, commands, cmd_count, envp);
+						// Restore interactive signals
+						setup_interactive_signals();
+					}
+					else
+					{
+						ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+						exec->exit_status = 2;
+					}
 				}
 				else
 				{
@@ -82,7 +108,11 @@ int main(int ac, char **av, char **envp)
 					{
 						parse_redirections(cmd, cmd->arr);
 						process_and_update_args(cmd, cmd->arr);
+						// Temporarily ignore SIGINT during command execution
+						setup_parent_signals();
 						parse_and_execute(exec, cmd, envp);
+						// Restore interactive signals
+						setup_interactive_signals();
 					}
 				}
 			}
@@ -92,10 +122,6 @@ int main(int ac, char **av, char **envp)
 			printf("hello");
 			break ;
 		}
-
-		// After executing a command, check if it was interrupted
-		if (g_signal_received)
-			exec->exit_status = g_signal_received;
 
 		free(input);
 	}

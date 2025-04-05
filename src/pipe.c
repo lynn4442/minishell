@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/28 10:00:00 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/04/05 14:52:02 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,40 @@
 
 char ***split_by_pipe(char *input, t_exec *exec)
 {
-    char ***commands = ft_malloc(&exec->gc, 3 * sizeof(char **));
-    if (!commands)
-        return NULL;
-
     char **parts = ft_split(input, '|', &exec->gc);
     if (!parts)
         return NULL;
 
-    // Trim whitespace and split each part
+    // Count number of commands
+    int cmd_count = 0;
+    while (parts[cmd_count])
+        cmd_count++;
+
+    // Allocate array for commands
+    char ***commands = ft_malloc(&exec->gc, (cmd_count + 1) * sizeof(char **));
+    if (!commands)
+        return NULL;
+
+    // Process each command
     int i = 0;
-    while (parts[i] && i < 2)
+    while (parts[i])
     {
         // Trim whitespace from the command
         char *trimmed = ft_strtrim(parts[i], " \t");
         if (!trimmed)
             return NULL;
         
-        // Use split_preserve_quotes instead of ft_split to handle quoted arguments
+        // Use split_preserve_quotes to handle quoted arguments
         commands[i] = split_preserve_quotes(trimmed, &exec->gc);
         if (!commands[i])
             return NULL;
+
+        // Create command node and set type
+        t_cmd_node *cmd = create_cmd_node(exec, commands[i]);
+        if (cmd)
+        {
+            cmd->type = PIPE;  // Set the command type to PIPE
+        }
         i++;
     }
     commands[i] = NULL;

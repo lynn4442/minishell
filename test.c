@@ -23,6 +23,7 @@ execve(cmd ,path,envp ) bas you need to do this in a fork why ?? because
 //127	Command not found
 //128	Invalid argument to exit
 //130	Command terminated by Ctrl+C (SIGINT)
+//131	Command terminated by Ctrl+\ (SIGQUIT)
 //137	Command killed with kill -9 (SIGKILL)
 //139	Segmentation fault (SIGSEGV)
 //255	Exit status out of range

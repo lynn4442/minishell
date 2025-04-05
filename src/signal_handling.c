@@ -17,7 +17,7 @@
 static void handle_sigint(int sig)
 {
     (void)sig;
-    printf("\n");
+    write(1, "\n", 1);  // Use write instead of printf
     rl_on_new_line();
     rl_replace_line("", 0);
     rl_redisplay();
@@ -35,7 +35,7 @@ void setup_interactive_signals(void)
     // Setup SIGINT (Ctrl+C)
     sa_int.sa_handler = handle_sigint;
     sigemptyset(&sa_int.sa_mask);
-    sa_int.sa_flags = 0;
+    sa_int.sa_flags = SA_RESTART;  // Add SA_RESTART flag to prevent signal interruption
     sigaction(SIGINT, &sa_int, NULL);
 
     // Setup SIGQUIT (Ctrl+\)
@@ -47,14 +47,24 @@ void setup_interactive_signals(void)
 
 void setup_child_signals(void)
 {
-    signal(SIGINT, SIG_DFL);
-    signal(SIGQUIT, SIG_DFL);
+    // Use sigaction instead of signal for more reliable behavior
+    struct sigaction sa;
+    sa.sa_handler = SIG_DFL;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
 }
 
 void setup_parent_signals(void)
 {
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
+    // Use sigaction instead of signal for more reliable behavior
+    struct sigaction sa;
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGQUIT, &sa, NULL);
 }
 
 void handle_eof_signal(t_exec *exec)

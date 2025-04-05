@@ -3,146 +3,149 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/27 10:00:00 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/04/05 14:40:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void child_process(t_cmd_node *cmd, int *pipe_fd, int is_first, char **envp)
+void execute_pipe(t_exec *exec, char ***commands, int cmd_count, char **envp)
 {
-    int original_fd;
+    if (cmd_count < 2)
+        return;
 
-    // Set up pipe
-    if (is_first)
+    int **pipe_fds = ft_malloc(&exec->gc, (cmd_count - 1) * sizeof(int *));
+    if (!pipe_fds)
+        return;
+
+    // Create pipes
+    for (int i = 0; i < cmd_count - 1; i++)
     {
-        close(pipe_fd[0]);  // Close read end
-        if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+        pipe_fds[i] = ft_malloc(&exec->gc, 2 * sizeof(int));
+        if (!pipe_fds[i] || pipe(pipe_fds[i]) == -1)
         {
-            perror("dup2");
-            exit(1);
+            perror("pipe");
+            return;
         }
-        close(pipe_fd[1]);
-    }
-    else
-    {
-        close(pipe_fd[1]);  // Close write end
-        if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-        {
-            perror("dup2");
-            exit(1);
-        }
-        close(pipe_fd[0]);
     }
 
-    // Handle redirections
-    if (cmd->in || cmd->out)
+    // Create and execute processes
+    pid_t *pids = ft_malloc(&exec->gc, cmd_count * sizeof(pid_t));
+    if (!pids)
+        return;
+
+    for (int i = 0; i < cmd_count; i++)
     {
-        if (cmd->in)
+        t_cmd_node *cmd = create_cmd_node(exec, commands[i]);
+        if (!cmd)
+            continue;
+
+        // Parse redirections
+        parse_redirections(cmd, cmd->arr);
+        process_and_update_args(cmd, cmd->arr);
+
+        pids[i] = fork();
+        if (pids[i] == 0)
         {
-            if (!setup_input_redirection(cmd, &original_fd))
+            // Set up signals for child process
+            setup_child_signals();
+
+            // Handle redirections first
+            handle_redirection(cmd, &exec->gc);
+
+            // Close all unused pipe ends first
+            for (int j = 0; j < cmd_count - 1; j++)
+            {
+                if (j != i - 1 && j != i)
+                {
+                    close(pipe_fds[j][0]);
+                    close(pipe_fds[j][1]);
+                }
+            }
+            
+            // First command
+            if (i == 0)
+            {
+                if (!cmd->out)  // Only set up pipe if no output redirection
+                {
+                    dup2(pipe_fds[0][1], STDOUT_FILENO);
+                    close(pipe_fds[0][0]);
+                    close(pipe_fds[0][1]);
+                }
+            }
+            // Last command
+            else if (i == cmd_count - 1)
+            {
+                if (!cmd->in)  // Only set up pipe if no input redirection
+                {
+                    dup2(pipe_fds[i-1][0], STDIN_FILENO);
+                    close(pipe_fds[i-1][0]);
+                    close(pipe_fds[i-1][1]);
+                }
+            }
+            // Middle commands
+            else
+            {
+                if (!cmd->in)  // Only set up input pipe if no input redirection
+                {
+                    dup2(pipe_fds[i-1][0], STDIN_FILENO);
+                    close(pipe_fds[i-1][0]);
+                    close(pipe_fds[i-1][1]);
+                }
+                if (!cmd->out)  // Only set up output pipe if no output redirection
+                {
+                    dup2(pipe_fds[i][1], STDOUT_FILENO);
+                    close(pipe_fds[i][0]);
+                    close(pipe_fds[i][1]);
+                }
+            }
+
+            // Execute command
+            if (is_builtin_command(cmd->arr[0]))
+            {
+                handle_builtin_command(cmd->exec, cmd);
+                exit(cmd->exec->exit_status);
+            }
+            else
+            {
+                char *cmd_path = find_command_path(cmd->exec, cmd->arr[0]);
+                if (!cmd_path)
+                {
+                    ft_putstr_fd("minishell: ", 2);
+                    ft_putstr_fd(cmd->arr[0], 2);
+                    ft_putstr_fd(": command not found\n", 2);
+                    exit(127);
+                }
+                execve(cmd_path, cmd->arr, envp);
+                perror("execve");
                 exit(1);
+            }
         }
-        if (cmd->out)
+        else if (pids[i] < 0)
         {
-            if (!setup_output_redirection(cmd, &original_fd))
-                exit(1);
+            perror("fork");
+            return;
         }
     }
 
-    // Execute command
-    if (is_builtin_command(cmd->arr[0]))
+    // Parent process: close all pipe fds
+    for (int i = 0; i < cmd_count - 1; i++)
     {
-        handle_builtin_command(cmd->exec, cmd);
-        exit(cmd->exec->exit_status);
-    }
-    else
-    {
-        char *cmd_path = find_command_path(cmd->exec, cmd->arr[0]);
-        if (!cmd_path)
-        {
-            ft_putstr_fd("minishell: ", 2);
-            ft_putstr_fd(cmd->arr[0], 2);
-            ft_putstr_fd(": command not found\n", 2);
-            exit(127);
-        }
-        execve(cmd_path, cmd->arr, envp);
-        perror("execve");
-        exit(1);
-    }
-}
-
-void execute_pipe(t_exec *exec, char **cmd1_args, char **cmd2_args, char **envp)
-{
-    int pipe_fd[2];
-    pid_t pid1, pid2;
-
-    if (pipe(pipe_fd) == -1)
-    {
-        perror("pipe");
-        return;
+        close(pipe_fds[i][0]);
+        close(pipe_fds[i][1]);
     }
 
-    // Create first command node
-    t_cmd_node *cmd1 = create_cmd_node(exec, cmd1_args);
-    if (!cmd1)
-    {
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-        return;
-    }
-
-    // Create second command node
-    t_cmd_node *cmd2 = create_cmd_node(exec, cmd2_args);
-    if (!cmd2)
-    {
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-        return;
-    }
-
-    // Parse redirections for both commands
-    parse_redirections(cmd1, cmd1->arr);
-    parse_redirections(cmd2, cmd2->arr);
-
-    // Process and update arguments after parsing redirections
-    process_and_update_args(cmd1, cmd1->arr);
-    process_and_update_args(cmd2, cmd2->arr);
-
-    // First child process
-    pid1 = fork();
-    if (pid1 == 0)
-        child_process(cmd1, pipe_fd, 1, envp);
-    else if (pid1 < 0)
-    {
-        perror("fork");
-        return;
-    }
-
-    // Second child process
-    pid2 = fork();
-    if (pid2 == 0)
-        child_process(cmd2, pipe_fd, 0, envp);
-    else if (pid2 < 0)
-    {
-        perror("fork");
-        return;
-    }
-
-    // Parent process
-    close(pipe_fd[0]);
-    close(pipe_fd[1]);
-
-    // Wait for both processes
+    // Wait for all processes
     int status;
-    waitpid(pid1, &status, 0);
-    waitpid(pid2, &status, 0);
-
-    if (WIFEXITED(status))
-        exec->exit_status = WEXITSTATUS(status);
+    for (int i = 0; i < cmd_count; i++)
+    {
+        waitpid(pids[i], &status, 0);
+        if (WIFEXITED(status))
+            exec->exit_status = WEXITSTATUS(status);
+    }
 }
 
 // Helper function to check if a command contains a pipe
@@ -155,27 +158,37 @@ int	has_pipe(t_cmd_node *cmd)
 void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list, char **envp)
 {
     t_cmd_node *current;
-    t_cmd_node *next;
+    char ***commands;
+    int cmd_count;
 
+    // Count commands and collect them
+    cmd_count = 0;
     current = cmd_list;
     while (current)
     {
-        if (has_pipe(current))
-        {
-            next = current->next;
-            if (!next)
-            {
-                ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-                exec->exit_status = 2;
-                return;
-            }
-            execute_pipe(exec, current->arr, next->arr, envp);
-            current = next->next;  // Skip the next command as it's already executed
-        }
-        else
-        {
-            parse_and_execute(exec, current, envp);
-            current = current->next;
-        }
+        cmd_count++;
+        current = current->next;
     }
+
+    if (cmd_count < 2)
+    {
+        parse_and_execute(exec, cmd_list, envp);
+        return;
+    }
+
+    // Allocate and fill commands array
+    commands = ft_malloc(&exec->gc, (cmd_count + 1) * sizeof(char **));
+    if (!commands)
+        return;
+
+    current = cmd_list;
+    int i = 0;
+    while (current)
+    {
+        commands[i++] = current->arr;
+        current = current->next;
+    }
+    commands[i] = NULL;
+
+    execute_pipe(exec, commands, cmd_count, envp);
 } 

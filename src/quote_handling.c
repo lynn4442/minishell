@@ -22,7 +22,7 @@ static void handle_env_variable(const char *arg, int *i, t_env_var *env, t_exec 
     if (arg[*i + 1] == '?')
     {
         char *exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
-        write(STDOUT_FILENO, exit_code_str, ft_strlen(exit_code_str));
+        printf("%s", exit_code_str);
         *i += 2;
         return;
     }
@@ -37,12 +37,12 @@ static void handle_env_variable(const char *arg, int *i, t_env_var *env, t_exec 
         char *var_name = ft_strndup(&exec->gc, arg + start, end - start);
         char *value = get_env_value(env, var_name);
         if (value)
-            write(STDOUT_FILENO, value, ft_strlen(value));
+            printf("%s", value);
         *i = end;
     }
     else
     {
-        write(STDOUT_FILENO, "$", 1);
+        printf("$");
         (*i)++;
     }
 }
@@ -57,80 +57,67 @@ void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec)
 
     while (i < len)
     {
-        // Handle escape characters
         if (arg[i] == '\\' && !escaped)
         {
             escaped = 1;
             i++;
             continue;
         }
-        
-        // If we're in an escaped state, handle the escaped character
         if (escaped)
         {
-            // For escaped spaces, just print a space
             if (arg[i] == ' ')
             {
-                write(STDOUT_FILENO, " ", 1);
+                printf(" ");
             }
-            // For other escaped characters, print them as is
             else
             {
-                write(STDOUT_FILENO, &arg[i], 1);
+                printf("%c", arg[i]);
             }
             escaped = 0;
             i++;
             continue;
         }
-        
-        // Handle opening quotes
         if (is_quote(arg[i]) && quote_type == '\0')
         {
             quote_type = arg[i];
             i++;
             continue;
         }
-        // Handle closing quotes
         else if (arg[i] == quote_type)
         {
             quote_type = '\0';
             i++;
             continue;
         }
-        
-        // Handle environment variables
         if (arg[i] == '$' && quote_type != '\'' && arg[i + 1])
         {
             handle_env_variable(arg, &i, env, exec);
             continue;
         }
-
-        // Handle spaces differently based on whether we're in quotes or not
         if (arg[i] == ' ')
         {
-            if (quote_type) // Inside quotes: preserve all spaces
+            if (quote_type)
             {
-                write(STDOUT_FILENO, " ", 1);
+                printf(" ");
             }
-            else // Outside quotes: collapse multiple spaces into one
+            else
             {
                 if (space_start == -1)
                 {
                     space_start = i;
-                    write(STDOUT_FILENO, " ", 1);
+                    printf(" ");
                 }
             }
         }
         else
         {
             space_start = -1;
-            write(STDOUT_FILENO, &arg[i], 1);
+            printf("%c", arg[i]);
         }
         i++;
     }
 }
 
-// Add this function to check for unclosed quotes
 int check_quotes(const char *input)
 {
     int i = 0;
@@ -145,21 +132,17 @@ int check_quotes(const char *input)
             i++;
             continue;
         }
-        
         if (escaped)
         {
             escaped = 0;
             i++;
             continue;
         }
-        
         if ((input[i] == '\'' || input[i] == '"') && quote_type == '\0')
             quote_type = input[i];
         else if (input[i] == quote_type)
             quote_type = '\0';
         i++;
     }
-
-    // If quote_type is not '\0', we have an unclosed quote
     return (quote_type == '\0');
-} 
+}

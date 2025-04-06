@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/05 14:52:02 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/06 16:18:27 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ char **split_preserve_quotes(const char *input, t_gc *gc)
     int count = 0;
     char quote = 0;
     int escaped = 0;
+    int is_echo_command = 0;
     
     // First count the number of arguments
     while (input[i])
@@ -198,8 +199,19 @@ char **split_preserve_quotes(const char *input, t_gc *gc)
         {
             char *arg = ft_strndup(gc, input + start, i - start);
             
-            // Remove quotes if the argument is quoted
-            if (arg && (arg[0] == '\'' || arg[0] == '"') && 
+            // Check if this is the echo command
+            if (count == 0 && ft_strcmp(arg, "echo") == 0)
+            {
+                is_echo_command = 1;
+                result[count] = arg;
+            }
+            // For echo command arguments, preserve quotes
+            else if (is_echo_command)
+            {
+                result[count] = arg;
+            }
+            // For other commands, remove quotes if the argument is quoted
+            else if (arg && (arg[0] == '\'' || arg[0] == '"') && 
                 arg[ft_strlen(arg) - 1] == arg[0])
             {
                 char *temp = ft_strndup(gc, arg + 1, ft_strlen(arg) - 2);

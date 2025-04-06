@@ -89,7 +89,7 @@ void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec)
             i++;
             continue;
         }
-        if (arg[i] == '$' && quote_type != '\'' && arg[i + 1])
+        if (arg[i] == '$' && (quote_type == '\0' || quote_type == '"') && arg[i + 1])
         {
             handle_env_variable(arg, &i, env, exec);
             continue;

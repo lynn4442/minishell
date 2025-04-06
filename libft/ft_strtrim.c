@@ -46,7 +46,7 @@ static int	ft_end(char const *s1, char const *set)
 	return (i + 1);
 }
 
-char	*ft_strtrim(char const *s1, char const *set)
+char	*ft_strtrim(char const *s1, char const *set, t_gc *gc)
 {
 	int		start;
 	int		end;
@@ -60,7 +60,7 @@ char	*ft_strtrim(char const *s1, char const *set)
 	len = end - start;
 	if (len < 0)
 		len = 0;
-	result = (char *)malloc(sizeof(char) * (len + 1));
+	result = (char *)ft_malloc(gc, sizeof(char) * (len + 1));
 	if (!result)
 		return (NULL);
 	result[len] = '\0';

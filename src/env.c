@@ -116,3 +116,22 @@ void ft_env(t_exec *exec, char **args)
 	exec->exit_status = 0;
 }
 
+void update_shlvl(t_exec *exec)
+{
+	t_env_var *shlvl_var;
+	char *new_value;
+	int current_level;
+
+	shlvl_var = get_env_var(exec, "SHLVL");
+	if (shlvl_var && shlvl_var->value)
+	{
+		current_level = ft_atoi(shlvl_var->value);
+		current_level++;
+		new_value = ft_itoa(current_level, &exec->gc);
+		if (new_value)
+			add_or_update_env_var(&exec->gc, &exec->env_list, "SHLVL", new_value);
+	}
+	else
+		add_or_update_env_var(&exec->gc, &exec->env_list, "SHLVL", "1");
+}
+

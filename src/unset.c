@@ -60,28 +60,14 @@ static void print_unset_error(const char *var_name, t_exec *exec)
 
 void unset_env_var(t_exec *exec, const char *name)
 {
-	t_env_var *node_to_remove;
-
 	if (!exec || !name)
 		return;
-
 	if (!is_valid_var_name(name))
 	{
 		print_unset_error(name, exec);
 		return;
 	}
-
-	node_to_remove = remove_env_var(exec, name);
-	if (node_to_remove)
-	{
-		if (node_to_remove->key)
-			free(node_to_remove->key);
-		if (node_to_remove->value)
-			free(node_to_remove->value);
-		if (node_to_remove->all)
-			free(node_to_remove->all);
-		free(node_to_remove);
-	}
+	remove_env_var(exec, name);
 }
 
 void ft_unset(t_exec *exec, char **args)
@@ -91,13 +77,11 @@ void ft_unset(t_exec *exec, char **args)
 
 	if (!exec || !args)
 		return;
-
 	if (!args[1])
 	{
 		exec->exit_status = 0;
 		return;
 	}
-
 	had_error = 0;
 	i = 1;
 	while (args[i])
@@ -111,6 +95,8 @@ void ft_unset(t_exec *exec, char **args)
 			unset_env_var(exec, args[i]);
 		i++;
 	}
-
-	exec->exit_status = had_error ? 1 : 0;
+	if (had_error)
+		exec->exit_status = 1;
+	else
+		exec->exit_status = 0;
 }

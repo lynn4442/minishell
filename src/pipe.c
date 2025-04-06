@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/06 16:18:27 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/06 18:04:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char ***split_by_pipe(char *input, t_exec *exec)
     while (parts[i])
     {
         // Trim whitespace from the command
-        char *trimmed = ft_strtrim(parts[i], " \t");
+        char *trimmed = ft_strtrim(parts[i], " \t", &exec->gc);
         if (!trimmed)
             return NULL;
         

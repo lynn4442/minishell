@@ -33,6 +33,7 @@ int main(int ac, char **av, char **envp)
 	}
 	init_exec(exec);
 	init_env(exec, envp);
+	update_shlvl(exec);  // Update the SHLVL environment variable
 	setup_interactive_signals();  // Setup signal handling
 
 	while (1)
@@ -120,11 +121,16 @@ int main(int ac, char **av, char **envp)
 		if (ft_strcmp(input, "stop") == 0)
 		{
 			printf("hello");
-			break ;
+			break;
 		}
-
 		free(input);
 	}
-	ft_free_all(&exec->gc);
+	
+	// Free all allocated memory before exiting
+	if (exec)
+	{
+		ft_free_all(&exec->gc);
+	}
+	
 	return (exec->exit_status);
 }

@@ -10,7 +10,12 @@
 /snap/bin/cat
 
 execve(cmd ,path,envp ) bas you need to do this in a fork why ?? because
+//INCREMENT THE SHLVL=1 in case manna hone mnaamoul 
+//export bede aatiya parameter tabaa shlevel 
+//in case env -i --> hard code 1
 
+// pwd --> in case manna bel env baamoul export for the variable 
+// old pwd --> in case manna bel env baamoul export for the variable 
 
 //cat
 //grep

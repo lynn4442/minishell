@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal_handling.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/06 15:03:43 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/04/06 17:44:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,14 @@ void handle_eof_signal(t_exec *exec)
 {
 	printf("exit\n");
 	exec->exit_status = 0;
+	
+	// Free the memory before exiting
+	if (exec)
+	{
+		ft_free_all(&exec->gc);
+	}
+	
+	exit(exec->exit_status);
 }
 
 int get_signal_exit_status(int status)

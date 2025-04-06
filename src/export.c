@@ -63,10 +63,7 @@ void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *val
 	{
 		if (ft_strcmp(temp->key, name) == 0)
 		{
-			if (temp->value)
-				free(temp->value);
-			if (temp->all)
-				free(temp->all);
+			// Don't manually free the memory, let the garbage collector handle it
 			temp->value = value ? ft_strdup(gc, value) : NULL;
 			temp->equal = (value != NULL);
 			if (value)
@@ -150,26 +147,21 @@ int ft_isspace(char c)
 
 void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 {
+	char *unquoted_arg;
 	char *key;
 	char *value;
-	char *equal_sign;
-	size_t key_len;
-	char *unquoted_arg;
+	char *equal_pos;
 
-	// First, strip any quotes from the argument
-	unquoted_arg = ft_strtrim(arg, "\"'");
+	unquoted_arg = ft_strtrim(arg, " \t", gc);
 	if (!unquoted_arg)
 		return;
 
-	equal_sign = ft_strchr(unquoted_arg, '=');
-	if (equal_sign)
+	equal_pos = ft_strchr(unquoted_arg, '=');
+	if (equal_pos)
 	{
-		key_len = equal_sign - unquoted_arg;
-		key = ft_strndup(gc, unquoted_arg, key_len);
-		if (*(equal_sign + 1) == '\0')
-			value = ft_strdup(gc, "");
-		else
-			value = ft_strdup(gc, equal_sign + 1);
+		*equal_pos = '\0';
+		key = unquoted_arg;
+		value = equal_pos + 1;
 		if (key && value)
 			add_or_update_env_var(gc, env_list, key, value);
 	}
@@ -179,9 +171,6 @@ void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 		if (key)
 			add_or_update_env_var(gc, env_list, key, NULL);
 	}
-
-	// Since ft_strtrim allocates new memory, we need to free it
-	free(unquoted_arg);
 }
 
 int execute_export(t_cmd_node *node, t_exec *exec)

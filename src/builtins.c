@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/28 15:51:54 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/06 17:44:24 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int handle_builtin_command(t_exec *exec, t_cmd_node *cmd)
     }
     else if (ft_strcmp(cmd->arr[0], "exit") == 0)
     {
-        ft_exit(cmd->arr, exec->exit_status);
+        ft_exit(cmd->arr, exec->exit_status, exec);
         return (1);
     }
     return (0);

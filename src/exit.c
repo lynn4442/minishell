@@ -26,10 +26,17 @@ int is_numeric(const char *str)
 	return (1);
 }
 
-void ft_exit(char **args, int last_exit_status)
+void ft_exit(char **args, int last_exit_status, t_exec *exec)
 {
 	(void)last_exit_status;
 	printf("exit\n");
+	
+	// Free the memory before exiting
+	if (exec)
+	{
+		ft_free_all(&exec->gc);
+	}
+	
 	if (!args[1])
 		exit(1);
 	if (is_numeric(args[1]))

@@ -19,7 +19,6 @@ char *get_current_directory(t_exec *exec)
 		return (NULL);
 	if (!getcwd(buf, 1024))
 	{
-		free(buf);
 		return (NULL);
 	}
 	return buf;

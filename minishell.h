@@ -157,11 +157,12 @@ void		init_env(t_exec *exec, char **envp);
 void		ft_env(t_exec *exec, char **args);
 char		**get_path_from_env(t_exec *exec);
 char		*get_env_value(t_env_var *env_list, char *var_name);
-t_env_var	*get_env_var(t_exec *exec, const char *name);
+t_env_var	*get_env_var(t_exec *exec, const char *key);
+void		update_shlvl(t_exec *exec);
 
 //exit
 int			is_numeric(const char *str);
-void		ft_exit(char **args, int last_exit_status);
+void		ft_exit(char **args, int last_exit_status, t_exec *exec);
 
 //main
 void		parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp);

@@ -92,10 +92,12 @@ void	update_pwd_vars(t_exec *exec, const char *old_pwd)
 		exec->exit_status = 1;
 		return ;
 	}
-	update_env_var(exec, "OLDPWD", old_pwd, true);
+	if (old_pwd)
+		update_env_var(exec, "OLDPWD", old_pwd, true);
 	update_env_var(exec, "PWD", cwd, true);
 	exec->exit_status = 0;
 }
+
 // no need for all these just to be like bash in this case
 // > cd makefile
 // > bash: cd: makefile: No such file or directory
@@ -212,7 +214,7 @@ int	ft_cd(t_exec *exec, t_cmd_node *cmd)
 
 	if (change_dir(path, exec) == 0)
 		update_pwd_vars(exec, old_pwd);
-	
+
 	return exec->exit_status;
 }
 

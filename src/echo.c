@@ -28,23 +28,18 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 
 	if (!cmd || !cmd->arr || !cmd->arr[0])
 		return;
-
-	// Handle output redirection
 	fd = handle_output_redirection(cmd);
 	if (fd == -1)
 	{
 		exec->exit_status = 1;
 		return;
 	}
-
 	if (fd != STDOUT_FILENO)
 	{
 		original_stdout = dup(STDOUT_FILENO);
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 	}
-
-	// Check for -n option(s)
 	while (cmd->arr[i])
 	{
 		if (cmd->arr[i][0] == '-')
@@ -60,22 +55,17 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 		else
 			break;
 	}
-
-	// Print arguments
 	int first = 1;
 	while (cmd->arr[i])
 	{
 		if (!first)
-			write(STDOUT_FILENO, " ", 1);
+			printf(" ");
 		print_arg(cmd->arr[i], env, exec);
 		first = 0;
 		i++;
 	}
-
 	if (!no_newline)
-		write(STDOUT_FILENO, "\n", 1);
-
-	// Restore original stdout if needed
+		printf("\n");
 	if (original_stdout != -1)
 	{
 		dup2(original_stdout, STDOUT_FILENO);

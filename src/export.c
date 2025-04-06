@@ -69,7 +69,6 @@ void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *val
 				free(temp->all);
 			temp->value = value ? ft_strdup(gc, value) : NULL;
 			temp->equal = (value != NULL);
-			// Update the all field without quotes
 			if (value)
 				temp->all = ft_strjoin(ft_strjoin(temp->key, "=", gc), value, gc);
 			else
@@ -120,7 +119,7 @@ void ft_export(t_env_var *env_list)
 		}
 		ft_putstr_fd("declare -x ", 1);
 		ft_putstr_fd(temp->key, 1);
-		
+
 		// Case 1: Has a value (like g=h)
 		if (temp->value && ft_strcmp(temp->value, "") != 0)
 		{
@@ -180,7 +179,7 @@ void handle_export(t_gc *gc, t_env_var **env_list, char *arg)
 		if (key)
 			add_or_update_env_var(gc, env_list, key, NULL);
 	}
-	
+
 	// Since ft_strtrim allocates new memory, we need to free it
 	free(unquoted_arg);
 }

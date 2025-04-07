@@ -10,4 +10,4 @@ make fclean
 git add .
 git commit -m "$1"
 git push
-echo ":white_check_mark: Changes pushed successfully!"
+echo "✅ Changes pushed successfully!"

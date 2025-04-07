@@ -1,21 +1,28 @@
-/home/lyoussef/bin/cat
-/usr/local/sbin/cat
-/usr/local/bin/cat
-/usr/sbin/cat
-/usr/bin/cat
-/sbin/cat
-/bin/cat
-/usr/games/cat
-/usr/local/games/cat
-/snap/bin/cat
+///home/lyoussef/bin/cat
+///usr/local/sbin/cat
+///usr/local/bin/cat
+///usr/sbin/cat
+///usr/bin/cat
+///sbin/cat
+///bin/cat
+///usr/games/cat
+///usr/local/games/cat
+///snap/bin/cat
 
-execve(cmd ,path,envp ) bas you need to do this in a fork why ?? because
-//INCREMENT THE SHLVL=1 in case manna hone mnaamoul 
-//export bede aatiya parameter tabaa shlevel 
+//things that are currently not working
+// 1- shlvl
+// 2- multiple > or multiple <
+// 3- echo $$
+
+
+
+//execve(cmd ,path,envp ) bas you need to do this in a fork
+//INCREMENT THE SHLVL=1 in case manna hone mnaamoul
+//export bede aatiya parameter tabaa shlevel
 //in case env -i --> hard code 1
 
-// pwd --> in case manna bel env baamoul export for the variable 
-// old pwd --> in case manna bel env baamoul export for the variable 
+// pwd --> in case manna bel env baamoul export for the variable
+// old pwd --> in case manna bel env baamoul export for the variable
 
 //cat
 //grep

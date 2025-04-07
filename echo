@@ -1,0 +1,58 @@
+Test Cases for Mini Shell
+Here's a comprehensive list of test cases for your mini shell, focusing on redirections, multiple pipes, and expansions:
+Basic Commands
+ls - Simple command execution
+pwd - Print working directory
+echo hello world - Echo with multiple arguments
+echo $PATH - Environment variable expansion
+echo $? - Exit status expansion
+Redirections
+ls > output.txt - Output redirection
+cat < input.txt - Input redirection
+ls >> output.txt - Append output redirection
+cat < input.txt > output.txt - Input and output redirection
+ls > output.txt 2>&1 - Redirect both stdout and stderr
+ls > output.txt 2> error.txt - Separate stdout and stderr redirection
+ls > /dev/null - Redirect to special file
+cat < /dev/null - Read from special file
+ls > /nonexistent/dir/file.txt - Error handling for invalid paths
+Multiple Pipes
+ls | grep .c | wc -l - Count C source files
+cat file.txt | grep "pattern" | sort | uniq - Complex pipeline
+ls | grep .c | xargs cat | wc -l - Pipeline with xargs
+ps aux | grep bash | awk '{print $2}' - Pipeline with awk
+find . -name "*.c" | xargs grep "main" | wc -l - Complex find and grep
+Expansions
+echo $HOME - Environment variable expansion
+echo $USER:$HOME - Multiple environment variables
+echo "Hello $USER" - Environment variable in quoted string
+echo 'Hello $USER' - No expansion in single quotes
+echo "Hello \$USER" - Escaped variable
+echo $? - Exit status expansion
+echo $$ - Process ID expansion
+echo $* - All arguments expansion
+echo $# - Number of arguments expansion
+echo $0 - Script name expansion
+Combined Tests
+ls | grep .c > output.txt - Pipe with output redirection
+cat < input.txt | grep "pattern" > output.txt - Input redirection, pipe, and output redirection
+ls | grep .c | wc -l > count.txt - Multiple pipes with output redirection
+cat < input.txt | grep "pattern" | sort | uniq > output.txt - Complex pipeline with redirections
+echo $PATH | tr ':' '\n' | sort > sorted_path.txt - Environment variable expansion with pipes and redirection
+ls | grep .c | xargs cat | wc -l > count.txt 2> error.txt - Complex pipeline with separate stdout and stderr redirection
+find . -name "*.c" | xargs grep "main" | wc -l > count.txt - Complex command with pipes and redirection
+ps aux | grep bash | awk '{print $2}' > pids.txt - Pipeline with awk and redirection
+echo "Current user: $USER" > user.txt - Environment variable expansion with output redirection
+cat < /dev/null | grep "pattern" > output.txt - Special file with pipe and redirection
+Edge Cases
+ls | > output.txt - Empty command in pipe
+ls | grep .c | - Trailing pipe
+| ls | grep .c - Leading pipe
+ls > output.txt | grep .c - Redirection before pipe
+ls | grep .c < input.txt - Input redirection after pipe
+ls > output.txt 2> output.txt - Redirecting stdout and stderr to the same file
+ls > output.txt 2>> output.txt - Redirecting stdout and appending stderr to the same file
+ls > /nonexistent/dir/file.txt 2>&1 - Error handling with combined redirection
+echo $NONEXISTENT_VAR - Non-existent environment variable
+echo $? after a failed command - Exit status of failed command
+These test cases cover a wide range of functionality in your mini shell, including basic commands, redirections, multiple pipes, expansions, and various combinations of these features. They also include some edge cases that can help identify potential issues in your implementation.

@@ -1,0 +1,10 @@
+/bin
+/home/lyoussef/bin
+/sbin
+/snap/bin
+/usr/bin
+/usr/games
+/usr/local/bin
+/usr/local/games
+/usr/local/sbin
+/usr/sbin

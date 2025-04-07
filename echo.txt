@@ -5,12 +5,15 @@ things that are not currently working
 1- shlvl
 2- multiple > or multiple <
 3- echo $$
---> nayyim
+--> nayyim --> 2>> or 2>
 #ls > output.txt 2> error.txt - Separate stdout and stderr redirection
-
-
-
-
+#echo $? - Exit status expansion
+#echo $$ - Process ID expansion
+#echo $# - Number of arguments expansion
+#echo $0 - Script name expansion
+#ls | grep .c | xargs cat | wc -l > count.txt 2> error.txt - Complex pipeline with separate stdout and stderr redirection
+#ls | grep .c | - Trailing pipe
+#| ls | grep .c - Leading pipe
 
 
 #Basic Commands
@@ -41,10 +44,6 @@ things that are not currently working
 #echo "Hello $USER" - Environment variable in quoted string
 #echo 'Hello $USER' - No expansion in single quotes
 #echo "Hello \$USER" - Escaped variable
-#echo $? - Exit status expansion
-#echo $$ - Process ID expansion
-#echo $# - Number of arguments expansion
-#echo $0 - Script name expansion
 
 #Combined Tests
 #ls | grep .c > output.txt - Pipe with output redirection
@@ -52,19 +51,14 @@ things that are not currently working
 #ls | grep .c | wc -l > count.txt - Multiple pipes with output redirection
 #cat < input.txt | grep "pattern" | sort | uniq > output.txt - Complex pipeline with redirections
 #echo $PATH | tr ':' '\n' | sort > sorted_path.txt - Environment variable expansion with pipes and redirection
-#ls | grep .c | xargs cat | wc -l > count.txt 2> error.txt - Complex pipeline with separate stdout and stderr redirection
 #ps aux | grep bash | awk '{print $2}' > pids.txt - Pipeline with awk and redirection
 #echo "Current user: $USER" > user.txt - Environment variable expansion with output redirection
 #cat < /dev/null | grep "pattern" > output.txt - Special file with pipe and redirection
 
 #Edge Cases
 #ls | > output.txt - Empty command in pipe
-#ls | grep .c | - Trailing pipe
-#| ls | grep .c - Leading pipe
 #ls > output.txt | grep .c - Redirection before pipe
 #ls | grep .c < input.txt - Input redirection after pipe
-#ls > output.txt 2> output.txt - Redirecting stdout and stderr to the same file
-#ls > output.txt 2>> output.txt - Redirecting stdout and appending stderr to the same file
 #ls > /nonexistent/dir/file.txt 2>&1 - Error handling with combined redirection
 #echo $NONEXISTENT_VAR - Non-existent environment variable
 #echo $? after a failed command - Exit status of failed command

@@ -15,38 +15,35 @@ things that are not currently working
 1- shlvl
 2- multiple > or multiple <
 3- echo $$
---> nayyim --> 2>> or 2>
-#ls > output.txt 2> error.txt - Separate stdout and stderr redirection
-#echo $? - Exit status expansion
-#ls | grep .c | xargs cat | wc -l > count.txt 2> error.txt - Complex pipeline with separate stdout and stderr redirection
-#ls | grep .c | - Trailing pipe
-#| ls | grep .c - Leading pipe
+echo $? - Exit status expansion
+ls | grep .c |
+| ls | grep .c
 
 
 #Basic Commands
-#ls - Simple command execution
-#pwd - Print working directory
-#echo hello world - Echo with multiple arguments
-#echo $PATH - Environment variable expansion
-#echo $? - Exit status expansion
+ls
+pwd
+echo hello world
+echo $PATH
+echo $?
 
 #Redirections
-#ls > output.txt - Output redirection
-#cat < input.txt - Input redirection
-#ls >> output.txt - Append output redirection
-#cat < input.txt > output.txt - Input and output redirection
-#ls > /dev/null - Redirect to special file
-#cat < /dev/null - Read from special file
-#ls > /nonexistent/dir/file.txt - Error handling for invalid paths
+#ls > output.txt
+#cat < input.txt
+#ls >> output.txt
+#cat < input.txt > output.txt
+#ls > /dev/null
+#cat < /dev/null
+#ls > /nonexistent/dir/file.txt
 
 #Multiple Pipes
-#ls | grep .c | wc -l - Count C source files
-#cat file.txt | grep "pattern" | sort | uniq - Complex pipeline
-#ls | grep .c | xargs cat | wc -l - Pipeline with xargs
-#ps aux | grep bash | awk '{print $2}' - Pipeline with awk
+#ls | grep .c | wc -l
+#cat file.txt | grep "pattern" | sort | uniq
+#ls | grep .c | xargs cat | wc -l
+#ps aux | grep bash | awk '{print $2}'
 
 #Expansions
-#echo $HOME - Environment variable expansion
+#echo $HOME
 #echo $USER:$HOME - Multiple environment variables
 #echo "Hello $USER" - Environment variable in quoted string
 #echo 'Hello $USER' - No expansion in single quotes

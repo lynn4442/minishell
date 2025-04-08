@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/06 17:44:32 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/08 09:51:19 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,30 @@ void handle_eof_signal(t_exec *exec)
 	printf("exit\n");
 	exec->exit_status = 0;
 	
-	// Free the memory before exiting
-	if (exec)
+	// Check if we're in a nested shell by looking at SHLVL
+	int shlvl = 1;  // Default value
+	t_env_var *current = exec->env_list;
+	while (current)
 	{
-		ft_free_all(&exec->gc);
+		if (ft_strcmp(current->key, "SHLVL") == 0)
+		{
+			shlvl = ft_atoi(current->value);
+			break;
+		}
+		current = current->next;
 	}
 	
-	exit(exec->exit_status);
+	// Only free memory if we're not in a nested shell
+	if (shlvl <= 1)
+	{
+		// Free the memory before exiting
+		if (exec)
+		{
+			ft_free_all(&exec->gc);
+		}
+	}
+	
+	exit(0);  // Always exit with 0 for EOF (Ctrl+D)
 }
 
 int get_signal_exit_status(int status)

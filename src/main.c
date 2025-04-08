@@ -71,6 +71,16 @@ int main(int ac, char **av, char **envp)
 			// Check if command contains pipe
 			if (ft_strchr(input, '|'))
 			{
+				// Check for leading or trailing pipe
+				char *trimmed = ft_strtrim(input, " \t", &exec->gc);
+				if (!trimmed || trimmed[0] == '|' || trimmed[ft_strlen(trimmed) - 1] == '|')
+				{
+					ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+					exec->exit_status = 2;
+					free(input);
+					continue;
+				}
+
 				char ***commands = split_by_pipe(input, exec);
 				if (commands && commands[0])
 				{
@@ -83,7 +93,7 @@ int main(int ac, char **av, char **envp)
 					{
 						// Temporarily ignore SIGINT during command execution
 						setup_parent_signals();
-						execute_pipe(exec, commands, cmd_count, envp);
+						execute_pipe(exec, commands, cmd_count);
 						// Restore interactive signals
 						setup_interactive_signals();
 					}
@@ -111,7 +121,7 @@ int main(int ac, char **av, char **envp)
 						process_and_update_args(cmd, cmd->arr);
 						// Temporarily ignore SIGINT during command execution
 						setup_parent_signals();
-						parse_and_execute(exec, cmd, envp);
+						parse_and_execute(exec, cmd);
 						// Restore interactive signals
 						setup_interactive_signals();
 					}

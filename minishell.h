@@ -159,13 +159,14 @@ char		**get_path_from_env(t_exec *exec);
 char		*get_env_value(t_env_var *env_list, char *var_name);
 t_env_var	*get_env_var(t_exec *exec, const char *key);
 void		update_shlvl(t_exec *exec);
+char		**convert_env_to_array(t_exec *exec, t_gc *gc);
 
 //exit
 int			is_numeric(const char *str);
 void		ft_exit(char **args, int last_exit_status, t_exec *exec);
 
 //main
-void		parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp);
+void		parse_and_execute(t_exec *exec, t_cmd_node *cmd);
 void		process_and_update_args(t_cmd_node *cmd, char **args);
 void		parse_redirections(t_cmd_node *cmd, char **args);
 int			main(int ac,char **av,char **envp);
@@ -175,7 +176,7 @@ void		ft_input_redirection(t_cmd_node *cmd, t_gc *gc);
 void		ft_output_append(t_cmd_node *cmd, t_gc *gc);
 void		ft_output_truncate(t_cmd_node *cmd, t_gc *gc);
 void		handle_redirection(t_cmd_node *cmd, t_gc *gc);
-void		execute_command(t_cmd_node *cmd, t_gc *gc, char **envp);
+void		execute_command(t_cmd_node *cmd, t_gc *gc);
 
 //utils
 void		*ft_malloc(t_gc *var, size_t size);
@@ -187,8 +188,8 @@ int			is_builtin_command(const char *cmd);
 
 //pipes related
 int		has_pipe(t_cmd_node *cmd);
-void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list, char **envp);
-void	execute_pipe(t_exec *exec, char ***commands, int cmd_count, char **envp);
+void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list);
+void	execute_pipe(t_exec *exec, char ***commands, int cmd_count);
 char	***split_by_pipe(char *input, t_exec *exec);
 char    *find_command_path(t_exec *exec, const char *cmd);
 char    **split_preserve_quotes(const char *input, t_gc *gc);

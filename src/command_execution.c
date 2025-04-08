@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/03 20:12:31 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/07 23:47:56 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static void handle_command_error(t_exec *exec, const char *cmd, int error_type)
 	}
 }
 
-void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
+void parse_and_execute(t_exec *exec, t_cmd_node *cmd)
 {
 	if (!exec || !cmd || !cmd->arr || !cmd->arr[0])
 	{
@@ -123,20 +123,29 @@ void parse_and_execute(t_exec *exec, t_cmd_node *cmd, char **envp)
 		return;
 	}
 
-	execute_command(cmd, &exec->gc, envp);
+	execute_command(cmd, &exec->gc);
 }
 
-void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
+void execute_command(t_cmd_node *cmd, t_gc *gc)
 {
 	int original_in = -1;
 	int original_out = -1;
 	pid_t pid;
 	int status;
+	char **env_array;
 
 	if (setup_input_redirection(cmd, &original_in) == -1 ||
 		setup_output_redirection(cmd, &original_out) == -1)
 	{
 		cmd->exec->exit_status = 1;
+		return;
+	}
+
+	// Convert environment list to array for execve
+	env_array = convert_env_to_array(cmd->exec, gc);
+	if (!env_array)
+	{
+		perror("minishell: environment conversion failed");
 		return;
 	}
 
@@ -159,7 +168,7 @@ void execute_command(t_cmd_node *cmd, t_gc *gc, char **envp)
 			ft_free_all(gc);
 			exit(127);
 		}
-		execve(cmd_path, cmd->arr, envp);
+		execve(cmd_path, cmd->arr, env_array);
 		perror("minishell");
 		ft_free_all(gc);
 		exit(126);

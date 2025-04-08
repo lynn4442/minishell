@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/06 17:44:24 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/07 23:39:21 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int handle_builtin_command(t_exec *exec, t_cmd_node *cmd)
 {
     if (!exec || !cmd || !cmd->arr || !cmd->arr[0])
         return (0);
-
     if (ft_strcmp(cmd->arr[0], "echo") == 0)
     {
         ft_echo(cmd, exec->env_list, exec);

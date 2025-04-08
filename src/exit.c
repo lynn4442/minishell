@@ -31,20 +31,38 @@ void ft_exit(char **args, int last_exit_status, t_exec *exec)
 	(void)last_exit_status;
 	printf("exit\n");
 	
-	// Free the memory before exiting
-	if (exec)
+	// Check if we're in a nested shell by looking at SHLVL
+	int shlvl = 1;  // Default value
+	t_env_var *current = exec->env_list;
+	while (current)
 	{
-		ft_free_all(&exec->gc);
+		if (ft_strcmp(current->key, "SHLVL") == 0)
+		{
+			shlvl = ft_atoi(current->value);
+			break;
+		}
+		current = current->next;
+	}
+	
+	// Only free memory if we're not in a nested shell
+	if (shlvl <= 1)
+	{
+		// Free the memory before exiting
+		if (exec)
+		{
+			ft_free_all(&exec->gc);
+		}
 	}
 	
 	if (!args[1])
-		exit(1);
+		exit(0);
 	if (is_numeric(args[1]))
 	{
 		if (args[2])
 		{
 			printf("exit: too many arguments\n");
-			return ;
+			exec->exit_status = 1;
+			return;
 		}
 		exit(ft_atoi(args[1]) % 256);
 	}

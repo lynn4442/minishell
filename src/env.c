@@ -125,7 +125,18 @@ void update_shlvl(t_exec *exec)
 	shlvl_var = get_env_var(exec, "SHLVL");
 	if (shlvl_var && shlvl_var->value)
 	{
+		// Handle non-numeric values or empty strings
+		if (ft_strlen(shlvl_var->value) == 0 || !is_numeric(shlvl_var->value))
+		{
+			add_or_update_env_var(&exec->gc, &exec->env_list, "SHLVL", "1");
+			return;
+		}
+		
 		current_level = ft_atoi(shlvl_var->value);
+		// Handle negative values or overflow
+		if (current_level < 0)
+			current_level = 0;
+		
 		current_level++;
 		new_value = ft_itoa(current_level, &exec->gc);
 		if (new_value)
@@ -133,5 +144,44 @@ void update_shlvl(t_exec *exec)
 	}
 	else
 		add_or_update_env_var(&exec->gc, &exec->env_list, "SHLVL", "1");
+}
+
+char **convert_env_to_array(t_exec *exec, t_gc *gc)
+{
+	t_env_var *current;
+	int count;
+	char **env_array;
+	int i;
+
+	// Count environment variables
+	count = 0;
+	current = exec->env_list;
+	while (current)
+	{
+		if (current->value)  // Only include variables with values
+			count++;
+		current = current->next;
+	}
+
+	// Allocate array (count + 1 for NULL terminator)
+	env_array = ft_malloc(gc, (count + 1) * sizeof(char *));
+	if (!env_array)
+		return (NULL);
+
+	// Fill array
+	i = 0;
+	current = exec->env_list;
+	while (current)
+	{
+		if (current->value)
+		{
+			env_array[i] = current->all;
+			i++;
+		}
+		current = current->next;
+	}
+	env_array[i] = NULL;  // NULL terminate the array
+
+	return (env_array);
 }
 

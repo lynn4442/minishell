@@ -8,9 +8,6 @@ things that are not currently working
 --> nayyim --> 2>> or 2>
 #ls > output.txt 2> error.txt - Separate stdout and stderr redirection
 #echo $? - Exit status expansion
-#echo $$ - Process ID expansion
-#echo $# - Number of arguments expansion
-#echo $0 - Script name expansion
 #ls | grep .c | xargs cat | wc -l > count.txt 2> error.txt - Complex pipeline with separate stdout and stderr redirection
 #ls | grep .c | - Trailing pipe
 #| ls | grep .c - Leading pipe
@@ -62,3 +59,65 @@ things that are not currently working
 #ls > /nonexistent/dir/file.txt 2>&1 - Error handling with combined redirection
 #echo $NONEXISTENT_VAR - Non-existent environment variable
 #echo $? after a failed command - Exit status of failed command
+
+
+
+   echo "Test" > file1.txt > file2.txt
+   cat file1.txt
+   cat file2.txt
+
+
+   echo "First" > file1.txt
+   echo "Second" > file2.txt
+   cat < file1.txt < file2.txt
+
+   echo "Hello" > input.txt
+   cat < input.txt > output.txt
+   cat output.txt
+
+
+   echo "Line 1" > append.txt
+   echo "Line 2" >> append.txt
+   echo "Line 3" >> append.txt
+   cat append.txt
+
+echo "First" > mixed.txt
+echo "Second" >> mixed.txt
+echo "Third" > mixed.txt
+cat mixed.txt
+
+
+echo "Hello World" | grep "Hello" > hello.txt
+echo "Goodbye World" | grep "Goodbye" >> hello.txt
+cat hello.txt
+
+
+echo "Line 1" > chain1.txt
+echo "Line 2" >> chain1.txt
+cat < chain1.txt | grep "Line" > chain2.txt
+cat chain2.txt
+
+
+
+echo $HOME > home.txt
+echo $PATH >> home.txt
+cat home.txt
+
+
+
+echo "Hello > World" > special.txt
+echo "Hello >> World" >> special.txt
+cat special.txt
+
+
+
+echo 'Hello "World"' > quotes.txt
+echo "Hello 'World'" >> quotes.txt
+cat quotes.txt
+
+
+cat < nonexistent.txt
+
+echo "Test" > /root/test.txt
+
+< input.txt

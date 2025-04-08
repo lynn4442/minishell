@@ -22,9 +22,12 @@ static void handle_env_variable(const char *arg, int *i, t_env_var *env, t_exec 
     if (arg[*i + 1] == '?')
     {
         char *exit_code_str = ft_itoa(exec->exit_status, &exec->gc);
-        printf("%s", exit_code_str);
-        *i += 2;
-        return;
+        if (exit_code_str)
+        {
+            printf("%s", exit_code_str);
+            *i += 2;
+            return;
+        }
     }
 
     int start = *i + 1;

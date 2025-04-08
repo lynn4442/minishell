@@ -117,8 +117,8 @@ int main(int ac, char **av, char **envp)
 					cmd = create_cmd_node(exec, args);
 					if (cmd)
 					{
-						parse_redirections(cmd, cmd->arr);
 						process_and_update_args(cmd, cmd->arr);
+						parse_redirections(cmd, cmd->arr);
 						// Temporarily ignore SIGINT during command execution
 						setup_parent_signals();
 						parse_and_execute(exec, cmd);

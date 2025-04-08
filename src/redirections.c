@@ -136,11 +136,13 @@ void parse_redirections(t_cmd_node *cmd, char **args)
 		{
 			if (ft_strcmp(args[i], ">") == 0)
 			{
+				// Just store the last redirection in cmd->out
 				cmd->out = args[i + 1];
 				cmd->append = 0;
 			}
 			else if (ft_strcmp(args[i], ">>") == 0)
 			{
+				// Just store the last redirection in cmd->out
 				cmd->out = args[i + 1];
 				cmd->append = 1;
 			}

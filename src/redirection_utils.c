@@ -39,7 +39,10 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
     int j = 0;
     char **new_args;
     int arg_count = 0;
+    char *last_out = NULL;
+    int last_append = 0;
 
+    // First pass: count arguments and create all output files
     while (args[i])
     {
         if ((ft_strcmp(args[i], ">") == 0 || 
@@ -48,13 +51,25 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
         {
             if (ft_strcmp(args[i], ">") == 0)
             {
-                cmd->out = args[i + 1];
-                cmd->append = 0;
+                // Create the file
+                int fd = open(args[i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                if (fd != -1)
+                    close(fd);
+                
+                // Remember the last output file
+                last_out = args[i + 1];
+                last_append = 0;
             }
             else if (ft_strcmp(args[i], ">>") == 0)
             {
-                cmd->out = args[i + 1];
-                cmd->append = 1;
+                // Create the file
+                int fd = open(args[i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
+                if (fd != -1)
+                    close(fd);
+                
+                // Remember the last output file
+                last_out = args[i + 1];
+                last_append = 1;
             }
             else if (ft_strcmp(args[i], "<") == 0)
                 cmd->in = args[i + 1];
@@ -66,6 +81,12 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
             i++;
         }
     }
+    
+    // Set the last output file
+    cmd->out = last_out;
+    cmd->append = last_append;
+    
+    // Second pass: create new args array without redirections
     new_args = ft_malloc(&cmd->exec->gc, sizeof(char *) * (arg_count + 1));
     if (!new_args)
         return;

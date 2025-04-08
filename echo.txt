@@ -62,24 +62,24 @@ things that are not currently working
 
 
 
-   echo "Test" > file1.txt > file2.txt
-   cat file1.txt
-   cat file2.txt
+echo "Test" > file1.txt > file2.txt
+cat file1.txt
+cat file2.txt
 
 
-   echo "First" > file1.txt
-   echo "Second" > file2.txt
-   cat < file1.txt < file2.txt
+echo "First" > file1.txt
+echo "Second" > file2.txt
+cat < file1.txt < file2.txt
 
-   echo "Hello" > input.txt
-   cat < input.txt > output.txt
-   cat output.txt
+echo "Hello" > input.txt
+cat < input.txt > output.txt
+cat output.txt
 
 
-   echo "Line 1" > append.txt
-   echo "Line 2" >> append.txt
-   echo "Line 3" >> append.txt
-   cat append.txt
+echo "Line 1" > append.txt
+echo "Line 2" >> append.txt
+echo "Line 3" >> append.txt
+cat append.txt
 
 echo "First" > mixed.txt
 echo "Second" >> mixed.txt

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/08 09:45:30 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/10 00:46:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,36 @@ void execute_pipe(t_exec *exec, char ***commands, int cmd_count)
         if (pids[i] == 0)
         {
             // Child process
+            setup_child_signals();  // Set up signals for child process
+            
+            // Close all pipe fds except the ones we need
+            for (int j = 0; j < cmd_count - 1; j++)
+            {
+                if (j != i - 1)  // Not the input pipe
+                    close(pipe_fds[j][0]);
+                if (j != i)      // Not the output pipe
+                    close(pipe_fds[j][1]);
+            }
+
+            // Set up input pipe
             if (i > 0)  // Not first command
             {
-                close(pipe_fds[i-1][1]);
-                dup2(pipe_fds[i-1][0], STDIN_FILENO);
+                if (dup2(pipe_fds[i-1][0], STDIN_FILENO) == -1)
+                {
+                    perror("dup2");
+                    exit(1);
+                }
                 close(pipe_fds[i-1][0]);
             }
+
+            // Set up output pipe
             if (i < cmd_count - 1)  // Not last command
             {
-                close(pipe_fds[i][0]);
-                dup2(pipe_fds[i][1], STDOUT_FILENO);
+                if (dup2(pipe_fds[i][1], STDOUT_FILENO) == -1)
+                {
+                    perror("dup2");
+                    exit(1);
+                }
                 close(pipe_fds[i][1]);
             }
 
@@ -67,7 +87,9 @@ void execute_pipe(t_exec *exec, char ***commands, int cmd_count)
                 int fd = open(cmd->in, O_RDONLY);
                 if (fd == -1)
                 {
-                    perror("minishell");
+                    ft_putstr_fd("minishell: ", 2);
+                    ft_putstr_fd(cmd->in, 2);
+                    ft_putstr_fd(": 3No such file or directory\n", 2);
                     exit(1);
                 }
                 dup2(fd, STDIN_FILENO);
@@ -80,7 +102,10 @@ void execute_pipe(t_exec *exec, char ***commands, int cmd_count)
                 int fd = open(cmd->out, flags, 0644);
                 if (fd == -1)
                 {
-                    perror("minishell");
+                    ft_putstr_fd("minishell: ", 2);
+                    ft_putstr_fd(cmd->out, 2);
+                    ft_putstr_fd(": ", 2);
+                    perror("");
                     exit(1);
                 }
                 dup2(fd, STDOUT_FILENO);
@@ -128,6 +153,13 @@ void execute_pipe(t_exec *exec, char ***commands, int cmd_count)
         waitpid(pids[i], &status, 0);
         if (WIFEXITED(status))
             exec->exit_status = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+        {
+            if (WTERMSIG(status) == SIGINT)
+                exec->exit_status = 130;
+            else if (WTERMSIG(status) == SIGQUIT)
+                exec->exit_status = 131;
+        }
     }
 }
 

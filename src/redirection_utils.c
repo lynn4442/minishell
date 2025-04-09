@@ -42,7 +42,7 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
     char *last_out = NULL;
     int last_append = 0;
 
-    // First pass: count arguments and create all output files
+    // First pass: count arguments and find the last output redirection
     while (args[i])
     {
         if ((ft_strcmp(args[i], ">") == 0 || 
@@ -51,22 +51,12 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
         {
             if (ft_strcmp(args[i], ">") == 0)
             {
-                // Create the file
-                int fd = open(args[i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-                if (fd != -1)
-                    close(fd);
-                
                 // Remember the last output file
                 last_out = args[i + 1];
                 last_append = 0;
             }
             else if (ft_strcmp(args[i], ">>") == 0)
             {
-                // Create the file
-                int fd = open(args[i + 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
-                if (fd != -1)
-                    close(fd);
-                
                 // Remember the last output file
                 last_out = args[i + 1];
                 last_append = 1;

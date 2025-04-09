@@ -1,3 +1,7 @@
+//NB: THIS SHOULD WORK --> env -i ./minishell
+
+
+
 //things that are currently not working
 echo "test" | grep "t" > grep1.txt > grep2.txt
 cat file.txt | grep "pattern" | wc -l > count1.txt > count2.txt

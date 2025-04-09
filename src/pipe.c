@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/06 18:04:08 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/10 00:43:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,14 @@ char ***split_by_pipe(char *input, t_exec *exec)
         if (!trimmed)
             return NULL;
         
+        // Check for empty commands
+        if (ft_strlen(trimmed) == 0)
+        {
+            ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+            exec->exit_status = 2;
+            return NULL;
+        }
+        
         // Use split_preserve_quotes to handle quoted arguments
         commands[i] = split_preserve_quotes(trimmed, &exec->gc);
         if (!commands[i])
@@ -47,6 +55,8 @@ char ***split_by_pipe(char *input, t_exec *exec)
         if (cmd)
         {
             cmd->type = PIPE;  // Set the command type to PIPE
+            process_and_update_args(cmd, cmd->arr);
+            parse_redirections(cmd, cmd->arr);
         }
         i++;
     }

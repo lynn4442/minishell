@@ -81,6 +81,33 @@ int main(int ac, char **av, char **envp)
 					continue;
 				}
 
+				// Check for empty redirections
+				char **parts = ft_split(input, '|', &exec->gc);
+				if (parts)
+				{
+					int i = 0;
+					int has_error = 0;
+					while (parts[i])
+					{
+						char *part = ft_strtrim(parts[i], " \t", &exec->gc);
+						if (part && (ft_strcmp(part, ">") == 0 || ft_strcmp(part, ">>") == 0 || ft_strcmp(part, "<") == 0))
+						{
+							ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+							ft_putstr_fd(part, 2);
+							ft_putstr_fd("'\n", 2);
+							exec->exit_status = 2;
+							has_error = 1;
+							break;
+						}
+						i++;
+					}
+					if (has_error)
+					{
+						free(input);
+						continue;
+					}
+				}
+
 				char ***commands = split_by_pipe(input, exec);
 				if (commands && commands[0])
 				{
@@ -114,6 +141,29 @@ int main(int ac, char **av, char **envp)
 				args = split_preserve_quotes(input, &exec->gc);
 				if (args)
 				{
+					// Check for empty redirections
+					int i = 0;
+					int has_error = 0;
+					while (args[i])
+					{
+						if ((ft_strcmp(args[i], ">") == 0 || ft_strcmp(args[i], ">>") == 0 || ft_strcmp(args[i], "<") == 0) && 
+							(!args[i+1] || ft_strcmp(args[i+1], ">") == 0 || ft_strcmp(args[i+1], ">>") == 0 || ft_strcmp(args[i+1], "<") == 0))
+						{
+							ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+							ft_putstr_fd(args[i+1] ? args[i+1] : "newline", 2);
+							ft_putstr_fd("'\n", 2);
+							exec->exit_status = 2;
+							has_error = 1;
+							break;
+						}
+						i++;
+					}
+					if (has_error)
+					{
+						free(input);
+						continue;
+					}
+
 					cmd = create_cmd_node(exec, args);
 					if (cmd)
 					{
@@ -136,11 +186,7 @@ int main(int ac, char **av, char **envp)
 		free(input);
 	}
 	
-	// Free all allocated memory before exiting
-	if (exec)
-	{
-		ft_free_all(&exec->gc);
-	}
-	
+	// Clean up before exiting
+	ft_free_all(&exec->gc);
 	return (exec->exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/04/07 23:47:56 by marvin           ###   ########.fr       */
+/*   Updated: 2025/04/10 00:46:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void handle_command_error(t_exec *exec, const char *cmd, int error_type)
 	}
 	else if (error_type == 3)
 	{
-		printf("minihell: %s: No such file or directory\n", cmd);
+		printf("minihell: %s: 1No such file or directory\n", cmd);
 		exec->exit_status = 1;
 	}
 }

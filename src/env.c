@@ -101,7 +101,7 @@ void ft_env(t_exec *exec, char **args)
 
 	if (args && args[1])
 	{
-		printf("env: '%s': No such file or directory\n", args[1]);
+		printf("env: '%s': 2No such file or directory\n", args[1]);
 		exec->exit_status = 1;
 		return;
 	}

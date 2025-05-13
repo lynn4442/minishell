@@ -53,7 +53,7 @@ void	sort_env_vars(t_env_var *head)
 	}
 }
 
-void add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value)
+void add_or_update_env_var(t_gc *gc, t_env_var **env_list, const char *name, const char *value)
 {
 	t_env_var *temp;
 	t_env_var *new_var;

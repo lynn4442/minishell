@@ -124,7 +124,6 @@ int			handle_output_redirection(t_cmd_node *cmd);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
-void		update_env_var(t_exec *exec, const char *key, const char *value, bool equal);
 int			change_dir(const char *path, t_exec *exec);
 void		update_pwd_vars(t_exec *exec, const char *old_pwd);
 char		*get_home_path(t_exec *exec);
@@ -132,11 +131,10 @@ char		*expand_home_path(t_exec *exec, const char *arg);
 char		*handle_oldpwd(t_exec *exec);
 int			ft_cd(t_exec *exec, t_cmd_node *cmd);
 
-
 //export
 int			ft_isspace(char c);
 int			is_valid_var_name(const char *name);
-void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, char *name, char *value);
+void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, const char *name, const char *value);
 void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
 void		swap_env_vars(t_env_var *a, t_env_var *b);
 void		sort_env_vars(t_env_var *head);
@@ -160,6 +158,7 @@ char		*get_env_value(t_env_var *env_list, char *var_name);
 t_env_var	*get_env_var(t_exec *exec, const char *key);
 void		update_shlvl(t_exec *exec);
 char		**convert_env_to_array(t_exec *exec, t_gc *gc);
+int         get_shell_level(t_exec *exec);
 
 //exit
 int			is_numeric(const char *str);
@@ -172,11 +171,9 @@ void		parse_redirections(t_cmd_node *cmd, char **args);
 int			main(int ac,char **av,char **envp);
 
 //redirections
-void		ft_input_redirection(t_cmd_node *cmd, t_gc *gc);
-void		ft_output_append(t_cmd_node *cmd, t_gc *gc);
-void		ft_output_truncate(t_cmd_node *cmd, t_gc *gc);
 void		handle_redirection(t_cmd_node *cmd, t_gc *gc);
-void		execute_command(t_cmd_node *cmd, t_gc *gc);
+void		execute_command(t_cmd_node *cmd);
+void        execute_command_generic(t_exec *exec, t_cmd_node *cmd);
 
 //utils
 void		*ft_malloc(t_gc *var, size_t size);
@@ -203,13 +200,21 @@ int restore_input_redirection(int original_fd);
 // quotations handling
 int check_quotes(const char *input);
 void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec);
+char *process_quotes(const char *str, t_env_var *env, t_exec *exec);
 
 // Add these prototypes
 void setup_interactive_signals(void);
 void setup_child_signals(void);
 void setup_parent_signals(void);
+void cleanup_and_exit(t_exec *exec, int exit_code);
 void handle_eof_signal(t_exec *exec);
 int get_signal_exit_status(int status);
+
+// Parser functions
+t_cmd_node *parse_command_line(char *input, t_exec *exec);
+t_cmd_node *parse_input(char *input, t_exec *exec);
+t_cmd_node *parse_piped_commands(char *input, t_exec *exec);
+int check_syntax(t_cmd_node *cmd_list, t_exec *exec);
 
 #endif
 

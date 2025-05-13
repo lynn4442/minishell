@@ -12,66 +12,6 @@
 
 #include "../minishell.h"
 
-void	update_env_var(t_exec *exec, const char *key, const char *value, bool equal)
-{
-	t_env_var	*var;
-	t_env_var	*last;
-	t_env_var	*new_var;
-
-	var = get_env_var(exec, key);
-	if (var)
-	{
-		var->value = ft_strdup(&exec->gc, value);
-		var->equal = equal;
-		if (equal)
-			var->all = ft_strjoin(ft_strjoin(var->key, "=", &exec->gc),
-					var->value, &exec->gc);
-		else
-			var->all = ft_strdup(&exec->gc, var->key);
-	}
-	else
-	{
-		new_var = ft_malloc(&exec->gc, sizeof(t_env_var));
-		if (!new_var)
-		{
-			perror("malloc");
-			return ;
-		}
-		new_var->key = ft_strdup(&exec->gc, key);
-		if (!new_var->key)
-		{
-			perror("malloc");
-			return ;
-		}
-		new_var->equal = equal;
-		new_var->value = ft_strdup(&exec->gc, value);
-		if (!new_var->value && equal)
-		{
-			perror("malloc");
-			return ;
-		}
-		if (equal)
-			new_var->all = ft_strjoin(ft_strjoin(new_var->key, "=", &exec->gc),
-					new_var->value, &exec->gc);
-		else
-			new_var->all = ft_strdup(&exec->gc, new_var->key);
-		new_var->next = NULL;
-		if (!exec->env_list)
-		{
-			new_var->prev = NULL;
-			exec->env_list = new_var;
-		}
-		else
-		{
-			last = exec->env_list;
-			while (last->next)
-				last = last->next;
-			last->next = new_var;
-			new_var->prev = last;
-		}
-	}
-}
-
 void	update_pwd_vars(t_exec *exec, const char *old_pwd)
 {
 	char	*cwd;
@@ -93,8 +33,8 @@ void	update_pwd_vars(t_exec *exec, const char *old_pwd)
 		return ;
 	}
 	if (old_pwd)
-		update_env_var(exec, "OLDPWD", old_pwd, true);
-	update_env_var(exec, "PWD", cwd, true);
+		add_or_update_env_var(&exec->gc, &exec->env_list, "OLDPWD", old_pwd);
+	add_or_update_env_var(&exec->gc, &exec->env_list, "PWD", cwd);
 	exec->exit_status = 0;
 }
 
@@ -183,20 +123,24 @@ int	ft_cd(t_exec *exec, t_cmd_node *cmd)
 	t_env_var *pwd_var;
 	char *expanded_path;
 	const char *path;
-	const char *arg = cmd ? cmd->arr[1] : NULL;
+	const char *arg;
 
-	// Check for multiple arguments
+	arg = NULL;
+	if (cmd) 
+		arg = cmd->arr[1];
+	//in case i have multiple args
 	if (cmd && cmd->arr[2] != NULL)
 	{
 		ft_putstr_fd("bash: cd: too many arguments\n", 2);
 		exec->exit_status = 1;
 		return 1;
 	}
-
 	pwd_var = get_env_var(exec, "PWD");
-	old_pwd = pwd_var ? pwd_var->value : "";
-
-	// Handle special cases
+	if (pwd_var)
+		old_pwd = pwd_var->value;
+	else
+		old_pwd = "";
+	//extremely special cases
 	if (!arg || ft_strcmp(arg, "~") == 0 || ft_strcmp(arg, "--") == 0)
 		path = get_home_path(exec);
 	else if (ft_strncmp(arg, "~/", 2) == 0)
@@ -208,13 +152,9 @@ int	ft_cd(t_exec *exec, t_cmd_node *cmd)
 		path = handle_oldpwd(exec);
 	else
 		path = arg;
-
 	if (!path)
 		return 1;
-
 	if (change_dir(path, exec) == 0)
 		update_pwd_vars(exec, old_pwd);
-
 	return exec->exit_status;
 }
-

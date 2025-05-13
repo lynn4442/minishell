@@ -1,6 +1,11 @@
 //NB: THIS SHOULD WORK --> env -i ./minishell
 
 
+"e"'c'"ho" "'test'"
+'test'
+"e"'c'"h"'"o"' test
+command not found
+
 
 //things that are currently not working
 echo "test" | grep "t" > grep1.txt > grep2.txt
@@ -155,3 +160,62 @@ ls -la > ls.txt | grep "txt" > grep.txt | sort -r > sort.txt
 cat < nonexistent.txt > output.txt
 
 echo "test" > /root/forbidden.txt
+
+cat<<a>z | grep hello<z
+ cat << '$USER' > out
+ CTRL C in heredoc
+ CTRL C in multiple minishells
+ change PWD in env
+ cat CTRL C exit code and general CTRL C exit code
+ CTRL + C with old value
+ cat < file1 | echo "hello world | file1 > file 2" > file2
+ "cat"
+ "<"
+ "file1"
+ "|"
+ "echo"
+ "hello world | file1 > file 2"
+ ">"
+ "file2"
+ Basic Pipe Commands
+ ls | wc
+ echo hello | cat
+ ps aux | grep bash
+ who | wc -l
+ cat /etc/passwd | grep root
+ Pipes with Multiple Commands
+ ls -l | grep '^d' | wc -l
+ cat file1 | sort | uniq | wc -l
+ ps aux | grep httpd | awk '{print $2}'
+ find . -type f | xargs wc -l | sort -n
+ ls -la | grep '^-' | sort -k 5 -n
+ Pipes with Redirection
+ cat file1.txt | grep 'pattern' > output.txt
+ ls | tee file1.txt | wc -l
+ echo "data" | tee file1.txt file2.txt | cat -n
+ cat < input.txt | grep 'pattern' | sort > output.txt
+ grep "error" < file1.txt | sort | uniq > output.txt ********
+ Pipes with Quotes and Special Characters
+ echo "hello | world" | cat
+ echo 'single | quotes' | cat
+ echo "|start and end|" | cat
+ echo 'ls | wc' | bash
+ echo 'ps aux | grep "httpd"' | sh
+ Complex Commands with Pipes, Redirection, and Quotes
+ cat file1 < file2 | grep 'pattern' > output.txt
+ echo "pattern" | grep "pattern" | tee file.txt
+ ls -la | grep '^d' | sort | uniq | wc -l
+ cat file1.txt file2.txt | grep -v '^#' | sort | uniq > output.txt
+ echo "content" | cat > file1.txt | wc -l
+Edge Cases
+ cat file1 < file2 < file3 > file4 | grep "pattern" > file5
+ cat <file1 | grep "pattern" | sort | uniq | wc -l
+ echo "start" | tee >(grep "pattern" > file1.txt) >(sort > file2.txt)
+ find . -type f -name "*.c" | xargs grep -H "main" | sort > results.txt
+ cat <(ls | grep "^a") <(ls | grep "^b")
+ Commands Mixing Pipes with Errors
+ ls non_existing_file | wc -l
+ grep "pattern" | sort | non_existing_command
+ cat < non_existing_file | wc -l
+ echo "hello" | non_existing_command
+ non_existing_command | grep "pattern"

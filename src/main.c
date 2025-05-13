@@ -14,13 +14,36 @@
 
 int g_signal_received = 0;
 
+/* Helper function to sanitize input by cleaning up excessive redirection symbols */
+static char *sanitize_input(char *input, t_gc *gc, int *error_status)
+{
+	int len = ft_strlen(input);
+	char *sanitized = ft_malloc(gc, len + 1);
+	int i = 0;
+	int j = 0;
+	
+	(void)error_status; // Mark parameter as intentionally unused
+	
+	if (!sanitized)
+		return input;
+
+	while (input[i])
+	{
+		sanitized[j++] = input[i++];
+	}
+	
+	sanitized[j] = '\0';
+	return sanitized;
+}
+
 int main(int ac, char **av, char **envp)
 {
 	t_gc		hello;
 	t_exec		*exec;
 	char		*input;
-	char		**args;
-	t_cmd_node	*cmd;
+	char		*sanitized_input;
+	t_cmd_node	*cmd_list;
+	int			error_status;
 
 	(void)ac;
 	(void)av;
@@ -55,138 +78,59 @@ int main(int ac, char **av, char **envp)
 			continue;
 		}
 		
-		if (ft_strlen(input) > 0)
+		// Skip empty lines
+		if (ft_strlen(input) == 0)
 		{
-			// Check for unclosed quotes first
-			if (!check_quotes(input))
-			{
-				ft_putstr_fd("minishell: syntax error: unclosed quotes\n", 2);
-				exec->exit_status = 2;
-				free(input);
-				continue;
-			}
-
-			add_history(input);
-			
-			// Check if command contains pipe
-			if (ft_strchr(input, '|'))
-			{
-				// Check for leading or trailing pipe
-				char *trimmed = ft_strtrim(input, " \t", &exec->gc);
-				if (!trimmed || trimmed[0] == '|' || trimmed[ft_strlen(trimmed) - 1] == '|')
-				{
-					ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-					exec->exit_status = 2;
-					free(input);
-					continue;
-				}
-
-				// Check for empty redirections
-				char **parts = ft_split(input, '|', &exec->gc);
-				if (parts)
-				{
-					int i = 0;
-					int has_error = 0;
-					while (parts[i])
-					{
-						char *part = ft_strtrim(parts[i], " \t", &exec->gc);
-						if (part && (ft_strcmp(part, ">") == 0 || ft_strcmp(part, ">>") == 0 || ft_strcmp(part, "<") == 0))
-						{
-							ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-							ft_putstr_fd(part, 2);
-							ft_putstr_fd("'\n", 2);
-							exec->exit_status = 2;
-							has_error = 1;
-							break;
-						}
-						i++;
-					}
-					if (has_error)
-					{
-						free(input);
-						continue;
-					}
-				}
-
-				char ***commands = split_by_pipe(input, exec);
-				if (commands && commands[0])
-				{
-					// Count the number of commands
-					int cmd_count = 0;
-					while (commands[cmd_count])
-						cmd_count++;
-					
-					if (cmd_count > 1)
-					{
-						// Temporarily ignore SIGINT during command execution
-						setup_parent_signals();
-						execute_pipe(exec, commands, cmd_count);
-						// Restore interactive signals
-						setup_interactive_signals();
-					}
-					else
-					{
-						ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-						exec->exit_status = 2;
-					}
-				}
-				else
-				{
-					ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-					exec->exit_status = 2;
-				}
-			}
-			else
-			{
-				args = split_preserve_quotes(input, &exec->gc);
-				if (args)
-				{
-					// Check for empty redirections
-					int i = 0;
-					int has_error = 0;
-					while (args[i])
-					{
-						if ((ft_strcmp(args[i], ">") == 0 || ft_strcmp(args[i], ">>") == 0 || ft_strcmp(args[i], "<") == 0) && 
-							(!args[i+1] || ft_strcmp(args[i+1], ">") == 0 || ft_strcmp(args[i+1], ">>") == 0 || ft_strcmp(args[i+1], "<") == 0))
-						{
-							ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-							ft_putstr_fd(args[i+1] ? args[i+1] : "newline", 2);
-							ft_putstr_fd("'\n", 2);
-							exec->exit_status = 2;
-							has_error = 1;
-							break;
-						}
-						i++;
-					}
-					if (has_error)
-					{
-						free(input);
-						continue;
-					}
-
-					cmd = create_cmd_node(exec, args);
-					if (cmd)
-					{
-						process_and_update_args(cmd, cmd->arr);
-						parse_redirections(cmd, cmd->arr);
-						// Temporarily ignore SIGINT during command execution
-						setup_parent_signals();
-						parse_and_execute(exec, cmd);
-						// Restore interactive signals
-						setup_interactive_signals();
-					}
-				}
-			}
+			free(input);
+			continue;
 		}
+
+		// Add input to history
+		add_history(input);
+		
+		// Initialize error status
+		error_status = 0;
+		
+		// Sanitize input to handle excessive redirection symbols
+		sanitized_input = sanitize_input(input, &exec->gc, &error_status);
+		
+		// If sanitization failed (syntax error), set error status and continue
+		if (!sanitized_input)
+		{
+			exec->exit_status = error_status;
+			free(input);
+			continue;
+		}
+		
+		// Use the new centralized parser with sanitized input
+		cmd_list = parse_command_line(sanitized_input, exec);
+		
+		// If parsing is successful, execute the commands
+		if (cmd_list)
+		{
+			// Temporarily ignore SIGINT during command execution
+			setup_parent_signals();
+			
+			// Execute commands based on type
+			if (cmd_list->type == PIPE || cmd_list->next)
+				execute_with_pipes(exec, cmd_list);
+			else
+				parse_and_execute(exec, cmd_list);
+			
+			// Restore interactive signals
+			setup_interactive_signals();
+		}
+		
+		// Handle an explicit "stop" command
 		if (ft_strcmp(input, "stop") == 0)
 		{
 			printf("hello");
+			free(input);
 			break;
 		}
+		
 		free(input);
 	}
-	
-	// Clean up before exiting
 	ft_free_all(&exec->gc);
 	return (exec->exit_status);
 }

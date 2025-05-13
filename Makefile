@@ -5,7 +5,7 @@ CFLAGS	= -Wall -Wextra -Werror
 # Directories
 SRC_DIR = src
 OBJ_DIR = obj
-INCLUDES = -I headers -I libft
+INCLUDES = -I headers -I libft -g
 
 ## Libraries
 LIBFT   = libft/libft.a

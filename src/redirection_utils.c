@@ -33,37 +33,25 @@ int handle_output_redirection(t_cmd_node *cmd)
     return fd;
 }
 
+/* Process command arguments and extract redirection operators */
 void process_and_update_args(t_cmd_node *cmd, char **args)
 {
     int i = 0;
     int j = 0;
     char **new_args;
     int arg_count = 0;
-    char *last_out = NULL;
-    int last_append = 0;
 
-    // First pass: count arguments and find the last output redirection
+    // First, we're just counting the number of non-redirection arguments
+    // This assumes parse_redirections has already processed the 
+    // redirection tokens and set cmd->in and cmd->out accordingly
     while (args[i])
     {
         if ((ft_strcmp(args[i], ">") == 0 || 
              ft_strcmp(args[i], ">>") == 0 ||
-             ft_strcmp(args[i], "<") == 0) && args[i + 1])
+             ft_strcmp(args[i], "<") == 0 ||
+             ft_strcmp(args[i], "<<") == 0) && args[i + 1])
         {
-            if (ft_strcmp(args[i], ">") == 0)
-            {
-                // Remember the last output file
-                last_out = args[i + 1];
-                last_append = 0;
-            }
-            else if (ft_strcmp(args[i], ">>") == 0)
-            {
-                // Remember the last output file
-                last_out = args[i + 1];
-                last_append = 1;
-            }
-            else if (ft_strcmp(args[i], "<") == 0)
-                cmd->in = args[i + 1];
-            i += 2;
+            i += 2; // Skip redirection operator and its target
         }
         else
         {
@@ -71,10 +59,6 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
             i++;
         }
     }
-    
-    // Set the last output file
-    cmd->out = last_out;
-    cmd->append = last_append;
     
     // Second pass: create new args array without redirections
     new_args = ft_malloc(&cmd->exec->gc, sizeof(char *) * (arg_count + 1));
@@ -86,7 +70,8 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
     {
         if ((ft_strcmp(args[i], ">") == 0 || 
              ft_strcmp(args[i], ">>") == 0 ||
-             ft_strcmp(args[i], "<") == 0) && args[i + 1])
+             ft_strcmp(args[i], "<") == 0 ||
+             ft_strcmp(args[i], "<<") == 0) && args[i + 1])
         {
             i += 2;
             continue;
@@ -94,9 +79,12 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
         new_args[j++] = ft_strdup(&cmd->exec->gc, args[i++]);
     }
     new_args[j] = NULL;
+    
+    // Update the command arguments to exclude redirection tokens
     cmd->arr = new_args;
 }
 
+/* Setup output redirection and save original stdout */
 int setup_output_redirection(t_cmd_node *cmd, int *original_fd)
 {
     int fd;
@@ -132,6 +120,7 @@ int setup_output_redirection(t_cmd_node *cmd, int *original_fd)
     return fd;
 }
 
+/* Restore stdout to its original state */
 int restore_output_redirection(int original_fd)
 {
     if (original_fd != -1)
@@ -147,6 +136,7 @@ int restore_output_redirection(int original_fd)
     return 0;
 }
 
+/* Setup input redirection and save original stdin */
 int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
 {
     int fd;
@@ -154,12 +144,17 @@ int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
     if (!cmd->in)
         return 0;
 
+    // Try to open the input file
     fd = open(cmd->in, O_RDONLY);
     if (fd == -1)
     {
-        perror("minishell");
+        // Just print the error but don't fail unless we need it
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd->in, 2);
+        ft_putstr_fd(": No such file or directory\n", 2);
         return -1;
     }
+    
     *original_fd = dup(STDIN_FILENO);
     if (*original_fd == -1)
     {
@@ -177,6 +172,8 @@ int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
     close(fd);
     return fd;
 }
+
+/* Restore stdin to its original state */
 int restore_input_redirection(int original_fd)
 {
     if (original_fd != -1)

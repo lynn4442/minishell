@@ -12,6 +12,26 @@
 
 #include "../minishell.h"
 
+/* Helper function to get the shell level from environment */
+int get_shell_level(t_exec *exec)
+{
+	int shlvl = 1;  // Default value
+	t_env_var *current = exec->env_list;
+	
+	while (current)
+	{
+		if (ft_strcmp(current->key, "SHLVL") == 0)
+		{
+			if (current->value && ft_strlen(current->value) > 0)
+				shlvl = ft_atoi(current->value);
+			break;
+		}
+		current = current->next;
+	}
+	
+	return shlvl;
+}
+
 char *get_env_value(t_env_var *env_list, char *var_name)
 {
 	t_env_var *current;
@@ -86,7 +106,13 @@ char **get_path_from_env(t_exec *exec)
 	while (current)
 	{
 		if (ft_strcmp(current->key, "PATH") == 0)
-			return (ft_split(current->value, ':', &exec->gc));
+		{
+			// Check if PATH has a non-NULL and non-empty value
+			if (current->value && ft_strlen(current->value) > 0)
+				return (ft_split(current->value, ':', &exec->gc));
+			else
+				return (NULL); // Return NULL if PATH exists but has no value
+		}
 		current = current->next;
 	}
 	return (NULL);
@@ -152,6 +178,7 @@ char **convert_env_to_array(t_exec *exec, t_gc *gc)
 	int count;
 	char **env_array;
 	int i;
+	char *temp;
 
 	// Count environment variables
 	count = 0;
@@ -175,8 +202,16 @@ char **convert_env_to_array(t_exec *exec, t_gc *gc)
 	{
 		if (current->value)
 		{
-			env_array[i] = current->all;
-			i++;
+			// Create a fresh KEY=VALUE string for each environment variable
+			temp = ft_malloc(gc, ft_strlen(current->key) + ft_strlen(current->value) + 2);
+			if (temp)
+			{
+				ft_strcpy(temp, current->key);
+				ft_strlcat(temp, "=", ft_strlen(current->key) + 2);
+				ft_strlcat(temp, current->value, ft_strlen(current->key) + ft_strlen(current->value) + 2);
+				env_array[i] = temp;
+				i++;
+			}
 		}
 		current = current->next;
 	}

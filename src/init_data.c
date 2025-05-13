@@ -28,26 +28,28 @@ t_env_var	*create_env_var(t_exec *exec, char *name, char *value)
 	return (env);
 }
 
+/* Create a command node with memory allocation optimizations */
 t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
 {
 	t_cmd_node	*cmd;
 	int			count;
 	int			i;
 
-	cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
-	i = 0;
+	if (!exec || !args)
+		return (NULL);
+
+	// Count the number of arguments
 	count = 0;
+	while (args[count])
+		count++;
+
+	// Allocate command node
+	cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
 	if (!cmd)
 		return (NULL);
-	while (args && args[count])
-		count++;
+
+	// Initialize all fields to safe defaults
 	cmd->arr = ft_malloc(&exec->gc, (count + 1) * sizeof(char *));
-	while (i < count)
-	{
-		cmd->arr[i] = ft_strdup(&exec->gc, args[i]);
-		i++;
-	}
-	cmd->arr[count] = NULL;
 	cmd->in = NULL;
 	cmd->out = NULL;
 	cmd->type = SMP_CMD;
@@ -57,11 +59,28 @@ t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
 	cmd->ex_heredoc = 0;
 	cmd->exec = exec;
 	cmd->next = NULL;
+
+	// Copy arguments
+	if (!cmd->arr)
+		return (NULL);
+	i = 0;
+	while (i < count)
+	{
+		cmd->arr[i] = ft_strdup(&exec->gc, args[i]);
+		if (!cmd->arr[i])
+			return (NULL);
+		i++;
+	}
+	cmd->arr[count] = NULL;
+
 	return (cmd);
 }
 
+/* Initialize the exec structure */
 void	init_exec(t_exec *exec)
 {
+	if (!exec)
+		return;
 	exec->cmd_list = NULL;
 	exec->env_list = NULL;
 	exec->exit_status = 0;

@@ -6,40 +6,36 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/13 13:36:45 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/14 01:07:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
 //find the path of a command
-char *find_command_path(t_exec *exec, const char *cmd)
+static char	*is_path_absolute(t_exec *exec, const char *expanded_cmd)
 {
-	char **path_dirs;
-	char *full_path;
-	char *temp_path;
-	int i;
-	char *expanded_cmd;
-
-	if (!cmd)
-		return (NULL);
-
-	//expand env var in command name
-	expanded_cmd = process_quotes(cmd, exec->env_list, exec);
-	if (!expanded_cmd)
-		return (NULL);
-	// check if the input is something like this /bin/ls (doesnt need to look in path)
 	if (ft_strchr(expanded_cmd, '/') || ft_strncmp(expanded_cmd, "./", 2) == 0)
 		return (ft_strdup(&exec->gc, expanded_cmd));
 	// not relative or absolute path we need to check in the PATH
-	path_dirs = get_path_from_env(exec);
-	if (!path_dirs) // in case PATH not set || empty --> only absolute com can run
-	{
-		full_path = ft_strjoin("./", expanded_cmd, &exec->gc);
-		if (full_path && access(full_path, F_OK) == 0) // F_OK to make sure that the file exist
-			return full_path;
-		return (NULL);
-	}
+	return (NULL);
+}
+
+static char	*try_local_path(t_exec *exec, const char *expanded_cmd)
+{
+	char	*full_path;
+
+	full_path = ft_strjoin("./", expanded_cmd, &exec->gc);
+	if (full_path && access(full_path, F_OK) == 0) // F_OK to make sure that the file exist
+		return full_path;
+	return (NULL);
+}
+
+static char	*hunt_in_path_dirs(t_exec *exec, const char *expanded_cmd, char **path_dirs)
+{
+	char	*full_path;
+	char	*temp_path;
+	int		i;
+
 	i = 0;
 	while (path_dirs[i]) // go over each part in the PATH
 	{
@@ -69,11 +65,44 @@ char *find_command_path(t_exec *exec, const char *cmd)
 	return (NULL);
 }
 
+static char	*cmd_search_prequel(t_exec *exec, const char *cmd)
+{
+	char	*expanded_cmd;
+	char	*direct_path;
+
+	if (!cmd)
+		return (NULL);
+	//expand env var in command name
+	expanded_cmd = process_quotes(cmd, exec->env_list, exec);
+	if (!expanded_cmd)
+		return (NULL);
+	direct_path = is_path_absolute(exec, expanded_cmd);
+	if (direct_path)
+		return (direct_path);
+	return (expanded_cmd);
+}
+
+char	*find_command_path(t_exec *exec, const char *cmd)
+{
+	char	**path_dirs;
+	char	*expanded_cmd;
+
+	expanded_cmd = cmd_search_prequel(exec, cmd);
+	if (!expanded_cmd || ft_strchr(expanded_cmd, '/'))
+		return (expanded_cmd);
+	
+	path_dirs = get_path_from_env(exec);
+	// in case PATH not set || empty --> only absolute com can run
+	if (!path_dirs) 
+		return (try_local_path(exec, expanded_cmd));
+	return (hunt_in_path_dirs(exec, expanded_cmd, path_dirs));
+}
+
 // error handling
-static void handle_command_error(t_exec *exec, const char *cmd, int error_type)
+static void	report_cmd_failure(t_exec *exec, const char *cmd, int error_type)
 {
 	if (!cmd)
-		return;
+		return ;
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd, 2);
 	if (error_type == 1)
@@ -99,28 +128,24 @@ static void handle_command_error(t_exec *exec, const char *cmd, int error_type)
 }
 
 // parsing and executing
-void parse_and_execute(t_exec *exec, t_cmd_node *cmd)
+void	parse_and_execute(t_exec *exec, t_cmd_node *cmd)
 {
 	if (!exec || !cmd || !cmd->arr || !cmd->arr[0])
 	{
 		ft_putstr_fd("minishell: Error: Invalid command node\n", 2);
 		exec->exit_status = 1;
-		return;
+		return ;
 	}
-
-	// Use the generalized execution system for all commands
-	execute_command_generic(exec, cmd);
+	execute_command_supreme(exec, cmd);
 }
 
-/* Restore standard I/O */
-static void restore_redirections(int original_in, int original_out)
+static void	restore_og_redirections(int original_in, int original_out)
 {
 	if (original_in != -1)
 	{
 		dup2(original_in, STDIN_FILENO);
 		close(original_in);
 	}
-	
 	if (original_out != -1)
 	{
 		dup2(original_out, STDOUT_FILENO);
@@ -128,107 +153,161 @@ static void restore_redirections(int original_in, int original_out)
 	}
 }
 
-/* Setup standard I/O redirections */
-static int setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out)
+static int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 {
-	// Save original file descriptors
+	int	fd;
+	
+	(void)original_in; // Silence unused parameter warning
+	
+	if (!cmd->in)
+		return (0);
+		
+	fd = open(cmd->in, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->in, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		cmd->exec->exit_status = 1;
+		return (-1);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+	return (0);
+}
+
+static int	setup_output_redirection_local(t_cmd_node *cmd, int *original_out)
+{
+	int	fd;
+	int	flags;
+	
+	(void)original_out; // Silence unused parameter warning
+	
+	if (!cmd->out)
+		return (0);
+		
+	flags = O_WRONLY | O_CREAT;
+	if (cmd->append)
+		flags = flags | O_APPEND;
+	else
+		flags = flags | O_TRUNC;
+	fd = open(cmd->out, flags, 0644);
+	if (fd == -1)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->out, 2);
+		ft_putstr_fd(": Error opening output file\n", 2);
+		cmd->exec->exit_status = 1;
+		return (-1);
+	}
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	return (0);
+}
+
+static int	setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out)
+{
 	*original_in = dup(STDIN_FILENO);
 	*original_out = dup(STDOUT_FILENO);
 	
-	// Handle input redirection
-	if (cmd->in)
+	if (setup_input_redirection_local(cmd, original_in) == -1)
 	{
-		int fd = open(cmd->in, O_RDONLY);
-		if (fd == -1)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd->in, 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
-			cmd->exec->exit_status = 1;
-			restore_redirections(*original_in, *original_out);
-			return (-1);
-		}
-		dup2(fd, STDIN_FILENO);
-		close(fd);
+		restore_og_redirections(*original_in, *original_out);
+		return (-1);
 	}
 	
-	// Handle output redirection
-	if (cmd->out)
+	if (setup_output_redirection_local(cmd, original_out) == -1)
 	{
-		int flags = O_WRONLY | O_CREAT;
-		flags |= cmd->append ? O_APPEND : O_TRUNC;
-		
-		int fd = open(cmd->out, flags, 0644);
-		if (fd == -1)
-		{
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd->out, 2);
-			ft_putstr_fd(": Error opening output file\n", 2);
-			cmd->exec->exit_status = 1;
-			restore_redirections(*original_in, *original_out);
-			return (-1);
-		}
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
+		restore_og_redirections(*original_in, *original_out);
+		return (-1);
 	}
 	
 	return (0);
 }
 
-/* Execute a builtin command */
-static int execute_builtin(t_exec *exec, t_cmd_node *cmd)
+static int	run_builtin_cmd(t_exec *exec, t_cmd_node *cmd)
 {
 	return (handle_builtin_command(exec, cmd));
 }
 
-/* Execute an external command */
-static int execute_external(t_exec *exec, t_cmd_node *cmd)
+static int	handle_lost_command(t_exec *exec, const char *expanded_cmd)
 {
-	char *cmd_path;
-	char **env_array;
-	pid_t pid;
-	int status;
-	char *expanded_cmd;
-
-	// Expand environment variables in command name
-	expanded_cmd = process_quotes(cmd->arr[0], exec->env_list, exec);
-	if (!expanded_cmd)
+	if (ft_strchr(expanded_cmd, '/'))
 	{
-		handle_command_error(exec, cmd->arr[0], 1);
-		return (1);
-	}
-
-	// Find command path
-	cmd_path = find_command_path(exec, expanded_cmd);
-	if (!cmd_path)
-	{
-		// Path not found, check if it's a direct executable
-		if (ft_strchr(expanded_cmd, '/'))
-		{
-			// It has a path but doesn't exist or can't be accessed
-			if (access(expanded_cmd, F_OK) != 0)
-				handle_command_error(exec, expanded_cmd, 3); // No such file or directory
-			else if (access(expanded_cmd, X_OK) != 0)
-				handle_command_error(exec, expanded_cmd, 2); // Permission denied
-			else
-				handle_command_error(exec, expanded_cmd, 0); // Generic error
-		}
+		// has path but doesn't exist || can't be accessed
+		if (access(expanded_cmd, F_OK) != 0)
+			report_cmd_failure(exec, expanded_cmd, 3);
+		else if (access(expanded_cmd, X_OK) != 0)
+			report_cmd_failure(exec, expanded_cmd, 2);
 		else
-		{
-			// Simple command that wasn't found in PATH
-			handle_command_error(exec, expanded_cmd, 1); // Command not found
-		}
-		return (1);
+			report_cmd_failure(exec, expanded_cmd, 0);
 	}
-
-	// Check command permissions - already checked in find_command_path
-	if (access(cmd_path, X_OK) != 0)
+	else
 	{
-		handle_command_error(exec, expanded_cmd, 2);
+		// command not found in PATH
+		report_cmd_failure(exec, expanded_cmd, 1);
+	}
+	return (1);
+}
+
+static void	launch_child_mission(t_cmd_node *cmd, 
+	char *cmd_path, char **env_array)
+{
+	// Child process
+	setup_child_signals();
+	execve(cmd_path, cmd->arr, env_array);
+	// If execve fails
+	ft_putstr_fd("minishell: ", 2);
+	perror(cmd->arr[0]);
+	exit(126);
+}
+
+static void	wait_for_child_return(t_exec *exec, pid_t pid)
+{
+	int	status;
+	
+	// Parent process
+	waitpid(pid, &status, 0);
+	// Update exit status
+	if (WIFEXITED(status))
+		exec->exit_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		exec->exit_status = 128 + WTERMSIG(status);
+}
+
+static int	prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd, 
+	char **expanded_cmd, char **cmd_path)
+{
+	*expanded_cmd = process_quotes(cmd->arr[0], exec->env_list, exec);
+	if (!*expanded_cmd)
+	{
+		report_cmd_failure(exec, cmd->arr[0], 1);
 		return (1);
 	}
+	
+	*cmd_path = find_command_path(exec, *expanded_cmd);
+	if (!*cmd_path)
+		return (handle_lost_command(exec, *expanded_cmd));
+	
+	if (access(*cmd_path, X_OK) != 0)
+	{
+		report_cmd_failure(exec, *expanded_cmd, 2);
+		return (1);
+	}
+	
+	return (0);
+}
 
-	// Convert environment list to array for execve
+static int	execute_external_quest(t_exec *exec, t_cmd_node *cmd)
+{
+	char	*cmd_path;
+	char	**env_array;
+	pid_t	pid;
+	char	*expanded_cmd;
+
+	if (prep_cmd_for_launch(exec, cmd, &expanded_cmd, &cmd_path))
+		return (1);
+	
 	env_array = convert_env_to_array(exec, &exec->gc);
 	if (!env_array)
 	{
@@ -236,8 +315,7 @@ static int execute_external(t_exec *exec, t_cmd_node *cmd)
 		exec->exit_status = 1;
 		return (1);
 	}
-
-	// Fork and execute command
+	
 	pid = fork();
 	if (pid == -1)
 	{
@@ -247,83 +325,46 @@ static int execute_external(t_exec *exec, t_cmd_node *cmd)
 	}
 	
 	if (pid == 0)
-	{
-		// Child process
-		setup_child_signals();
-		
-		execve(cmd_path, cmd->arr, env_array);
-		
-		// If execve fails
-		ft_putstr_fd("minishell: ", 2);
-		perror(expanded_cmd);
-		exit(126);
-	}
+		launch_child_mission(cmd, cmd_path, env_array);
 	else
-	{
-		// Parent process
-		waitpid(pid, &status, 0);
+		wait_for_child_return(exec, pid);
 		
-		// Update exit status
-		if (WIFEXITED(status))
-			exec->exit_status = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			exec->exit_status = 128 + WTERMSIG(status);
-	}
-	
 	return (0);
 }
 
-/* Generalized command execution that handles all command types */
-void execute_command_generic(t_exec *exec, t_cmd_node *cmd)
+void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 {
-	int original_in = -1;
-	int original_out = -1;
-	int is_builtin;
+	int	original_in;
+	int	original_out;
+	int	is_builtin;
 
+	original_in = -1;
+	original_out = -1;
 	if (!exec || !cmd || !cmd->arr || !cmd->arr[0])
-		return;
-
-	// Check if command is a builtin
+		return ;
 	is_builtin = is_builtin_command(cmd->arr[0]);
-
-	// Handle piped commands separately
 	if (cmd->type == PIPE)
 	{
 		execute_with_pipes(exec, exec->cmd_list);
-		return;
+		return ;
 	}
-
-	// Handle builtins without redirection directly for efficiency
 	if (is_builtin && !cmd->in && !cmd->out)
 	{
-		execute_builtin(exec, cmd);
-		return;
+		run_builtin_cmd(exec, cmd);
+		return ;
 	}
-	
-	// For builtins with redirections, or external commands
-	// Setup redirections
 	if (setup_redirections(cmd, &original_in, &original_out) == -1)
-		return;
-	
-	// Execute command based on type
+		return ;
 	if (is_builtin)
-	{
-		execute_builtin(exec, cmd);
-	}
+		run_builtin_cmd(exec, cmd);
 	else
-	{
-		execute_external(exec, cmd);
-	}
-	
-	// Restore original redirections
-	restore_redirections(original_in, original_out);
+		execute_external_quest(exec, cmd);
+	restore_og_redirections(original_in, original_out);
 }
 
-/* Execute a command with the generalized executor */
-void execute_command(t_cmd_node *cmd)
+void	command_mission_control(t_cmd_node *cmd)
 {
-	// This function now wraps the more general executor
 	if (!cmd || !cmd->exec)
-		return;
-	execute_command_generic(cmd->exec, cmd);
+		return ;
+	execute_command_supreme(cmd->exec, cmd);
 }

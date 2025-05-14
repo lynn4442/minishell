@@ -119,7 +119,7 @@ void		init_exec(t_exec *exec);
 void		add_env_var(t_exec *exec, char *name, char *value);
 
 //echo
-void		print_arg(char *arg, t_env_var *env, t_exec *exec);
+void		print_single_arg(char *arg, t_env_var *env, t_exec *exec);
 int			handle_output_redirection(t_cmd_node *cmd);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
@@ -215,6 +215,9 @@ t_cmd_node *parse_command_line(char *input, t_exec *exec);
 t_cmd_node *parse_input(char *input, t_exec *exec);
 t_cmd_node *parse_piped_commands(char *input, t_exec *exec);
 int check_syntax(t_cmd_node *cmd_list, t_exec *exec);
+
+void		command_mission_control(t_cmd_node *cmd);
+void        execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
 
 #endif
 

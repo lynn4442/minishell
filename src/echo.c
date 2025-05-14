@@ -12,8 +12,7 @@
 
 #include "../minishell.h"
 
-/* Print a single argument with quote handling */
-void print_arg(char *arg, t_env_var *env, t_exec *exec)
+void print_single_arg(char *arg, t_env_var *env, t_exec *exec)
 {
 	if (!arg)
 		return;
@@ -92,7 +91,7 @@ void ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 	{
 		if (!first_arg)
 			printf(" ");
-		print_arg(cmd->arr[i], env, exec);
+		print_single_arg(cmd->arr[i], env, exec);
 		first_arg = 0;
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/06 23:29:27 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/14 01:01:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -308,7 +308,7 @@ void execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
     // If only one command, use the standard execution
     if (cmd_count == 1)
     {
-        execute_command_generic(exec, cmd_list);
+        execute_command_supreme(exec, cmd_list);
         return;
     }
     

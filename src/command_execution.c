@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 09:46:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/14 01:07:30 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/17 16:36:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static char	*is_path_absolute(t_exec *exec, const char *expanded_cmd)
 {
 	if (ft_strchr(expanded_cmd, '/') || ft_strncmp(expanded_cmd, "./", 2) == 0)
 		return (ft_strdup(&exec->gc, expanded_cmd));
-	// not relative or absolute path we need to check in the PATH
 	return (NULL);
 }
 

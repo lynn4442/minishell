@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/06 15:42:42 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/17 15:29:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,3 +259,10 @@ void	print_with_quote_handling(const char *str, t_env_var *env, t_exec *exec)
 	if (processed)
 		printf("%s", processed);
 }
+
+
+typedef struct s_cmd_map
+{
+	const char	*cmd_name;
+	int			(*run_cmd)(t_exec *, t_cmd_node *);
+} t_cmd_map;

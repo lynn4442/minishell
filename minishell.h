@@ -124,12 +124,12 @@ int			handle_output_redirection(t_cmd_node *cmd);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
 
 //cd
-int			change_dir(const char *path, t_exec *exec);
-void		update_pwd_vars(t_exec *exec, const char *old_pwd);
-char		*get_home_path(t_exec *exec);
-char		*expand_home_path(t_exec *exec, const char *arg);
-char		*handle_oldpwd(t_exec *exec);
-int			ft_cd(t_exec *exec, t_cmd_node *cmd);
+int		ft_cd(t_exec *exec, t_cmd_node *cmd);
+int		cd_change_directory(const char *path, t_exec *exec);
+void	cd_update_pwd_vars(t_exec *exec, const char *old_pwd);
+char	*cd_get_home_path(t_exec *exec);
+char	*cd_expand_home_path(t_exec *exec, const char *arg);
+char	*cd_get_oldpwd(t_exec *exec);
 
 //export
 int			ft_isspace(char c);
@@ -182,6 +182,9 @@ void		ft_free_all(t_gc *gc);
 //builtins
 int			handle_builtin_command(t_exec *exec, t_cmd_node *cmd);
 int			is_builtin_command(const char *cmd);
+int			handle_echo_cd_pwd(t_exec *exec, t_cmd_node *cmd);
+int			handle_env_export_unset(t_exec *exec, t_cmd_node *cmd);
+int			handle_exit(t_exec *exec, t_cmd_node *cmd);
 
 //pipes related
 int		has_pipe(t_cmd_node *cmd);

@@ -12,9 +12,11 @@
 
 #include "../minishell.h"
 
-int is_numeric(const char *str)
+int	is_numeric(const char *str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	if (str[i] == '-' || str[i] == '+')
 		i++;
 	while (str[i])
@@ -26,21 +28,27 @@ int is_numeric(const char *str)
 	return (1);
 }
 
-void ft_exit(char **args, int last_exit_status, t_exec *exec)
+/**
+ * Handles the shell's exit command
+ * @param args Command arguments array
+ * @param last_exit_status Previous command's exit status
+ * @param exec Execution context structure
+ */
+void	ft_exit(char **args, int last_exit_status, t_exec *exec)
 {
+	int	exit_code;
+
 	(void)last_exit_status;
 	printf("exit\n");
-	
 	if (!args[1])
 		cleanup_and_exit(exec, 0);
-	
 	if (is_numeric(args[1]))
 	{
 		if (args[2])
 		{
 			printf("exit: too many arguments\n");
 			exec->exit_status = 1;
-			return;
+			return ;
 		}
 		cleanup_and_exit(exec, ft_atoi(args[1]) % 256);
 	}

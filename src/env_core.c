@@ -1,0 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_core.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/10 19:55:04 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/05/04 17:30:00 by marvin           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minishell.h"
+
+static void	parse_and_add_env_var(t_exec *exec, char *env_var)
+{
+	char	*equal_sign;
+
+	equal_sign = ft_strchr(env_var, '=');
+	if (equal_sign)
+		handle_export(&exec->gc, &exec->env_list, env_var);
+}
+
+void	init_env(t_exec *exec, char **envp)
+{
+	int	i;
+
+	if (!exec || !envp)
+		return ;
+	i = 0;
+	while (envp[i])
+		parse_and_add_env_var(exec, envp[i++]);
+}
+
+void	ft_env(t_exec *exec, char **args)
+{
+	t_env_var	*current;
+
+	if (!exec || !exec->env_list)
+		return ;
+	if (args && args[1])
+	{
+		printf("env: '%s': 2No such file or directory\n", args[1]);
+		exec->exit_status = 1;
+		return ;
+	}
+	current = exec->env_list;
+	while (current)
+	{
+		if (current->value)
+			printf("%s=%s\n", current->key, current->value);
+		current = current->next;
+	}
+	exec->exit_status = 0;
+}

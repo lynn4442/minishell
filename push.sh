@@ -10,5 +10,5 @@ make fclean
 git add .
 git commit -m "$1"
 git push
-clear
+#clear
 echo "✅ Changes pushed successfully!"

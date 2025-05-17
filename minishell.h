@@ -191,6 +191,9 @@ int		has_pipe(t_cmd_node *cmd);
 void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list);
 void	execute_pipe(t_exec *exec, char ***commands, int cmd_count);
 char	***split_by_pipe(char *input, t_exec *exec);
+char	*build_command_path(t_exec *exec, const char *dir, const char *cmd);
+char	*check_command_access(const char *full_path);
+char	*hunt_in_path_dirs(t_exec *exec, const char *expanded_cmd, char **path_dirs);
 char    *find_command_path(t_exec *exec, const char *cmd);
 char    **split_preserve_quotes(const char *input, t_gc *gc);
 
@@ -221,6 +224,29 @@ int check_syntax(t_cmd_node *cmd_list, t_exec *exec);
 
 void		command_mission_control(t_cmd_node *cmd);
 void        execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
+
+// Path handling functions
+char	*is_path_absolute(t_exec *exec, const char *expanded_cmd);
+char	*try_local_path(t_exec *exec, const char *expanded_cmd);
+char	*cmd_search_prequel(t_exec *exec, const char *cmd);
+
+// Command preparation functions
+void	report_cmd_failure(t_exec *exec, const char *cmd, int error_type);
+int		handle_lost_command(t_exec *exec, const char *expanded_cmd);
+int		prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd, char **expanded_cmd, char **cmd_path);
+
+// Redirection handling functions
+void	restore_og_redirections(int original_in, int original_out);
+int		setup_input_redirection_local(t_cmd_node *cmd, int *original_in);
+int		setup_output_redirection_local(t_cmd_node *cmd, int *original_out);
+int		setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out);
+
+// Command execution functions
+void	launch_child_mission(t_cmd_node *cmd, char *cmd_path, char **env_array);
+void	wait_for_child_return(t_exec *exec, pid_t pid);
+int		execute_external_quest(t_exec *exec, t_cmd_node *cmd);
+void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
+void	command_mission_control(t_cmd_node *cmd);
 
 #endif
 

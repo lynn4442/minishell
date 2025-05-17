@@ -344,7 +344,6 @@ static t_token *get_next_token(t_lexer *lexer, t_gc *gc)
 	}
 }
 
-/* Sanitize input by normalizing multiple consecutive redirection symbols */
 static char *sanitize_input(char *input, t_gc *gc)
 {
 	int len = ft_strlen(input);

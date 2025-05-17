@@ -22,7 +22,7 @@ static char *sanitize_input(char *input, t_gc *gc, int *error_status)
 	int i = 0;
 	int j = 0;
 	
-	(void)error_status; // Mark parameter as intentionally unused
+	(void)error_status;
 	
 	if (!sanitized)
 		return input;

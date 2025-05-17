@@ -122,6 +122,10 @@ void		add_env_var(t_exec *exec, char *name, char *value);
 void		print_single_arg(char *arg, t_env_var *env, t_exec *exec);
 int			handle_output_redirection(t_cmd_node *cmd);
 void		ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec);
+int			handle_echo_redirection(t_cmd_node *cmd, int *original_stdout, t_exec *exec);
+int			parse_echo_options(char **args, int *i);
+void		print_echo_args(char **args, int i, t_env_var *env, t_exec *exec);
+int			restore_echo_output(int original_stdout, t_exec *exec);
 
 //cd
 int		ft_cd(t_exec *exec, t_cmd_node *cmd);
@@ -241,12 +245,23 @@ int		setup_input_redirection_local(t_cmd_node *cmd, int *original_in);
 int		setup_output_redirection_local(t_cmd_node *cmd, int *original_out);
 int		setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out);
 
-// Command execution functions
-void	launch_child_mission(t_cmd_node *cmd, char *cmd_path, char **env_array);
-void	wait_for_child_return(t_exec *exec, pid_t pid);
-int		execute_external_quest(t_exec *exec, t_cmd_node *cmd);
+// Child process handling functions
+void	execute_child_process(t_cmd_node *cmd, char *cmd_path, char **env_array);
+void	handle_child_exit_status(t_exec *exec, pid_t pid);
+int		prepare_process_environment(t_exec *exec, char ***env_array);
+int		create_and_execute_process(t_exec *exec, t_cmd_node *cmd, char *cmd_path, char **env_array);
+
+// Command dispatch functions
+int		execute_builtin_command(t_exec *exec, t_cmd_node *cmd);
+int		execute_external_command(t_exec *exec, t_cmd_node *cmd);
+int		handle_pipe_execution(t_exec *exec);
+int		handle_builtin_without_redirect(t_exec *exec, t_cmd_node *cmd);
+int		execute_command_with_redirect(t_exec *exec, t_cmd_node *cmd, int original_in, int original_out);
+
+// Core execution functions
 void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
 void	command_mission_control(t_cmd_node *cmd);
+void	parse_and_execute(t_exec *exec, t_cmd_node *cmd);
 
 #endif
 

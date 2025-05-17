@@ -74,4 +74,4 @@ int	prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd,
 		return (1);
 	}
 	return (0);
-} 
+}

@@ -9,6 +9,6 @@ make fclean
 
 git add .
 git commit -m "$1"
-git push
+git push --force
 #clear
 echo "✅ Changes pushed successfully!"

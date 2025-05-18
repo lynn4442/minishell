@@ -3,53 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   init_data.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 09:26:05 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/18 09:55:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_env_var	*create_env_var(t_exec *exec, char *name, char *value)
+int	count_args(char **args)
 {
-	t_env_var	*env;
+	int	count;
 
-	env = ft_malloc(&exec->gc, sizeof(t_env_var));
-	if (!env)
-		return (NULL);
-	env->key = ft_strdup(&exec->gc, name);
-	env->value = ft_strdup(&exec->gc, value);
-	if (!env->key || !env->value)
-		return (NULL);
-	env->next = NULL;
-	env->prev = NULL;
-	return (env);
-}
-
-/* Create a command node with memory allocation optimizations */
-t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
-{
-	t_cmd_node	*cmd;
-	int			count;
-	int			i;
-
-	if (!exec || !args)
-		return (NULL);
-
-	// Count the number of arguments
 	count = 0;
 	while (args[count])
 		count++;
+	return (count);
+}
 
-	// Allocate command node
-	cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
-	if (!cmd)
-		return (NULL);
-
-	// Initialize all fields to safe defaults
-	cmd->arr = ft_malloc(&exec->gc, (count + 1) * sizeof(char *));
+void	init_cmd_fields(t_cmd_node *cmd, t_exec *exec)
+{
 	cmd->in = NULL;
 	cmd->out = NULL;
 	cmd->type = SMP_CMD;
@@ -59,50 +33,50 @@ t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
 	cmd->ex_heredoc = 0;
 	cmd->exec = exec;
 	cmd->next = NULL;
+}
 
-	// Copy arguments
-	if (!cmd->arr)
-		return (NULL);
+int	copy_args(t_exec *exec, t_cmd_node *cmd, char **args, int count)
+{
+	int	i;
+
 	i = 0;
 	while (i < count)
 	{
 		cmd->arr[i] = ft_strdup(&exec->gc, args[i]);
 		if (!cmd->arr[i])
-			return (NULL);
+			return (0);
 		i++;
 	}
 	cmd->arr[count] = NULL;
+	return (1);
+}
 
+t_cmd_node	*create_cmd_node(t_exec *exec, char **args)
+{
+	t_cmd_node	*cmd;
+	int			count;
+
+	if (!exec || !args)
+		return (NULL);
+	count = count_args(args);
+	cmd = ft_malloc(&exec->gc, sizeof(t_cmd_node));
+	if (!cmd)
+		return (NULL);
+	cmd->arr = ft_malloc(&exec->gc, (count + 1) * sizeof(char *));
+	if (!cmd->arr)
+		return (NULL);
+	init_cmd_fields(cmd, exec);
+	if (!copy_args(exec, cmd, args, count))
+		return (NULL);
 	return (cmd);
 }
 
-/* Initialize the exec structure */
 void	init_exec(t_exec *exec)
 {
 	if (!exec)
-		return;
+		return ;
 	exec->cmd_list = NULL;
 	exec->env_list = NULL;
 	exec->exit_status = 0;
 	exec->gc.head = NULL;
-}
-
-void	add_env_var(t_exec *exec, char *name, char *value)
-{
-	t_env_var	*new_var;
-	t_env_var	*temp;
-
-	new_var = create_env_var(exec, name, value);
-	if (!new_var)
-		return ;
-	if (!exec->env_list)
-		exec->env_list = new_var;
-	else
-	{
-		temp = exec->env_list;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = new_var;
-		new_var->prev = temp;
-	}
 }

@@ -83,7 +83,8 @@ typedef enum e_type {
 //split aa ases li aam bekhdo bel env w asemo la 3 parts 1 the key
 //2 the boolean eza le2a = aw lae
 //3 the value li after the =
-typedef struct s_env_var {
+typedef struct s_env_var 
+{
 	char				*key;
 	bool 				equal;
 	char				*value;
@@ -92,7 +93,8 @@ typedef struct s_env_var {
 	struct s_env_var	*prev;
 } t_env_var;
 
-typedef struct s_cmd_node {
+typedef struct s_cmd_node 
+{
 	char				**arr;
 	char				*in;
 	char				*out;
@@ -105,7 +107,8 @@ typedef struct s_cmd_node {
 	struct s_cmd_node	*next;
 }	t_cmd_node;
 
-typedef struct s_exec{
+typedef struct s_exec
+{
 	t_cmd_node	*cmd_list;
 	t_env_var	*env_list;
 	int			exit_status;
@@ -262,6 +265,40 @@ int		execute_command_with_redirect(t_exec *exec, t_cmd_node *cmd, int original_i
 void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
 void	command_mission_control(t_cmd_node *cmd);
 void	parse_and_execute(t_exec *exec, t_cmd_node *cmd);
+
+/* env_var_utils.c */
+void		update_env_var(t_gc *gc, t_env_var *var, const char *value);
+t_env_var	*create_new_env_var(t_gc *gc, const char *name, const char *value);
+void		add_or_update_env_var(t_gc *gc, t_env_var **env_list, const char *name,
+				const char *value);
+t_env_var	*create_env_var(t_exec *exec, char *name, char *value);
+void		add_env_var(t_exec *exec, char *name, char *value);
+
+/* init_data.c */
+int			count_args(char **args);
+void		init_cmd_fields(t_cmd_node *cmd, t_exec *exec);
+int			copy_args(t_exec *exec, t_cmd_node *cmd, char **args, int count);
+t_cmd_node	*create_cmd_node(t_exec *exec, char **args);
+void		init_exec(t_exec *exec);
+
+/* export_display.c */
+void		swap_env_vars(t_env_var *a, t_env_var *b);
+void		sort_env_vars(t_env_var *head);
+void		print_env_var(t_env_var *var);
+int			check_env_list(t_env_var *env_list);
+void		ft_export(t_env_var *env_list);
+
+/* export_cmd.c */
+int			display_env_vars(t_exec *exec);
+int			process_export_arg(t_exec *exec, char *arg);
+int			process_export_args(t_cmd_node *node, t_exec *exec);
+int			execute_export(t_cmd_node *node, t_exec *exec);
+
+/* export.c */
+void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
+
+/* str_utils.c */
+int			ft_isspace(char c);
 
 #endif
 

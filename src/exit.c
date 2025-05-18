@@ -28,16 +28,8 @@ int	is_numeric(const char *str)
 	return (1);
 }
 
-/**
- * Handles the shell's exit command
- * @param args Command arguments array
- * @param last_exit_status Previous command's exit status
- * @param exec Execution context structure
- */
 void	ft_exit(char **args, int last_exit_status, t_exec *exec)
 {
-	int	exit_code;
-
 	(void)last_exit_status;
 	printf("exit\n");
 	if (!args[1])

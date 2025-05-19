@@ -40,7 +40,7 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 		ft_putstr_fd(cmd->in, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		cmd->exec->exit_status = 1;
-		return (-1);
+		return (0);
 	}
 	dup2(fd, STDIN_FILENO);
 	close(fd);

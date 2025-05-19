@@ -12,11 +12,13 @@
 
 #include "../minishell.h"
 
-int get_shell_level(t_exec *exec)
+int	get_shell_level(t_exec *exec)
 {
-	int shlvl = 1;
-	t_env_var *current = exec->env_list;
-	
+	int			shlvl;
+	t_env_var	*current;
+
+	shlvl = 1;
+	current = exec->env_list;
 	while (current)
 	{
 		if (ft_strcmp(current->key, "SHLVL") == 0)
@@ -50,7 +52,8 @@ void	update_shlvl(t_exec *exec)
 		current_level++;
 		new_value = ft_itoa(current_level, &exec->gc);
 		if (new_value)
-			add_or_update_env_var(&exec->gc, &exec->env_list, "SHLVL", new_value);
+			add_or_update_env_var(&exec->gc, &exec->env_list,
+				"SHLVL", new_value);
 	}
 	else
 		add_or_update_env_var(&exec->gc, &exec->env_list, "SHLVL", "1");

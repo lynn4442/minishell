@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/28 10:00:00 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/18 19:44:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_token {
 	t_token_type	type;
 	char			*value;
 	struct s_token	*next;
+	struct s_token	*prev;
 } t_token;
 
 /* Lexer context */
@@ -47,7 +48,7 @@ typedef struct s_parser {
 } t_parser;
 
 /* Initialize the lexer with the input string */
-static t_lexer *init_lexer(char *input, t_gc *gc)
+t_lexer *init_lexer(char *input, t_gc *gc)
 {
 	t_lexer *lexer;
 
@@ -62,13 +63,13 @@ static t_lexer *init_lexer(char *input, t_gc *gc)
 }
 
 /* Check if character is whitespace */
-static int is_whitespace(char c)
+int is_whitespace(char c)
 {
 	return (c == ' ' || c == '\t' || c == '\n' || c == '\r');
 }
 
 /* Skip whitespace in the input */
-static void skip_whitespace(t_lexer *lexer)
+void skip_whitespace(t_lexer *lexer)
 {
 	while (lexer->input[lexer->position] && 
 		   is_whitespace(lexer->input[lexer->position]))
@@ -76,7 +77,7 @@ static void skip_whitespace(t_lexer *lexer)
 }
 
 /* Create a new token */
-static t_token *create_token(t_token_type type, char *value, t_gc *gc)
+t_token *create_token(t_token_type type, char *value, t_gc *gc)
 {
 	t_token *token;
 
@@ -86,11 +87,12 @@ static t_token *create_token(t_token_type type, char *value, t_gc *gc)
 	token->type = type;
 	token->value = value ? ft_strdup(gc, value) : NULL;
 	token->next = NULL;
+	token->prev = NULL;
 	return (token);
 }
 
 /* Add token to the end of the token list */
-static void add_token(t_token **head, t_token *new_token)
+void add_token(t_token **head, t_token *new_token)
 {
 	t_token *current;
 
@@ -103,131 +105,100 @@ static void add_token(t_token **head, t_token *new_token)
 	while (current->next)
 		current = current->next;
 	current->next = new_token;
+	new_token->prev = current;
 }
-
-/* 
-// Unused function - commented out to avoid compiler warnings
-static int handle_quotes(t_lexer *lexer, int *end_pos, char quote_char)
-{
-	int i;
-	int escaped;
-	
-	i = lexer->position + 1;
-	escaped = 0;
-	
-	while (lexer->input[i])
-	{
-		// Handle escape sequence inside double quotes
-		if (lexer->input[i] == '\\' && quote_char == '"' && !escaped)
-		{
-			escaped = 1;
-			i++;
-			continue;
-		}
-		
-		// If previous character was escape, just treat this as normal character
-		if (escaped)
-		{
-			escaped = 0;
-			i++;
-			continue;
-		}
-		
-		// Found closing quote
-		if (lexer->input[i] == quote_char)
-		{
-			*end_pos = i;
-			return (1); // Found closing quote
-		}
-		i++;
-	}
-	return (0); // No closing quote found
-}
-*/
 
 /* Get the next word token */
-static t_token *get_word_token(t_lexer *lexer, t_gc *gc)
+t_token *get_word_token(t_lexer *lexer, t_gc *gc)
 {
 	int start;
 	char *word;
 	int i;
-	int in_quotes = 0;
-	char quote_type = 0;
+	int j;
+	int in_quotes;
+	char quote_type;
+	char *temp;
+	int escaped;
 
 	start = lexer->position;
 	i = start;
+	in_quotes = 0;
+	quote_type = 0;
+	escaped = 0;
 	
 	// Special case for attached redirection operators at the start
 	if (lexer->input[i] == '>' || lexer->input[i] == '<')
-	{
-		// Handle redirections separately in get_next_token
 		return NULL;
-	}
 	
+	// Allocate temporary buffer for word construction
+	temp = ft_malloc(gc, ft_strlen(lexer->input) + 1);
+	if (!temp)
+		return NULL;
+	
+	j = 0;
 	// Process the entire token with quotes
 	while (lexer->input[i])
 	{
-		// Handle quotes
-		if ((lexer->input[i] == '\'' || lexer->input[i] == '"'))
+		// Handle quotes first
+		if ((lexer->input[i] == '\'' || lexer->input[i] == '"') && !escaped)
 		{
 			if (!in_quotes)
 			{
-				// Start of quoted section
 				in_quotes = 1;
 				quote_type = lexer->input[i];
+				i++;  // Skip the opening quote
+				continue;
 			}
 			else if (lexer->input[i] == quote_type)
 			{
-				// End of quoted section
 				in_quotes = 0;
 				quote_type = 0;
+				i++;  // Skip the closing quote
+				continue;
 			}
-			// Otherwise it's a different quote inside quotes, just continue
-			i++;
-			continue;
 		}
-		
-		// Inside quotes, continue collecting characters
-		if (in_quotes)
+
+		// Handle escape character
+		if (lexer->input[i] == '\\' && !escaped)
 		{
-			i++;
+			escaped = 1;
+			temp[j++] = lexer->input[i++];
+			continue;
+		}
+
+		// If current character is escaped, add it as is
+		if (escaped)
+		{
+			temp[j++] = lexer->input[i++];
+			escaped = 0;
 			continue;
 		}
 		
-		// Outside quotes, check for token delimiters
-		if (is_whitespace(lexer->input[i]) || 
+		if (!in_quotes && (is_whitespace(lexer->input[i]) || 
 			lexer->input[i] == '|' || 
 			lexer->input[i] == '>' || 
-			lexer->input[i] == '<')
+			lexer->input[i] == '<'))
 		{
 			break;
 		}
 		
-		// Regular character
-		i++;
+		temp[j++] = lexer->input[i++];
 	}
+	temp[j] = '\0';
 	
-	// Extract the word - only if we have content
-	if (i > start)
+	// Only create token if we have content
+	if (j > 0)
 	{
-		word = ft_strndup(gc, lexer->input + start, i - start);
+		word = ft_strdup(gc, temp);
 		lexer->position = i;
-		
-		// Check for redirection symbols in the word - but allow any number of them
-		if (word)
-		{
-			return (create_token(TOKEN_WORD, word, gc));
-		}
-		
 		return (create_token(TOKEN_WORD, word, gc));
 	}
 	
-	// No content, return NULL so get_next_token can handle the next character
 	return NULL;
 }
 
 /* Get the next token from the input */
-static t_token *get_next_token(t_lexer *lexer, t_gc *gc)
+t_token *get_next_token(t_lexer *lexer, t_gc *gc)
 {
 	char current;
 	t_token *word_token;
@@ -242,11 +213,21 @@ static t_token *get_next_token(t_lexer *lexer, t_gc *gc)
 	// Handle pure redirection symbols and pipes
 	if (current == '|')
 	{
+		ft_putstr_fd("DEBUG: Found pipe token\n", 2);
 		lexer->position++;
+		// Check for double pipe or pipe at start/end
+		if (lexer->position == 1 || !lexer->input[lexer->position] || 
+			lexer->input[lexer->position] == '|')
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+			lexer->error = 1;
+			return (create_token(TOKEN_EOF, NULL, gc));
+		}
 		return (create_token(TOKEN_PIPE, "|", gc));
 	}
 	else if (current == '<')
 	{
+		ft_putstr_fd("DEBUG: Found input redirection\n", 2);
 		lexer->position++;
 		if (lexer->input[lexer->position] == '<')
 		{
@@ -290,43 +271,13 @@ static t_token *get_next_token(t_lexer *lexer, t_gc *gc)
 	}
 	else if (current == '>')
 	{
+		ft_putstr_fd("DEBUG: Found output redirection\n", 2);
 		lexer->position++;
 		if (lexer->input[lexer->position] == '>')
 		{
 			lexer->position++;
-			// Check for more > characters (like >>>)
-			if (lexer->input[lexer->position] == '>')
-			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-				ft_putchar_fd('>', 2);
-				ft_putchar_fd('>', 2);
-				ft_putchar_fd('>', 2);
-				ft_putstr_fd("'\n", 2);
-				lexer->error = 1;
-				return (create_token(TOKEN_EOF, NULL, gc));
-			}
-			
-			// Check if there's no word after append
-			skip_whitespace(lexer);
-			if (!lexer->input[lexer->position] || lexer->input[lexer->position] == '|' ||
-				lexer->input[lexer->position] == '<' || lexer->input[lexer->position] == '>')
-			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
-				lexer->error = 1;
-				return (create_token(TOKEN_EOF, NULL, gc));
-			}
-			
+			ft_putstr_fd("DEBUG: It's an append redirection\n", 2);
 			return (create_token(TOKEN_REDIR_APPEND, ">>", gc));
-		}
-		
-		// Check if there's no word after redirection
-		skip_whitespace(lexer);
-		if (!lexer->input[lexer->position] || lexer->input[lexer->position] == '|' ||
-			lexer->input[lexer->position] == '<' || lexer->input[lexer->position] == '>')
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n", 2);
-			lexer->error = 1;
-			return (create_token(TOKEN_EOF, NULL, gc));
 		}
 		
 		return (create_token(TOKEN_REDIR_OUT, ">", gc));
@@ -344,7 +295,7 @@ static t_token *get_next_token(t_lexer *lexer, t_gc *gc)
 	}
 }
 
-static char *sanitize_input(char *input, t_gc *gc)
+char *sanitize_input(char *input, t_gc *gc)
 {
 	int len = ft_strlen(input);
 	char *sanitized = ft_malloc(gc, len + 1);
@@ -364,7 +315,7 @@ static char *sanitize_input(char *input, t_gc *gc)
 }
 
 /* Tokenize the input string */
-static t_token *tokenize(char *input, t_gc *gc)
+t_token *tokenize(char *input, t_gc *gc)
 {
 	t_lexer *lexer;
 	t_token *token_list;
@@ -403,7 +354,7 @@ static t_token *tokenize(char *input, t_gc *gc)
 */
 
 /* Initialize the parser with a token list */
-static t_parser *init_parser(t_token *tokens, t_exec *exec)
+t_parser *init_parser(t_token *tokens, t_exec *exec)
 {
 	t_parser *parser;
 
@@ -420,7 +371,7 @@ static t_parser *init_parser(t_token *tokens, t_exec *exec)
 }
 
 /* Advance to the next token */
-static void advance_token(t_parser *parser)
+void advance_token(t_parser *parser)
 {
 	if (parser->current_token && 
 		parser->current_token->type != TOKEN_EOF)
@@ -428,45 +379,88 @@ static void advance_token(t_parser *parser)
 }
 
 /* Parse a simple command */
-static t_cmd_node *parse_simple_command(t_parser *parser)
+t_cmd_node *parse_simple_command(t_parser *parser)
 {
 	t_cmd_node *cmd;
 	char **args;
 	int arg_count;
 	int i;
-	int sflag = 0;
-	t_token *start_token;
 	char *last_input = NULL;
 	char *last_output = NULL;
 	int last_output_is_append = 0;
 
 	// First, count the number of word tokens for this command
 	arg_count = 0;
-	start_token = parser->current_token;
 	
-	while (parser->current_token && 
-		   parser->current_token->type != TOKEN_PIPE && 
-		   parser->current_token->type != TOKEN_EOF)
+	// First pass: Count args and track redirection info
+	t_token *current = parser->current_token;
+	while (current && current->type != TOKEN_EOF && current->type != TOKEN_PIPE)
 	{
-		// Skip redirection and its target
-		if (parser->current_token->type == TOKEN_REDIR_IN || 
-			parser->current_token->type == TOKEN_REDIR_OUT || 
-			parser->current_token->type == TOKEN_REDIR_APPEND || 
-			parser->current_token->type == TOKEN_REDIR_HEREDOC)
+		if (current->type == TOKEN_WORD)
 		{
-			advance_token(parser);
-			if (parser->current_token && 
-				parser->current_token->type == TOKEN_WORD)
-				advance_token(parser);
-			continue;
+			// Don't count words that are redirection targets
+			if (!(current->next && (current->next->type == TOKEN_REDIR_IN ||
+								  current->next->type == TOKEN_REDIR_OUT ||
+								  current->next->type == TOKEN_REDIR_APPEND)) &&
+				!(current != parser->current_token && 
+				  (current->prev->type == TOKEN_REDIR_IN ||
+				   current->prev->type == TOKEN_REDIR_OUT ||
+				   current->prev->type == TOKEN_REDIR_APPEND)))
+			{
+				arg_count++;
+			}
 		}
-		
-		if (parser->current_token->type == TOKEN_WORD)
-			arg_count++;
-		
-		advance_token(parser);
+		else if (current->type == TOKEN_REDIR_OUT ||
+				 current->type == TOKEN_REDIR_APPEND)
+		{
+			last_output_is_append = (current->type == TOKEN_REDIR_APPEND);
+			if (current->next && current->next->type == TOKEN_WORD)
+			{
+				char *filename = current->next->value;
+				// Remove quotes if present
+				if (filename[0] == '"' && filename[ft_strlen(filename) - 1] == '"')
+				{
+					char *unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2);
+					if (unquoted)
+					{
+						filename = ft_strdup(&parser->exec->gc, unquoted);
+						free(unquoted);
+					}
+				}
+				last_output = filename;
+			}
+		}
+		else if (current->type == TOKEN_REDIR_IN)
+		{
+			if (current->next && current->next->type == TOKEN_WORD)
+			{
+				char *filename = current->next->value;
+				// Remove quotes if present
+				if (filename[0] == '"' && filename[ft_strlen(filename) - 1] == '"')
+				{
+					char *unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2);
+					if (unquoted)
+					{
+						filename = ft_strdup(&parser->exec->gc, unquoted);
+						free(unquoted);
+					}
+				}
+				last_input = filename;
+				
+				// Check if input file exists
+				if (access(filename, F_OK) == -1)
+				{
+					ft_putstr_fd("minishell: ", 2);
+					ft_putstr_fd(filename, 2);
+					ft_putstr_fd(": No such file or directory\n", 2);
+					parser->error = 1;
+					return (NULL);
+				}
+			}
+		}
+		current = current->next;
 	}
-	
+
 	// Allocate args array
 	args = ft_malloc(&parser->exec->gc, sizeof(char *) * (arg_count + 1));
 	if (!args)
@@ -475,65 +469,36 @@ static t_cmd_node *parse_simple_command(t_parser *parser)
 		return (NULL);
 	}
 	
-	// Reset parser position and fill the args array
+	// Fill the args array
 	i = 0;
-	parser->current_token = start_token;
-	
-	while (parser->current_token && 
-		   parser->current_token->type != TOKEN_PIPE && 
-		   parser->current_token->type != TOKEN_EOF)
+	current = parser->current_token;
+	while (current && current->type != TOKEN_EOF && current->type != TOKEN_PIPE)
 	{
-		// Track redirections but exclude them from command arguments
-		if (parser->current_token->type == TOKEN_REDIR_IN)
+		if (current->type == TOKEN_WORD)
 		{
-			advance_token(parser);
-			if (parser->current_token && 
-				parser->current_token->type == TOKEN_WORD)
+			// Skip words that are redirection targets
+			if (!(current->next && (current->next->type == TOKEN_REDIR_IN ||
+								  current->next->type == TOKEN_REDIR_OUT ||
+								  current->next->type == TOKEN_REDIR_APPEND)) &&
+				!(current != parser->current_token && 
+				  (current->prev->type == TOKEN_REDIR_IN ||
+				   current->prev->type == TOKEN_REDIR_OUT ||
+				   current->prev->type == TOKEN_REDIR_APPEND)))
 			{
-				last_input = parser->current_token->value;
-				advance_token(parser);
+				args[i++] = ft_strdup(&parser->exec->gc, current->value);
 			}
-			continue;
 		}
-		else if (parser->current_token->type == TOKEN_REDIR_OUT)
-		{
-			advance_token(parser);
-			if (parser->current_token && 
-				parser->current_token->type == TOKEN_WORD)
-			{
-				last_output = parser->current_token->value;
-				last_output_is_append = 0;
-				advance_token(parser);
-			}
-			continue;
-		}
-		else if (parser->current_token->type == TOKEN_REDIR_APPEND)
-		{
-			advance_token(parser);
-			if (parser->current_token && 
-				parser->current_token->type == TOKEN_WORD)
-			{
-				last_output = parser->current_token->value;
-				last_output_is_append = 1;
-				advance_token(parser);
-			}
-			continue;
-		}
-		else if (parser->current_token->type == TOKEN_REDIR_HEREDOC)
-		{
-			advance_token(parser);
-			if (parser->current_token && 
-				parser->current_token->type == TOKEN_WORD)
-				advance_token(parser);
-			continue;
-		}
-		
-		if (parser->current_token->type == TOKEN_WORD)
-			args[i++] = ft_strdup(&parser->exec->gc, parser->current_token->value);
-		
-		advance_token(parser);
+		current = current->next;
 	}
 	args[i] = NULL;
+
+	// Advance parser position to end of command
+	while (parser->current_token && 
+		   parser->current_token->type != TOKEN_EOF &&
+		   parser->current_token->type != TOKEN_PIPE)
+	{
+		advance_token(parser);
+	}
 	
 	// Create command node
 	cmd = create_cmd_node(parser->exec, args);
@@ -545,65 +510,87 @@ static t_cmd_node *parse_simple_command(t_parser *parser)
 	
 	// Set input and output redirections
 	if (last_input)
+	{
 		cmd->in = ft_strdup(&parser->exec->gc, last_input);
+	}
 	
 	if (last_output)
 	{
 		cmd->out = ft_strdup(&parser->exec->gc, last_output);
 		cmd->append = last_output_is_append;
-		
-		// Create all output files in the chain
-		parser->current_token = start_token;
-		
-		while (parser->current_token && 
-		       parser->current_token->type != TOKEN_PIPE && 
-		       parser->current_token->type != TOKEN_EOF  &&
-		   sflag == 0)
-		{
-			if (parser->current_token->type == TOKEN_REDIR_OUT || 
-			    parser->current_token->type == TOKEN_REDIR_APPEND)
-			{
-				int is_append = (parser->current_token->type == TOKEN_REDIR_APPEND);
-				advance_token(parser);
-				
-				if (parser->current_token && 
-				    parser->current_token->type == TOKEN_WORD)
-				{
-					// Create the file with appropriate flags
-					int flags = O_WRONLY | O_CREAT;
-					flags |= is_append ? O_APPEND : O_TRUNC;
-					
-					int fd = open(parser->current_token->value, flags, 0644);
-					if (fd >= 0)
-						close(fd);
-					
-					advance_token(parser);
-				}
-				continue;
-			}
-			else if (parser->current_token->type == TOKEN_REDIR_IN)
-			{
-				int fd = open(parser->current_token->value, O_RDONLY);
-				if (fd < 0)
-					sflag = 1;
-			}
-			advance_token(parser);
-		}
-		
-		// Reset parser position
-		parser->current_token = start_token;
 	}
 	
 	return (cmd);
 }
 
 /* Parse a pipeline */
-static t_cmd_node *parse_pipeline(t_parser *parser)
+t_cmd_node *parse_pipeline(t_parser *parser)
 {
 	t_cmd_node *first_cmd;
 	t_cmd_node *current_cmd;
 	t_cmd_node *next_cmd;
 	int pipe_count = 0;
+	t_token *start_token;
+
+	ft_putstr_fd("\n=== Pipeline Output File Creation Pass ===\n", 2);
+	
+	// First, create all output files in the pipeline
+	start_token = parser->current_token;
+	while (parser->current_token && 
+		   parser->current_token->type != TOKEN_EOF)
+	{
+		ft_putstr_fd("DEBUG: Pipeline token type: ", 2);
+		ft_putnbr_fd(parser->current_token->type, 2);
+		ft_putstr_fd("\n", 2);
+		
+		if (parser->current_token->type == TOKEN_REDIR_OUT ||
+			parser->current_token->type == TOKEN_REDIR_APPEND)
+		{
+			int is_append = (parser->current_token->type == TOKEN_REDIR_APPEND);
+			advance_token(parser);
+			if (parser->current_token && 
+				parser->current_token->type == TOKEN_WORD)
+			{
+				char *filename = parser->current_token->value;
+				ft_putstr_fd("DEBUG: Found pipeline output file: ", 2);
+				ft_putstr_fd(filename, 2);
+				ft_putstr_fd("\n", 2);
+				
+				// Remove quotes if present
+				if (filename[0] == '"' && filename[ft_strlen(filename) - 1] == '"')
+				{
+					char *unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2);
+					if (unquoted)
+					{
+						filename = ft_strdup(&parser->exec->gc, unquoted);
+						free(unquoted);
+					}
+				}
+				
+				ft_putstr_fd("DEBUG: Creating pipeline output file: ", 2);
+				ft_putstr_fd(filename, 2);
+				ft_putstr_fd("\n", 2);
+				
+				int fd = open(filename, 
+							O_WRONLY | O_CREAT | (is_append ? O_APPEND : O_TRUNC),
+							0644);
+				if (fd >= 0)
+				{
+					ft_putstr_fd("DEBUG: Successfully created pipeline output file\n", 2);
+					close(fd);
+				}
+				else
+				{
+					ft_putstr_fd("DEBUG: Failed to create pipeline output file: ", 2);
+					perror(filename);
+				}
+			}
+		}
+		advance_token(parser);
+	}
+	
+	// Reset position to start parsing commands
+	parser->current_token = start_token;
 
 	// Parse the first command
 	first_cmd = parse_simple_command(parser);
@@ -619,14 +606,6 @@ static t_cmd_node *parse_pipeline(t_parser *parser)
 		pipe_count++;
 		advance_token(parser); // Skip the pipe token
 		
-		// Check for syntax error: empty pipe (e.g., cmd | | cmd)
-		if (parser->current_token && parser->current_token->type == TOKEN_PIPE)
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-			parser->error = 1;
-			return (first_cmd);
-		}
-		
 		// Set the current command type to PIPE
 		current_cmd->type = PIPE;
 		
@@ -634,8 +613,6 @@ static t_cmd_node *parse_pipeline(t_parser *parser)
 		next_cmd = parse_simple_command(parser);
 		if (!next_cmd)
 		{
-			// Handle case where there's nothing after the pipe
-			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
 			parser->error = 1;
 			return (first_cmd);
 		}
@@ -644,15 +621,6 @@ static t_cmd_node *parse_pipeline(t_parser *parser)
 		current_cmd->next = next_cmd;
 		current_cmd = next_cmd;
 	}
-	
-	// Debug output to see how many pipes were found
-	// ft_putstr_fd("minishell debug: Pipeline with ", 2);
-	// char *pipe_str = ft_itoa(pipe_count, &parser->exec->gc);
-	// if (pipe_str)
-	// {
-	// 	ft_putstr_fd(pipe_str, 2);
-	// }
-	// ft_putstr_fd(" pipes created\n", 2);
 	
 	return (first_cmd);
 }
@@ -689,12 +657,11 @@ t_cmd_node *parse_input(char *input, t_exec *exec)
 	// Parse the command(s)
 	cmd_list = parse_pipeline(parser);
 	
-	// Check for errors
-	if (parser->error)
+	// Only show syntax error if there's no specific error already set
+	if (parser->error && exec->exit_status == 0 && !parser->current_token)
 	{
 		ft_putstr_fd("minishell: syntax error\n", 2);
 		exec->exit_status = 2;
-		return (NULL);
 	}
 	
 	return (cmd_list);
@@ -712,8 +679,8 @@ int check_syntax(t_cmd_node *cmd_list, t_exec *exec)
 	
 	while (current)
 	{
-		// Check for empty commands
-		if (!current->arr || !current->arr[0])
+		// Check for empty commands, but allow redirections without arguments
+		if (!current->arr)
 		{
 			ft_putstr_fd("minishell: syntax error near unexpected token\n", 2);
 			exec->exit_status = 2;
@@ -743,6 +710,68 @@ t_cmd_node *parse_piped_commands(char *input, t_exec *exec)
     return parse_input(input, exec);
 }
 
+// Add debug function at the top after includes
+void debug_print_command(t_cmd_node *cmd, int level)
+{
+	int	i;
+
+	if (!cmd)
+		return;
+	
+	// Print indentation based on level
+	for (i = 0; i < level; i++)
+		ft_putstr_fd("  ", 2);
+	
+	// Print command type
+	ft_putstr_fd("Command Type: ", 2);
+	if (cmd->type == PIPE)
+		ft_putstr_fd("PIPE\n", 2);
+	else
+		ft_putstr_fd("SIMPLE\n", 2);
+	
+	// Print arguments
+	for (i = 0; i < level; i++)
+		ft_putstr_fd("  ", 2);
+	ft_putstr_fd("Args: ", 2);
+	i = 0;
+	while (cmd->arr && cmd->arr[i])
+	{
+		ft_putstr_fd(cmd->arr[i], 2);
+		ft_putstr_fd(" ", 2);
+		i++;
+	}
+	ft_putstr_fd("\n", 2);
+	
+	// Print redirections
+	if (cmd->in)
+	{
+		for (i = 0; i < level; i++)
+			ft_putstr_fd("  ", 2);
+		ft_putstr_fd("Input: ", 2);
+		ft_putstr_fd(cmd->in, 2);
+		ft_putstr_fd("\n", 2);
+	}
+	if (cmd->out)
+	{
+		for (i = 0; i < level; i++)
+			ft_putstr_fd("  ", 2);
+		ft_putstr_fd("Output: ", 2);
+		ft_putstr_fd(cmd->out, 2);
+		ft_putstr_fd(" (", 2);
+		ft_putstr_fd(cmd->append ? "append" : "truncate", 2);
+		ft_putstr_fd(")\n", 2);
+	}
+	
+	// Recursively print next command
+	if (cmd->next)
+	{
+		for (i = 0; i < level; i++)
+			ft_putstr_fd("  ", 2);
+		ft_putstr_fd("|\n", 2);
+		debug_print_command(cmd->next, level + 1);
+	}
+}
+
 /* Main parse function for external call */
 t_cmd_node *parse_command_line(char *input, t_exec *exec)
 {
@@ -751,12 +780,24 @@ t_cmd_node *parse_command_line(char *input, t_exec *exec)
 	// Parse the input
 	cmd_list = parse_input(input, exec);
 	
-	// Check for syntax errors
-	if (check_syntax(cmd_list, exec))
-		return (NULL);
-	
-	// Store the command list in the exec structure
-	exec->cmd_list = cmd_list;
+	// Only check syntax and show debug output if parsing succeeded
+	if (cmd_list)
+	{
+		// Check for syntax errors
+		if (check_syntax(cmd_list, exec))
+		{
+			exec->cmd_list = NULL;
+			return (NULL);
+		}
+		
+		// Add debug output
+		ft_putstr_fd("\n=== Parsed Command Structure ===\n", 2);
+		debug_print_command(cmd_list, 0);
+		ft_putstr_fd("==============================\n\n", 2);
+		
+		// Store the command list in the exec structure
+		exec->cmd_list = cmd_list;
+	}
 	
 	return (cmd_list);
 } 

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/14 01:01:28 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/18 19:40:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,12 @@ static void setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
             ft_putstr_fd("minishell: ", 2);
             ft_putstr_fd(cmd->in, 2);
             ft_putstr_fd(": No such file or directory\n", 2);
-            exit(1);
+            // Don't exit, just set error status and continue
+            cmd->exec->exit_status = 1;
+            // Close pipe read end if it exists
+            if (prev_pipe_fd != -1)
+                close(prev_pipe_fd);
+            return;
         }
         
         // Redirect stdin from the file
@@ -67,98 +72,101 @@ static void setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
         int flags = O_WRONLY | O_CREAT;
         flags |= cmd->append ? O_APPEND : O_TRUNC;
         
-        // We need to create all output redirection files
-        // Find and process all output redirections in cmd->arr
-        int i = 0;
-        char **output_files = NULL;
-        int *append_flags = NULL;
-        int file_count = 0;
-        
-        // Count output redirections
-        while (cmd->arr && cmd->arr[i])
-        {
-            if ((ft_strcmp(cmd->arr[i], ">") == 0 || ft_strcmp(cmd->arr[i], ">>") == 0) && cmd->arr[i + 1])
-                file_count++;
-            i++;
-        }
-        
-        // Process redirections if we found any
-        if (file_count > 0)
-        {
-            // Allocate arrays
-            output_files = ft_malloc(&cmd->exec->gc, sizeof(char *) * (file_count + 1));
-            append_flags = ft_malloc(&cmd->exec->gc, sizeof(int) * file_count);
-            if (!output_files || !append_flags)
-            {
-                ft_putstr_fd("minishell: malloc error\n", 2);
-                exit(1);
-            }
-            
-            // Fill arrays
-            i = 0;
-            file_count = 0;
-            while (cmd->arr && cmd->arr[i])
-            {
-                if (ft_strcmp(cmd->arr[i], ">") == 0 && cmd->arr[i + 1])
-                {
-                    output_files[file_count] = cmd->arr[i + 1];
-                    append_flags[file_count] = 0; // truncate
-                    file_count++;
-                    i += 2;
-                }
-                else if (ft_strcmp(cmd->arr[i], ">>") == 0 && cmd->arr[i + 1])
-                {
-                    output_files[file_count] = cmd->arr[i + 1];
-                    append_flags[file_count] = 1; // append
-                    file_count++;
-                    i += 2;
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            
-            // Create all intermediate files
-            for (i = 0; i < file_count - 1; i++)
-            {
-                int flags = O_WRONLY | O_CREAT;
-                flags |= append_flags[i] ? O_APPEND : O_TRUNC;
-                
-                int fd = open(output_files[i], flags, 0644);
-                if (fd >= 0)
-                    close(fd);
-            }
-        }
-        
-        // Now open the final output file to redirect to
-        int fd = open(cmd->out, flags, 0644);
-        if (fd == -1)
+        // Open the output file
+        int file_fd = open(cmd->out, flags, 0644);
+        if (file_fd == -1)
         {
             ft_putstr_fd("minishell: ", 2);
             ft_putstr_fd(cmd->out, 2);
             ft_putstr_fd(": Error opening output file\n", 2);
             exit(1);
         }
-        
-        // Redirect stdout to the file
-        if (dup2(fd, STDOUT_FILENO) == -1)
-            perror("dup2 output file");
-        close(fd);
-        
-        // We're done - don't redirect to pipe even if it exists
-        // Just close the pipe write end if it exists to avoid leaking FDs
+
+        // If we also have a pipe, we need to duplicate output to both
         if (next_pipe_fd != -1)
-            close(next_pipe_fd);
-            
-        return;
+        {
+            // Create a temporary pipe for tee-like functionality
+            int tee_pipe[2];
+            if (pipe(tee_pipe) == -1)
+            {
+                perror("pipe");
+                close(file_fd);
+                exit(1);
+            }
+
+            // Fork a child to handle the tee operation
+            pid_t tee_pid = fork();
+            if (tee_pid == -1)
+            {
+                perror("fork");
+                close(file_fd);
+                close(tee_pipe[0]);
+                close(tee_pipe[1]);
+                exit(1);
+            }
+
+            if (tee_pid == 0)
+            {
+                // Child process: read from pipe and write to both outputs
+                char buffer[4096];
+                ssize_t n;
+
+                close(tee_pipe[1]);  // Close write end
+
+                while ((n = read(tee_pipe[0], buffer, sizeof(buffer))) > 0)
+                {
+                    // Write to file
+                    if (write(file_fd, buffer, n) != n)
+                    {
+                        perror("write to file");
+                        exit(1);
+                    }
+                    // Write to next pipe
+                    if (write(next_pipe_fd, buffer, n) != n)
+                    {
+                        perror("write to pipe");
+                        exit(1);
+                    }
+                }
+
+                close(tee_pipe[0]);
+                close(file_fd);
+                close(next_pipe_fd);
+                exit(0);
+            }
+            else
+            {
+                // Parent process: redirect stdout to the tee pipe
+                close(tee_pipe[0]);  // Close read end
+                if (dup2(tee_pipe[1], STDOUT_FILENO) == -1)
+                {
+                    perror("dup2");
+                    exit(1);
+                }
+                close(tee_pipe[1]);
+                close(file_fd);
+                // Don't close next_pipe_fd as the tee process needs it
+            }
+        }
+        else
+        {
+            // No pipe, just redirect to file
+            if (dup2(file_fd, STDOUT_FILENO) == -1)
+            {
+                perror("dup2");
+                exit(1);
+            }
+            close(file_fd);
+        }
     }
-    
-    // If no output redirection, use pipe if available
-    if (next_pipe_fd != -1)
+    else if (next_pipe_fd != -1)
     {
+        // No file redirection, just pipe
         if (dup2(next_pipe_fd, STDOUT_FILENO) == -1)
-            perror("dup2 pipe output");
+        {
+            perror("dup2");
+            exit(1);
+        }
         close(next_pipe_fd);
     }
 }

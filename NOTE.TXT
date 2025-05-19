@@ -1,0 +1,3 @@
+WSOLET PARSER.C BS MA BEDA TEZBAT HEYDE 
+cat < input.txt | grep "pattern" | sort -r > output.txt | wc -l
+ma aam tezbat l 0 

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/17 15:29:26 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/18 13:00:26 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,12 @@ static int	process_quoted_text(const char *str, char **result,
 	while (str[i])
 	{
 		// Handle escape character (outside quotes or in double quotes)
-		if (str[i] == '\\' && !escaped && (quote_type == '\0' || quote_type == '"'))
+		if (str[i] == '\\' && !escaped)
 		{
 			escaped = 1;
+			// Keep the backslash for escaped quotes
+			if (str[i + 1] == '\'' || str[i + 1] == '"')
+				res[len++] = str[i];
 			i++;
 			continue;
 		}

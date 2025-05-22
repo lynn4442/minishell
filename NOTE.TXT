@@ -1,3 +1,17 @@
-WSOLET PARSER.C BS MA BEDA TEZBAT HEYDE 
+WSOLET PARSER.C BS MA BEDA TEZBAT HEYDE
 cat < input.txt | grep "pattern" | sort -r > output.txt | wc -l
-ma aam tezbat l 0 
+ma aam tezbat l 0
+
+
+//////Do that/////////////
+
+lyoussef@c2r6s9:~/mini_tested_without_norme$ env -i bash
+lyoussef@c2r6s9:/home/lyoussef/mini_tested_without_norme$ export
+declare -x OLDPWD
+declare -x PWD="/home/lyoussef/mini_tested_without_norme"
+declare -x SHLVL="1"
+lyoussef@c2r6s9:/home/lyoussef/mini_tested_without_norme$ env
+PWD=/home/lyoussef/mini_tested_without_norme
+SHLVL=1
+_=/usr/bin/env
+lyoussef@c2r6s9:/home/lyoussef/mini_tested_without_norme$

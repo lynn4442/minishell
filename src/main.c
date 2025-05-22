@@ -21,9 +21,9 @@ static char *sanitize_input(char *input, t_gc *gc, int *error_status)
 	char *sanitized = ft_malloc(gc, len + 1);
 	int i = 0;
 	int j = 0;
-	
+
 	(void)error_status;
-	
+
 	if (!sanitized)
 		return input;
 
@@ -31,7 +31,7 @@ static char *sanitize_input(char *input, t_gc *gc, int *error_status)
 	{
 		sanitized[j++] = input[i++];
 	}
-	
+
 	sanitized[j] = '\0';
 	return sanitized;
 }
@@ -63,13 +63,13 @@ int main(int ac, char **av, char **envp)
 	{
 		g_signal_received = 0;  // Reset signal status
 		input = readline("minihell> ");
-		
+
 		if (!input)  // Handle Ctrl+D (EOF)
 		{
 			handle_eof_signal(exec);
 			break;
 		}
-		
+
 		// If a signal was received, skip command processing
 		if (g_signal_received)
 		{
@@ -77,7 +77,7 @@ int main(int ac, char **av, char **envp)
 			free(input);
 			continue;
 		}
-		
+
 		// Skip empty lines
 		if (ft_strlen(input) == 0)
 		{
@@ -87,13 +87,13 @@ int main(int ac, char **av, char **envp)
 
 		// Add input to history
 		add_history(input);
-		
+
 		// Initialize error status
 		error_status = 0;
-		
+
 		// Sanitize input to handle excessive redirection symbols
 		sanitized_input = sanitize_input(input, &exec->gc, &error_status);
-		
+
 		// If sanitization failed (syntax error), set error status and continue
 		if (!sanitized_input)
 		{
@@ -101,34 +101,34 @@ int main(int ac, char **av, char **envp)
 			free(input);
 			continue;
 		}
-		
+
 		// Use the new centralized parser with sanitized input
 		cmd_list = parse_command_line(sanitized_input, exec);
-		
+
 		// If parsing is successful, execute the commands
 		if (cmd_list)
 		{
 			// Temporarily ignore SIGINT during command execution
 			setup_parent_signals();
-			
+
 			// Execute commands based on type
 			if (cmd_list->type == PIPE || cmd_list->next)
 				execute_with_pipes(exec, cmd_list);
 			else
 				parse_and_execute(exec, cmd_list);
-			
+
 			// Restore interactive signals
 			setup_interactive_signals();
 		}
-		
-		// Handle an explicit "stop" command
-		if (ft_strcmp(input, "stop") == 0)
-		{
-			printf("hello");
-			free(input);
-			break;
-		}
-		
+
+		//// Handle an explicit "stop" command
+		//if (ft_strcmp(input, "stop") == 0)
+		//{
+		//	printf("hello");
+		//	free(input);
+		//	break;
+		//}
+
 		free(input);
 	}
 	ft_free_all(&exec->gc);

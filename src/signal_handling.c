@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signal_handling.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/09 13:49:50 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 15:05:14 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern int g_signal_received;
+int g_signal_received;
 
 //after zabbit l sigaction
 static void handle_sigint(int sig)
@@ -74,7 +74,7 @@ void setup_parent_signals(void)
 void cleanup_and_exit(t_exec *exec, int exit_code)
 {
 	int shlvl = get_shell_level(exec);//check the shell level
-	
+
 	//if not in nested level
 	if (shlvl <= 1 && exec)
 		ft_free_all(&exec->gc);
@@ -107,3 +107,4 @@ int get_signal_exit_status(int status)
 	}
 	return WEXITSTATUS(status);  // Gets the exit code from normally terminated process
 }
+// recheck with fouad this to redo it

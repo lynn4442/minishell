@@ -29,6 +29,17 @@
 # include "libft/libft.h"
 # include <signal.h>
 
+//0	Success (No error)
+//1	General error (Miscellaneous error)
+//2	Incorrect usage (Misuse of shell builtins)
+//126	Command found but not executable
+//127	Command not found
+//128	Invalid argument to exit
+//130	Command terminated by Ctrl+C (SIGINT)
+//137	Command killed with kill -9 (SIGKILL)
+//139	Segmentation fault (SIGSEGV)
+//255	Exit status out of range
+
 extern int g_signal_received;
 
 typedef struct s_mem_node
@@ -83,7 +94,7 @@ typedef enum e_type {
 //split aa ases li aam bekhdo bel env w asemo la 3 parts 1 the key
 //2 the boolean eza le2a = aw lae
 //3 the value li after the =
-typedef struct s_env_var 
+typedef struct s_env_var
 {
 	char				*key;
 	bool 				equal;
@@ -93,7 +104,7 @@ typedef struct s_env_var
 	struct s_env_var	*prev;
 } t_env_var;
 
-typedef struct s_cmd_node 
+typedef struct s_cmd_node
 {
 	char				**arr;
 	char				*in;

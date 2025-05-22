@@ -97,4 +97,4 @@ char	*find_command_path(t_exec *exec, const char *cmd)
 	if (!path_dirs)
 		return (try_local_path(exec, expanded_cmd));
 	return (hunt_in_path_dirs(exec, expanded_cmd, path_dirs));
-} 
+}

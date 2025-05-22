@@ -120,15 +120,6 @@ int main(int ac, char **av, char **envp)
 			// Restore interactive signals
 			setup_interactive_signals();
 		}
-
-		//// Handle an explicit "stop" command
-		//if (ft_strcmp(input, "stop") == 0)
-		//{
-		//	printf("hello");
-		//	free(input);
-		//	break;
-		//}
-
 		free(input);
 	}
 	ft_free_all(&exec->gc);

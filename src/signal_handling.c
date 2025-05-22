@@ -6,13 +6,13 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 15:05:14 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/22 16:24:51 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int g_signal_received;
+extern int g_signal_received;
 
 //after zabbit l sigaction
 static void handle_sigint(int sig)

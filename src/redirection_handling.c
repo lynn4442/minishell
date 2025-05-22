@@ -29,8 +29,8 @@ void	restore_og_redirections(int original_in, int original_out)
 int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 {
 	int	fd;
-	
-	(void)original_in;	
+
+	(void)original_in;
 	if (!cmd->in)
 		return (0);
 	fd = open(cmd->in, O_RDONLY);
@@ -51,7 +51,7 @@ int	setup_output_redirection_local(t_cmd_node *cmd, int *original_out)
 {
 	int	fd;
 	int	flags;
-	
+
 	(void)original_out;
 	if (!cmd->out)
 		return (0);
@@ -78,7 +78,6 @@ int	setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out)
 {
 	*original_in = dup(STDIN_FILENO);
 	*original_out = dup(STDOUT_FILENO);
-	
 	if (setup_input_redirection_local(cmd, original_in) == -1)
 	{
 		restore_og_redirections(*original_in, *original_out);
@@ -90,4 +89,4 @@ int	setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out)
 		return (-1);
 	}
 	return (0);
-} 
+}

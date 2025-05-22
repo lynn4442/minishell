@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/18 13:00:26 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 16:24:11 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	handle_exit_status(char *res, int len, t_exec *exec)
 	return (len);
 }
 
-static int	handle_variable(const char *str, int *i, char *res, 
+static int	handle_variable(const char *str, int *i, char *res,
 					int len, t_env_var *env, t_exec *exec)
 {
 	int		start;
@@ -57,7 +57,7 @@ static int	handle_variable(const char *str, int *i, char *res,
 	return (len);
 }
 
-static int	process_special_chars(const char *str, int *i, char *res, 
+static int	process_special_chars(const char *str, int *i, char *res,
 					int len, t_env_var *env, t_exec *exec)
 {
 	if (str[*i + 1] == '?')
@@ -72,7 +72,7 @@ static int	process_special_chars(const char *str, int *i, char *res,
 	return (len);
 }
 
-static int	process_quoted_text(const char *str, char **result, 
+static int	process_quoted_text(const char *str, char **result,
 					t_env_var *env, t_exec *exec)
 {
 	int		i;
@@ -86,7 +86,7 @@ static int	process_quoted_text(const char *str, char **result,
 	res = *result;
 	quote_type = '\0';
 	escaped = 0;
-	
+
 	while (str[i])
 	{
 		// Handle escape character (outside quotes or in double quotes)
@@ -99,7 +99,7 @@ static int	process_quoted_text(const char *str, char **result,
 			i++;
 			continue;
 		}
-		
+
 		// Handle escaped character
 		if (escaped)
 		{
@@ -107,7 +107,7 @@ static int	process_quoted_text(const char *str, char **result,
 			escaped = 0;
 			continue;
 		}
-		
+
 		// Handle quotes
 		if ((str[i] == '\'' || str[i] == '"'))
 		{
@@ -117,22 +117,22 @@ static int	process_quoted_text(const char *str, char **result,
 				quote_type = '\0';   // End quoted section
 			else
 				res[len++] = str[i]; // Different quote inside quoted section
-				
+
 			i++;
 			continue;
 		}
-		
+
 		// Handle variable expansion (outside quotes or in double quotes)
 		if (str[i] == '$' && (quote_type == '\0' || quote_type == '"') && str[i + 1])
 		{
 			len = process_special_chars(str, &i, res, len, env, exec);
 			continue;
 		}
-		
+
 		// Copy regular character
 		res[len++] = str[i++];
 	}
-	
+
 	res[len] = '\0';
 	return (len);
 }
@@ -140,7 +140,7 @@ static int	process_quoted_text(const char *str, char **result,
 static char	*extract_var_name(const char *str, int start, int end)
 {
 	char	*var_name;
-	
+
 	var_name = malloc(end - start + 1);
 	if (!var_name)
 		return (NULL);
@@ -155,7 +155,7 @@ static int	process_var_length(const char *str, int *i, int max_len, t_env_var *e
 	int		end;
 	char	*var_name;
 	char	*var_value;
-	
+
 	start = *i + 1;
 	end = start;
 	while (str[end] && (ft_isalnum(str[end]) || str[end] == '_'))
@@ -174,7 +174,7 @@ static int	process_var_length(const char *str, int *i, int max_len, t_env_var *e
 	{
 		max_len++;
 		(*i)++;
-	}	
+	}
 	return (max_len);
 }
 
@@ -182,7 +182,7 @@ static int	calculate_max_result_length(const char *str, t_env_var *env)
 {
 	int	i;
 	int	max_len;
-	
+
 	i = 0;
 	max_len = 0;
 	while (str[i])
@@ -206,7 +206,7 @@ char	*process_quotes(const char *str, t_env_var *env, t_exec *exec)
 {
 	char	*result;
 	int		max_len;
-	
+
 	if (!str)
 		return (NULL);
 	max_len = calculate_max_result_length(str, env);
@@ -223,10 +223,10 @@ int	check_quotes(const char *str)
 {
 	int		i;
 	char	quote_type;
-	
+
 	i = 0;
 	quote_type = '\0';
-	
+
 	while (str[i])
 	{
 		if (str[i] == '\\')
@@ -237,7 +237,7 @@ int	check_quotes(const char *str)
 				i++;
 			continue;
 		}
-		
+
 		if ((str[i] == '\'' || str[i] == '"'))
 		{
 			if (quote_type == '\0')
@@ -245,27 +245,20 @@ int	check_quotes(const char *str)
 			else if (str[i] == quote_type)
 				quote_type = '\0';
 		}
-		
+
 		i++;
 	}
-	
+
 	return (quote_type == '\0');
 }
 
 void	print_with_quote_handling(const char *str, t_env_var *env, t_exec *exec)
 {
 	char	*processed;
-	
+
 	if (!str)
 		return;
 	processed = process_quotes(str, env, exec);
 	if (processed)
 		printf("%s", processed);
 }
-
-
-typedef struct s_cmd_map
-{
-	const char	*cmd_name;
-	int			(*run_cmd)(t_exec *, t_cmd_node *);
-} t_cmd_map;

@@ -14,7 +14,9 @@
 
 char *get_current_directory(t_exec *exec)
 {
-	char *buf = ft_malloc(&exec->gc, 1024);
+	char	*buf;
+
+	buf = ft_malloc(&exec->gc, 1024);
 	if (!buf)
 		return (NULL);
 	if (!getcwd(buf, 1024))

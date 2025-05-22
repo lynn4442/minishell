@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
 //my malloc and my free
-
 void	*ft_malloc(t_gc *var, size_t size)
 {
 	t_mem_node	*new_node;
@@ -53,9 +52,9 @@ void	ft_free_all(t_gc *gc)
 	}
 }
 
-int is_valid_var_name(const char *name)
+int	is_valid_var_name(const char *name)
 {
-	int i;
+	int	i;
 
 	if (!name || (!ft_isalpha(name[0]) && name[0] != '_'))
 		return (0);

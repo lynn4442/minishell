@@ -19,7 +19,6 @@ t_env_var *remove_env_var(t_exec *exec, const char *name)
 
 	if (!exec || !name || !exec->env_list)
 		return NULL;
-
 	current = exec->env_list;
 	prev = NULL;
 	while (current)

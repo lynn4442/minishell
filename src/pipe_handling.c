@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/18 19:40:12 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/19 20:35:41 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,7 +206,7 @@ static void execute_pipeline_command(t_cmd_node *cmd, char **env_array)
     // Verify command exists
     if (!cmd->arr || !cmd->arr[0])
     {
-        ft_putstr_fd("minishell: empty command\n", 2);
+        // ft_putstr_fd("minishell: empty command\n", 2);
         exit(1);
     }
     

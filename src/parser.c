@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/18 19:44:37 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/22 13:56:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -387,6 +387,7 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 	int i;
 	char *last_input = NULL;
 	char *last_output = NULL;
+	int sflag = 0;
 	int last_output_is_append = 0;
 
 	// First, count the number of word tokens for this command
@@ -398,11 +399,8 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 	{
 		if (current->type == TOKEN_WORD)
 		{
-			// Don't count words that are redirection targets
-			if (!(current->next && (current->next->type == TOKEN_REDIR_IN ||
-								  current->next->type == TOKEN_REDIR_OUT ||
-								  current->next->type == TOKEN_REDIR_APPEND)) &&
-				!(current != parser->current_token && 
+			// Only skip words that are redirection targets (the word after the redirection operator)
+			if (!(current != parser->current_token && 
 				  (current->prev->type == TOKEN_REDIR_IN ||
 				   current->prev->type == TOKEN_REDIR_OUT ||
 				   current->prev->type == TOKEN_REDIR_APPEND)))
@@ -410,8 +408,8 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 				arg_count++;
 			}
 		}
-		else if (current->type == TOKEN_REDIR_OUT ||
-				 current->type == TOKEN_REDIR_APPEND)
+		else if ((current->type == TOKEN_REDIR_OUT ||
+				 current->type == TOKEN_REDIR_APPEND) && sflag == 0)
 		{
 			last_output_is_append = (current->type == TOKEN_REDIR_APPEND);
 			if (current->next && current->next->type == TOKEN_WORD)
@@ -453,8 +451,11 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 					ft_putstr_fd("minishell: ", 2);
 					ft_putstr_fd(filename, 2);
 					ft_putstr_fd(": No such file or directory\n", 2);
-					parser->error = 1;
-					return (NULL);
+					// parser->error = 1;
+					// return (NULL);
+					sflag = 1;
+					current = current->next;
+					continue;
 				}
 			}
 		}
@@ -476,11 +477,8 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 	{
 		if (current->type == TOKEN_WORD)
 		{
-			// Skip words that are redirection targets
-			if (!(current->next && (current->next->type == TOKEN_REDIR_IN ||
-								  current->next->type == TOKEN_REDIR_OUT ||
-								  current->next->type == TOKEN_REDIR_APPEND)) &&
-				!(current != parser->current_token && 
+			// Only skip words that are redirection targets (the word after the redirection operator)
+			if (!(current != parser->current_token && 
 				  (current->prev->type == TOKEN_REDIR_IN ||
 				   current->prev->type == TOKEN_REDIR_OUT ||
 				   current->prev->type == TOKEN_REDIR_APPEND)))
@@ -531,13 +529,16 @@ t_cmd_node *parse_pipeline(t_parser *parser)
 	t_cmd_node *next_cmd;
 	int pipe_count = 0;
 	t_token *start_token;
+	int		sflag = 0;
 
 	ft_putstr_fd("\n=== Pipeline Output File Creation Pass ===\n", 2);
 	
 	// First, create all output files in the pipeline
 	start_token = parser->current_token;
 	while (parser->current_token && 
-		   parser->current_token->type != TOKEN_EOF)
+		   parser->current_token->type != TOKEN_EOF
+			&& sflag == 0
+		)
 	{
 		ft_putstr_fd("DEBUG: Pipeline token type: ", 2);
 		ft_putnbr_fd(parser->current_token->type, 2);
@@ -586,6 +587,15 @@ t_cmd_node *parse_pipeline(t_parser *parser)
 				}
 			}
 		}
+		else if (parser->current_token->type == TOKEN_REDIR_IN)
+		{
+			int fd = open(parser->current_token->value, O_RDONLY);
+			if (fd < 0)
+			{
+				// ft_putstr_fd("NO SUCH FILE OR DIRECTORY", 2);
+				sflag = 1;
+			}
+		}
 		advance_token(parser);
 	}
 	
@@ -611,9 +621,9 @@ t_cmd_node *parse_pipeline(t_parser *parser)
 		
 		// Parse the next command in the pipeline
 		next_cmd = parse_simple_command(parser);
-		if (!next_cmd)
+		if (parser->error == 1)
 		{
-			parser->error = 1;
+			// parser->error = 1;
 			return (first_cmd);
 		}
 		

@@ -161,6 +161,7 @@ int			execute_export(t_cmd_node *node, t_exec *exec);
 
 //unset
 void		ft_unset(t_exec *exec, char **args);
+void	print_unset_error(const char *var_name, t_exec *exec);
 t_env_var	*remove_env_var(t_exec *exec, const char *name);
 void		unset_env_var(t_exec *exec, const char *name);
 

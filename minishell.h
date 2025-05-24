@@ -161,8 +161,14 @@ int			execute_export(t_cmd_node *node, t_exec *exec);
 
 //unset
 void		ft_unset(t_exec *exec, char **args);
-t_env_var	*remove_env_var(t_exec *exec, const char *name);
 void		unset_env_var(t_exec *exec, const char *name);
+t_env_var	*remove_env_var(t_exec *exec, const char *name);
+t_env_var	*find_and_remove_node(t_exec *exec, const char *name);
+t_env_var	*handle_first_node_removal(t_exec *exec, t_env_var *current);
+t_env_var	*handle_middle_node_removal(t_env_var *current, t_env_var *prev);
+void		print_unset_error(const char *var_name, t_exec *exec);
+void		process_single_var(t_exec *exec, const char *var_name, int *had_error);
+void		process_all_vars(t_exec *exec, char **args);
 
 //pwd
 char		*get_current_directory(t_exec *exec);

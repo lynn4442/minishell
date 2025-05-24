@@ -14,36 +14,13 @@
 
 void	print_single_arg(char *arg, t_env_var *env, t_exec *exec)
 {
-	int i;
-	int escaped;
-
-	(void)env;  // Mark as unused
-	(void)exec; // Mark as unused
+	char	*processed;
 
 	if (!arg)
 		return ;
-	i = 0;
-	escaped = 0;
-	while (arg[i])
-	{
-		if (arg[i] == '\\' && !escaped)
-		{
-			escaped = 1;
-			i++;
-			continue ;
-		}
-		if (escaped)
-		{
-			printf("%c", arg[i]);
-			escaped = 0;
-		}
-		else
-		{
-			if (arg[i] != '\\')
-				printf("%c", arg[i]);
-		}
-		i++;
-	}
+	processed = process_quotes(arg, env, exec);
+	if (processed)
+		printf("%s", processed);
 }
 
 int	parse_echo_options(char **args, int *i)

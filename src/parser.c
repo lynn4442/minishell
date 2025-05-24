@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 13:56:37 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/23 23:00:38 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,14 +146,14 @@ t_token *get_word_token(t_lexer *lexer, t_gc *gc)
 			{
 				in_quotes = 1;
 				quote_type = lexer->input[i];
-				i++;  // Skip the opening quote
+				temp[j++] = lexer->input[i++];  // Keep the opening quote
 				continue;
 			}
 			else if (lexer->input[i] == quote_type)
 			{
 				in_quotes = 0;
 				quote_type = 0;
-				i++;  // Skip the closing quote
+				temp[j++] = lexer->input[i++];  // Keep the closing quote
 				continue;
 			}
 		}

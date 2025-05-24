@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 16:24:11 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/23 22:58:16 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ static int	process_quoted_text(const char *str, char **result,
 	while (str[i])
 	{
 		// Handle escape character (outside quotes or in double quotes)
-		if (str[i] == '\\' && !escaped)
+		if (str[i] == '\\' && !escaped && quote_type != '\'')
 		{
 			escaped = 1;
 			// Keep the backslash for escaped quotes
@@ -123,7 +123,7 @@ static int	process_quoted_text(const char *str, char **result,
 		}
 
 		// Handle variable expansion (outside quotes or in double quotes)
-		if (str[i] == '$' && (quote_type == '\0' || quote_type == '"') && str[i + 1])
+		if (str[i] == '$' && quote_type != '\'' && str[i + 1])
 		{
 			len = process_special_chars(str, &i, res, len, env, exec);
 			continue;

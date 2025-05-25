@@ -36,11 +36,14 @@ int handle_output_redirection(t_cmd_node *cmd)
 /* Process command arguments and extract redirection operators */
 void process_and_update_args(t_cmd_node *cmd, char **args)
 {
-	int i = 0;
-	int j = 0;
+	int i;
+	int j;
 	char **new_args;
-	int arg_count = 0;
+	int arg_count;
 
+	i = 0;
+	j = 0;
+	arg_count = 0;
 	// First, we're just counting the number of non-redirection arguments
 	// This assumes parse_redirections has already processed the
 	// redirection tokens and set cmd->in and cmd->out accordingly
@@ -59,7 +62,6 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
 			i++;
 		}
 	}
-
 	// Second pass: create new args array without redirections
 	new_args = ft_malloc(&cmd->exec->gc, sizeof(char *) * (arg_count + 1));
 	if (!new_args)
@@ -135,7 +137,6 @@ int restore_output_redirection(int original_fd)
 	}
 	return 0;
 }
-
 /* Setup input redirection and save original stdin */
 int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
 {
@@ -143,7 +144,6 @@ int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
 
 	if (!cmd->in)
 		return 0;
-
 	// Try to open the input file
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
@@ -154,7 +154,6 @@ int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
 		ft_putstr_fd(": No such file or directory\n", 2);
 		return -1;
 	}
-
 	*original_fd = dup(STDIN_FILENO);
 	if (*original_fd == -1)
 	{

@@ -126,6 +126,15 @@ typedef struct s_exec
 	t_gc		gc;
 }	t_exec;
 
+typedef	struct s_quote_check
+{
+	int		i;
+	int		len;
+	char	*res;
+	char	quote_type;
+	int		escaped;
+} t_quote_check; 
+
 //init_data
 t_env_var	*create_env_var(t_exec *exec, char *name, char *value);
 t_cmd_node	*create_cmd_node(t_exec *exec, char **args);
@@ -231,6 +240,8 @@ int restore_input_redirection(int original_fd);
 int check_quotes(const char *input);
 void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec);
 char *process_quotes(const char *str, t_env_var *env, t_exec *exec);
+int	handle_exit_status(char *res, int len, t_exec *exec);
+char	*extract_var_name(const char *str, int start, int end);
 
 // Add these prototypes
 void setup_interactive_signals(void);

@@ -12,54 +12,6 @@
 
 #include "../minishell.h"
 
-char ***split_by_pipe(char *input, t_exec *exec)
-{
-	// Note: This function should be deprecated in favor of the centralized parser
-	// It's maintained here for backward compatibility
-
-	char **parts = ft_split(input, '|', &exec->gc);
-	if (!parts)
-		return NULL;
-
-	// Count number of commands
-	int cmd_count = 0;
-	while (parts[cmd_count])
-		cmd_count++;
-
-	// Allocate array for commands
-	char ***commands = ft_malloc(&exec->gc, (cmd_count + 1) * sizeof(char **));
-	if (!commands)
-		return NULL;
-
-	// Process each command
-	int i = 0;
-	while (parts[i])
-	{
-		// Trim whitespace from the command
-		char *trimmed = ft_strtrim(parts[i], " \t", &exec->gc);
-		if (!trimmed)
-			return NULL;
-
-		// Check for empty commands
-		if (ft_strlen(trimmed) == 0)
-		{
-			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
-			exec->exit_status = 2;
-			return NULL;
-		}
-
-		// Use split_preserve_quotes to handle quoted arguments and split on spaces
-		commands[i] = split_preserve_quotes(trimmed, &exec->gc);
-		if (!commands[i])
-			return NULL;
-
-		i++;
-	}
-	commands[i] = NULL;
-
-	return commands;
-}
-
 static void handle_escape_and_quotes(char c, int *escaped, char *quote)
 {
 	if (c == '\\' && !(*escaped))
@@ -67,7 +19,6 @@ static void handle_escape_and_quotes(char c, int *escaped, char *quote)
 		*escaped = 1;
 		return;
 	}
-
 	if (*escaped)
 	{
 		*escaped = 0;
@@ -76,48 +27,42 @@ static void handle_escape_and_quotes(char c, int *escaped, char *quote)
 	if (c == '\'' || c == '"')
 	{
 		if (!(*quote))
-		{
 			*quote = c;
-		}
 		else if (*quote == c)
-		{
 			*quote = 0;
-		}
 		// Otherwise, it's a quote of a different type while inside a quote
 		// For example: a double quote inside single quotes, ignore it
 	}
 }
-
 static int count_arguments(const char *input, t_gc *gc)
 {
-	int i = 0;
-	int count = 0;
-	char quote = 0;
-	int escaped = 0;
+	int		i;
+	int		count;
+	char	quote;
+	int		escaped;
+	int		start;
 
+	i = 0;
+	count = 0;
+	quote = 0;
+	escaped = 0;
 	(void)gc;
-
 	while (input[i])
 	{
 		while (input[i] && ft_isspace(input[i]) && !quote)
 			i++;
 		if (!input[i])
 			break;
-		int start = i;
+		start = i;
 		if (!quote && !escaped && (input[i] == '>' || input[i] == '<'))
 		{
 			count++;
 			if (input[i+1] && input[i] == input[i+1])
-			{
 				i += 2;
-			}
 			else
-			{
 				i++;
-			}
 			while (input[i] && ft_isspace(input[i]))
 				i++;
-
 			if (input[i])
 				continue;
 			else
@@ -137,21 +82,15 @@ static int count_arguments(const char *input, t_gc *gc)
 				break;
 			i++;
 		}
-
 		if (start < i)
 			count++;
-
 		if (!input[i])
 			break;
-
-		// Important! Increment i to avoid infinite loop if not already at end
 		if (ft_isspace(input[i]))
 			i++;
 	}
-
 	return count;
 }
-
 /* Extract a single argument from the input string */
 static char *extract_argument(const char *input, int *i, char *quote, int *escaped, t_gc *gc, int is_echo_command)
 {

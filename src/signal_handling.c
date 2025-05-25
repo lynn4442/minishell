@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal_handling.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lynny <lynny@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/24 22:06:29 by lynny            ###   ########.fr       */
+/*   Updated: 2025/05/25 19:47:55 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static void	handle_sigint(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 	g_signal_received = 0;
-}
+}zz
 
 static void setup_signal_handlers(int sigint_action, int sigquit_action)
 {
@@ -108,3 +108,62 @@ int get_signal_exit_status(int status)
 	return WEXITSTATUS(status);  // Gets the exit code from normally terminated process
 }
 // recheck with fouad this to redo it
+
+
+//extern int	g_signal_received;
+
+////after zabbit l sigaction
+//static void	handle_sigint(int sig)
+//{
+//	(void)sig;
+//	write(1, "\n", 1);
+//	rl_on_new_line();
+//	rl_replace_line("", 0);
+//	rl_redisplay();
+//	g_signal_received = 0;
+//}
+
+//void signal_fdahouk()
+//{
+//	signal(SIGINT,handle_sigint);
+//	signal(SIGQUIT,SIG_IGN);
+//}
+
+//void function_ignore()
+//{
+//	signal(SIGINT,SIG_IGN);
+//	signal(SIGQUIT,SIG_IGN);
+//}
+
+//void function_default()
+//{
+//	signal(SIGINT,SIG_DFL);
+//	signal(SIGQUIT,SIG_DFL);
+//}
+
+//void setup_signal_handlers(int sigint_action, int sigquit_action)
+//{
+//	if (sigint_action == 1 && sigquit_action == 0 )
+//		signal_fdahouk();
+//	else if (sigint_action == 1 && sigquit_action == 1)
+//		function_default();
+//	else
+//		function_ignore();
+//}
+
+//void handle_eof_signal(t_exec *exec)
+//{
+//	printf("exit\n");
+//	exec->exit_status = 0;
+//	cleanup_and_exit(exec, 0);//for the ctrl+d --> exit_code = 0
+//}
+
+//void cleanup_and_exit(t_exec *exec, int exit_code)
+//{
+//	int shlvl = get_shell_level(exec);//check the shell level
+
+//	//if not in nested level
+//	if (shlvl <= 1 && exec)
+//		ft_free_all(&exec->gc);
+//	exit(exit_code);
+//}

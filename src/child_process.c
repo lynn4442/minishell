@@ -26,6 +26,7 @@ void	handle_child_exit_status(t_exec *exec, pid_t pid)
 	int	status;
 
 	waitpid(pid, &status, 0);
+	//signal_fdahouk();
 	if (WIFEXITED(status))
 		exec->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
@@ -57,8 +58,14 @@ int	create_and_execute_process(t_exec *exec, t_cmd_node *cmd,
 		return (1);
 	}
 	if (pid == 0)
+	{
+		//function_default();
 		execute_child_process(cmd, cmd_path, env_array);
+	}
 	else
+	{
+		//function_ignore();
 		handle_child_exit_status(exec, pid);
+	}
 	return (0);
 }

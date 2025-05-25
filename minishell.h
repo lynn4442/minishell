@@ -312,5 +312,8 @@ void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
 /* str_utils.c */
 int			ft_isspace(char c);
 
+
+int	save_original_fd(int fd_to_save, int *original_fd);
+
 #endif
 

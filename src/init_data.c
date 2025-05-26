@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 19:12:03 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/18 09:55:50 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/26 14:47:10 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	init_cmd_fields(t_cmd_node *cmd, t_exec *exec)
 	cmd->heredoc = NULL;
 	cmd->append = 0;
 	cmd->err = 0;
-	cmd->ex_heredoc = 0;
+	cmd->ex_heredoc = 0; //heyde li zedta
 	cmd->exec = exec;
 	cmd->next = NULL;
 }
@@ -79,4 +79,5 @@ void	init_exec(t_exec *exec)
 	exec->env_list = NULL;
 	exec->exit_status = 0;
 	exec->gc.head = NULL;
+	exec->heredoc_counter = 0;
 }

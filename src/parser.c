@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/23 23:00:38 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/26 21:05:30 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,11 +389,10 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 	char *last_output = NULL;
 	int sflag = 0;
 	int last_output_is_append = 0;
+	// char *heredoc_delimiter = NULL; heyda l part li zeddto
 
-	// First, count the number of word tokens for this command
 	arg_count = 0;
 	
-	// First pass: Count args and track redirection info
 	t_token *current = parser->current_token;
 	while (current && current->type != TOKEN_EOF && current->type != TOKEN_PIPE)
 	{
@@ -403,7 +402,8 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 			if (!(current != parser->current_token && 
 				  (current->prev->type == TOKEN_REDIR_IN ||
 				   current->prev->type == TOKEN_REDIR_OUT ||
-				   current->prev->type == TOKEN_REDIR_APPEND)))
+				   current->prev->type == TOKEN_REDIR_APPEND ||
+				   current->prev->type == TOKEN_REDIR_HEREDOC)))
 			{
 				arg_count++;
 			}
@@ -459,6 +459,12 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 				}
 			}
 		}
+		// heyde zeddta kermel l heredoc
+		// else if (current->type == TOKEN_REDIR_HEREDOC && current->next)
+		// {
+		// 	heredoc_delimiter = current->next->value;
+		// 	current = current->next->next;
+		// }
 		current = current->next;
 	}
 
@@ -481,7 +487,8 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 			if (!(current != parser->current_token && 
 				  (current->prev->type == TOKEN_REDIR_IN ||
 				   current->prev->type == TOKEN_REDIR_OUT ||
-				   current->prev->type == TOKEN_REDIR_APPEND)))
+				   current->prev->type == TOKEN_REDIR_APPEND ||
+				   current->prev->type == TOKEN_REDIR_HEREDOC)))
 			{
 				args[i++] = ft_strdup(&parser->exec->gc, current->value);
 			}
@@ -517,6 +524,11 @@ t_cmd_node *parse_simple_command(t_parser *parser)
 		cmd->out = ft_strdup(&parser->exec->gc, last_output);
 		cmd->append = last_output_is_append;
 	}
+	// the heredoc part li zeddto
+	// if (heredoc_delimiter)
+	// {
+	// 	cmd->heredoc = ft_strdup(&parser->exec->gc, heredoc_delimiter);
+	// }
 	
 	return (cmd);
 }

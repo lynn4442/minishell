@@ -1,12 +1,13 @@
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 09:59:11 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:39:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +135,7 @@ typedef	struct s_quote_check
 	char	*res;
 	char	quote_type;
 	int		escaped;
-} t_quote_check; 
+} t_quote_check;
 
 //init_data
 t_env_var	*create_env_var(t_exec *exec, char *name, char *value);

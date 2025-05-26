@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 17:12:00 by marvin            #+#    #+#             */
-/*   Updated: 2025/05/17 17:12:00 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/26 21:24:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,14 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	(void)original_in;
 	if (!cmd->in)
 		return (0);
+
+	// heyde eza fi heredoc
+	// if (cmd->heredoc)
+	// {
+	// 	if (handle_heredoc(cmd, cmd->exec) == -1)
+	// 		return (-1);
+	// }
+
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{
@@ -40,7 +48,7 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 		ft_putstr_fd(cmd->in, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
 		cmd->exec->exit_status = 1;
-		return (0);
+		return (-1);
 	}
 	dup2(fd, STDIN_FILENO);
 	close(fd);

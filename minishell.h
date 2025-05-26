@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 09:59:11 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/26 22:36:01 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,14 @@ int			execute_export(t_cmd_node *node, t_exec *exec);
 
 //unset
 void		ft_unset(t_exec *exec, char **args);
-void	print_unset_error(const char *var_name, t_exec *exec);
-t_env_var	*remove_env_var(t_exec *exec, const char *name);
 void		unset_env_var(t_exec *exec, const char *name);
+t_env_var	*remove_env_var(t_exec *exec, const char *name);
+t_env_var	*find_and_remove_node(t_exec *exec, const char *name);
+t_env_var	*handle_first_node_removal(t_exec *exec, t_env_var *current);
+t_env_var	*handle_middle_node_removal(t_env_var *current, t_env_var *prev);
+void		print_unset_error(const char *var_name, t_exec *exec);
+void		process_single_var(t_exec *exec, const char *var_name, int *had_error);
+void		process_all_vars(t_exec *exec, char **args);
 
 //pwd
 char		*get_current_directory(t_exec *exec);
@@ -231,6 +236,7 @@ char *process_quotes(const char *str, t_env_var *env, t_exec *exec);
 void setup_interactive_signals(void);
 void setup_child_signals(void);
 void setup_parent_signals(void);
+void setup_heredoc_signals(void);
 void cleanup_and_exit(t_exec *exec, int exit_code);
 void handle_eof_signal(t_exec *exec);
 int get_signal_exit_status(int status);
@@ -312,8 +318,9 @@ void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
 /* str_utils.c */
 int			ft_isspace(char c);
 
-
-int	save_original_fd(int fd_to_save, int *original_fd);
+// heredoc functions
+// int handle_heredoc(t_cmd_node *cmd, t_exec *exec);
+// void cleanup_heredoc_files(t_cmd_node *cmd);
 
 #endif
 

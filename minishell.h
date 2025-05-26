@@ -331,5 +331,9 @@ void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
 /* str_utils.c */
 int			ft_isspace(char c);
 
+// Heredoc functions
+int handle_heredoc(t_cmd_node *cmd, t_exec *exec);
+void cleanup_heredoc_files(t_cmd_node *cmd);
+
 #endif
 

@@ -242,6 +242,9 @@ void print_with_quote_handling(const char *arg, t_env_var *env, t_exec *exec);
 char *process_quotes(const char *str, t_env_var *env, t_exec *exec);
 int	handle_exit_status(char *res, int len, t_exec *exec);
 char	*extract_var_name(const char *str, int start, int end);
+int	process_quoted_text(const char *str, char **result,t_env_var *env, t_exec *exec);
+int	handle_quote(const char *str, t_quote_check *st);
+int process_special_chars(const char *str, t_quote_check *st, t_env_var *env, t_exec *exec);
 
 // Add these prototypes
 void setup_interactive_signals(void);

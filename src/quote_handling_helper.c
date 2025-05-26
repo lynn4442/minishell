@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quote_handling_helper.c                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/26 19:12:45 by hhussein          #+#    #+#             */
+/*   Updated: 2025/05/26 19:13:52 by hhussein         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 static int	handle_backslash(const char *str, t_quote_check *st)
@@ -12,6 +24,7 @@ static int	handle_backslash(const char *str, t_quote_check *st)
 	}
 	return (0);
 }
+
 static int	handle_escaped_char(const char *str, t_quote_check *st)
 {
 	if (st->escaped)
@@ -23,7 +36,7 @@ static int	handle_escaped_char(const char *str, t_quote_check *st)
 	return (0);
 }
 
-static int	handle_quote(const char *str, t_quote_check *st)
+int	handle_quote(const char *str, t_quote_check *st)
 {
 	if (str[st->i] == '\'' || str[st->i] == '"')
 	{
@@ -38,6 +51,7 @@ static int	handle_quote(const char *str, t_quote_check *st)
 	}
 	return (0);
 }
+
 static int	handle_quotes_and_escapes(const char *str, t_quote_check *st)
 {
 	if (handle_backslash(str, st))
@@ -48,7 +62,8 @@ static int	handle_quotes_and_escapes(const char *str, t_quote_check *st)
 		return (1);
 	return (0);
 }
-static int	process_quoted_text(const char *str, char **result,
+
+int	process_quoted_text(const char *str, char **result,
 					t_env_var *env, t_exec *exec)
 {
 	t_quote_check	st;
@@ -58,15 +73,14 @@ static int	process_quoted_text(const char *str, char **result,
 	st.res = *result;
 	st.quote_type = '\0';
 	st.escaped = 0;
-
 	while (str[st.i])
 	{
 		if (handle_quotes_and_escapes(str, &st))
-			continue;
+			continue ;
 		if (str[st.i] == '$' && st.quote_type != '\'' && str[st.i + 1])
 		{
 			st.len = process_special_chars(str, &st, env, exec);
-			continue;
+			continue ;
 		}
 		st.res[st.len++] = str[st.i++];
 	}

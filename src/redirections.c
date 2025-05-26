@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 19:55:04 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/04 17:30:00 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/26 18:38:04 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@ static char **process_attached_redirections(char **args, t_gc *gc, int *position
 		if (!new_args || !cmd_part || !redir_token)
 			return args;
 		i = 0;
-		while (i < *position;)
+		while (i < *position)
 		{
-			new_args[i] = args[i++];
+			new_args[i] = args[i];
 			i++;
 		}
 		new_args[i++] = cmd_part;

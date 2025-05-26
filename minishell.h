@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/26 14:39:54 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/26 23:57:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,6 @@ int process_special_chars(const char *str, t_quote_check *st, t_env_var *env, t_
 
 // Add these prototypes
 void setup_interactive_signals(void);
-void setup_child_signals(void);
 void setup_parent_signals(void);
 void cleanup_and_exit(t_exec *exec, int exit_code);
 void handle_eof_signal(t_exec *exec);
@@ -335,6 +334,13 @@ int			ft_isspace(char c);
 // Heredoc functions
 int handle_heredoc(t_cmd_node *cmd, t_exec *exec);
 void cleanup_heredoc_files(t_cmd_node *cmd);
+
+// Signal handling functions
+void	handle_sigint(int sig);
+void	setup_interactive_signals(void);
+void	setup_child_signals(void);
+void	setup_parent_signals(void);
+void	setup_signal_handlers(int sigint_action, int sigquit_action);
 
 #endif
 

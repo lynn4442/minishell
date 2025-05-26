@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 09:59:11 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/26 14:39:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,7 @@ typedef struct s_exec
 	t_env_var	*env_list;
 	int			exit_status;
 	t_gc		gc;
+	int			heredoc_counter;  // Counter for unique heredoc filenames
 }	t_exec;
 
 //init_data
@@ -316,6 +317,10 @@ void		handle_export(t_gc *gc, t_env_var **env_list, char *arg);
 
 /* str_utils.c */
 int			ft_isspace(char c);
+
+// Heredoc functions
+int handle_heredoc(t_cmd_node *cmd, t_exec *exec);
+void cleanup_heredoc_files(t_cmd_node *cmd);
 
 #endif
 

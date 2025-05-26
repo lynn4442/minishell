@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/23 22:58:16 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/26 14:56:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ static int	calculate_max_result_length(const char *str, t_env_var *env)
 	return (max_len + 1); // +1 for '\0'
 }
 
+// hone mafroud nzid l quote handling eza heredoc
 char	*process_quotes(const char *str, t_env_var *env, t_exec *exec)
 {
 	char	*result;

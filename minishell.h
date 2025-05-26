@@ -124,6 +124,7 @@ typedef struct s_exec
 	t_env_var	*env_list;
 	int			exit_status;
 	t_gc		gc;
+	int			heredoc_counter;  // Counter for unique heredoc filenames
 }	t_exec;
 
 typedef	struct s_quote_check
@@ -336,4 +337,3 @@ int handle_heredoc(t_cmd_node *cmd, t_exec *exec);
 void cleanup_heredoc_files(t_cmd_node *cmd);
 
 #endif
-

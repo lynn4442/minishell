@@ -1,0 +1,52 @@
+static int	process_quoted_text(const char *str, char **result,
+					t_env_var *env, t_exec *exec)
+{
+	int		i;
+	int		len;
+	char	*res;
+	char	quote_type;
+	int		escaped;
+
+	i = 0;
+	len = 0;
+	res = *result;
+	quote_type = '\0';
+	escaped = 0;
+
+	while (str[i])
+	{
+		if (str[i] == '\\' && !escaped && quote_type != '\'') // Handle escape character (outside quotes or in double quotes)
+		{
+			escaped = 1; // Keep the backslash for escaped quotes
+			if (str[i + 1] == '\'' || str[i + 1] == '"')
+				res[len++] = str[i];
+			i++;
+			continue;
+		}
+		if (escaped)// Handle escaped character
+		{
+			res[len++] = str[i++];
+			escaped = 0;
+			continue;
+		}
+		if ((str[i] == '\'' || str[i] == '"'))// Handle quotes
+		{
+			if (quote_type == '\0')
+				quote_type = str[i]; // Start quoted section
+			else if (str[i] == quote_type)
+				quote_type = '\0';   // End quoted section
+			else
+				res[len++] = str[i]; // Different quote inside quoted section
+			i++;
+			continue;
+		}
+		if (str[i] == '$' && quote_type != '\'' && str[i + 1])// Handle variable expansion (outside quotes or in double quotes)
+		{
+			len = process_special_chars(str, &i, res, len, env, exec);
+			continue;
+		}
+		res[len++] = str[i++];
+	}
+	res[len] = '\0';
+	return (len);
+}

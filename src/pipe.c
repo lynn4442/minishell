@@ -3,22 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 16:21:23 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/05/28 20:00:37 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static void handle_escape_and_quotes(char c, int *escaped, char *quote)
+char ***split_by_pipe(char *input, t_exec *exec)
+{
+	// Note: This function should be deprecated in favor of the centralized parser
+	// It's maintained here for backward compatibility
+
+	char **parts = ft_split(input, '|', &exec->gc);
+	if (!parts)
+		return NULL;
+
+	// Count number of commands
+	int cmd_count = 0;
+	while (parts[cmd_count])
+		cmd_count++;
+
+	// Allocate array for commands
+	char ***commands = ft_malloc(&exec->gc, (cmd_count + 1) * sizeof(char **));
+	if (!commands)
+		return NULL;
+
+	// Process each command
+	int i = 0;
+	while (parts[i])
+	{
+		// Trim whitespace from the command
+		char *trimmed = ft_strtrim(parts[i], " \t", &exec->gc);
+		if (!trimmed)
+			return NULL;
+
+		// Check for empty commands
+		if (ft_strlen(trimmed) == 0)
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
+			exec->exit_status = 2;
+			return NULL;
+		}
+
+		// Use split_preserve_quotes to handle quoted arguments and split on spaces
+		commands[i] = split_preserve_quotes(trimmed, &exec->gc);
+		if (!commands[i])
+			return NULL;
+
+		i++;
+	}
+	commands[i] = NULL;
+
+	return commands;
+}
+
+void handle_escape_and_quotes(char c, int *escaped, char *quote)
 {
 	if (c == '\\' && !(*escaped))
 	{
 		*escaped = 1;
 		return;
 	}
+
 	if (*escaped)
 	{
 		*escaped = 0;
@@ -27,70 +76,18 @@ static void handle_escape_and_quotes(char c, int *escaped, char *quote)
 	if (c == '\'' || c == '"')
 	{
 		if (!(*quote))
+		{
 			*quote = c;
+		}
 		else if (*quote == c)
+		{
 			*quote = 0;
+		}
 		// Otherwise, it's a quote of a different type while inside a quote
 		// For example: a double quote inside single quotes, ignore it
 	}
 }
-static int count_arguments(const char *input, t_gc *gc)
-{
-	int		i;
-	int		count;
-	char	quote;
-	int		escaped;
-	int		start;
 
-	i = 0;
-	count = 0;
-	quote = 0;
-	escaped = 0;
-	(void)gc;
-	while (input[i])
-	{
-		while (input[i] && ft_isspace(input[i]) && !quote)
-			i++;
-		if (!input[i])
-			break;
-		start = i;
-		if (!quote && !escaped && (input[i] == '>' || input[i] == '<'))
-		{
-			count++;
-			if (input[i+1] && input[i] == input[i+1])
-				i += 2;
-			else
-				i++;
-			while (input[i] && ft_isspace(input[i]))
-				i++;
-			if (input[i])
-				continue;
-			else
-				break;
-		}
-		while (input[i])
-		{
-			handle_escape_and_quotes(input[i], &escaped, &quote);
-			if (escaped)
-			{
-				i++;
-				continue;
-			}
-			if (ft_isspace(input[i]) && !quote)
-				break;
-			if (!quote && !escaped && (input[i] == '>' || input[i] == '<'))
-				break;
-			i++;
-		}
-		if (start < i)
-			count++;
-		if (!input[i])
-			break;
-		if (ft_isspace(input[i]))
-			i++;
-	}
-	return count;
-}
 /* Extract a single argument from the input string */
 static char *extract_argument(const char *input, int *i, char *quote, int *escaped, t_gc *gc, int is_echo_command)
 {
@@ -208,43 +205,29 @@ static char *extract_argument(const char *input, int *i, char *quote, int *escap
 
 char **split_preserve_quotes(const char *input, t_gc *gc)
 {
-	// Note: This function should be used by the parser,
-	// but the direct calls from outside should go through the centralized parser
+	char **result;// Note: This function should be used by the parser,
+	int 	is_echo_command;// but the direct calls from outside should go through the centralized parse
+	t_argument_count	arg;
 
-	char **result;
-	int i = 0;
-	int count = 0;
-	char quote = 0;
-	int escaped = 0;
-	int is_echo_command = 0;
-
-	// Count the number of arguments
+	set_value(&arg);
+	is_echo_command = 0;
 	int arg_count = count_arguments(input, gc);
-
-	// Allocate array
 	result = ft_malloc(gc, sizeof(char *) * (arg_count + 1));
 	if (!result)
 		return NULL;
-
-	// Scan for arguments
-	i = 0;
-	while (count < arg_count)
+	arg.i = 0;
+	while (arg.count < arg_count)
 	{
-		char *arg = extract_argument(input, &i, &quote, &escaped, gc, is_echo_command);
+		char *arg = extract_argument(input, &arg.i, &quote, &escaped, gc, is_echo_command);
 		if (!arg)
 			break;
-
-		// Check if this is the echo command
-		if (count == 0 && ft_strcmp(arg, "echo") == 0)
+		if (arg.count == 0 && ft_strcmp(arg, "echo") == 0)// Check if this is the echo command
 			is_echo_command = 1;
-
-		result[count++] = arg;
-
+		result[arg.count++] = arg;
 		if (!input[i])
 			break;
 		i++;
 	}
-
 	result[count] = NULL;
-	return result;
+	return (result);
 }

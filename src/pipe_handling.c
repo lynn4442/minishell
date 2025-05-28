@@ -20,6 +20,7 @@ static int is_debug_enabled(t_exec *exec)
 			(ft_strcmp(debug_var->value, "1") == 0 ||
 			 ft_strcmp(debug_var->value, "true") == 0));
 }
+
 /* Setup a single command's input from a pipe or file */
 static void setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
 {
@@ -459,6 +460,7 @@ int has_pipe(t_cmd_node *cmd)
 
 	return (cmd->type == PIPE);
 }
+
 /* Execute a pipe from string commands (old interface maintained for compatibility) */
 void execute_pipe(t_exec *exec, char ***commands, int cmd_count)
 {

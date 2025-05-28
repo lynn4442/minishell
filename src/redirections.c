@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 19:55:04 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/26 18:38:04 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/05/04 17:30:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ static void display_file_error(const char *file, const char *message, t_gc *gc)
 	ft_free_all(gc);
 	exit(1);
 }
+
 /* Check if a string is or contains a redirection operator */
 static int is_redirection(const char *str)
 {
@@ -54,6 +55,7 @@ static int is_redirection(const char *str)
 	
 	return 0;
 }
+
 /* Process attached redirections like 'ls>test' or '>file' */
 static char **process_attached_redirections(char **args, t_gc *gc, int *position)
 {
@@ -64,9 +66,7 @@ static char **process_attached_redirections(char **args, t_gc *gc, int *position
 	char *cmd_part = NULL;
 	char *filename_part = NULL;
 	char *redir_token = NULL;
-	int		i = 0;
-	int 	count = 0;
-	int 	j = 0;
+	
 	ft_putstr_fd("DEBUG - Processing attached redirection: [", 2);
 	ft_putstr_fd(arg, 2);
 	ft_putstr_fd("]\n", 2);
@@ -75,8 +75,9 @@ static char **process_attached_redirections(char **args, t_gc *gc, int *position
 	if (len <= 1 || ft_strcmp(arg, ">") == 0 || ft_strcmp(arg, "<") == 0 ||
 		ft_strcmp(arg, ">>") == 0 || ft_strcmp(arg, "<<") == 0)
 		return args;
+	
 	// Find the position of redirection character
-	while (i < len)
+	for (int i = 0; i < len; i++)
 	{
 		if (arg[i] == '>' || arg[i] == '<')
 		{
@@ -84,61 +85,93 @@ static char **process_attached_redirections(char **args, t_gc *gc, int *position
 			redir_type = arg[i];
 			break;
 		}
-		i++;
 	}
+	
 	if (redir_pos == -1)
 		return args; // No redirection found
+	
+	// Count existing args
+	int count = 0;
 	while (args[count])
 		count++;
-	if (redir_pos == len - 1) // Case 1: Command followed by redirection (e.g. "ls>")
+		
+	// Now handle different cases
+	
+	// Case 1: Command followed by redirection (e.g. "ls>")
+	if (redir_pos == len - 1)
 	{
 		ft_putstr_fd("DEBUG - Case 1: Command with redirection at end\n", 2);
 		cmd_part = ft_strndup(gc, arg, len - 1);
 		redir_token = ft_strndup(gc, &arg[len - 1], 1);
-		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 2)); // Create new args array with space for additional token
+		
+		// Create new args array with space for additional token
+		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 2));
 		if (!new_args || !cmd_part || !redir_token)
 			return args;
-		i = 0;
-		while (i < *position)
-		{
+			
+		// Copy before current
+		int i;
+		for (i = 0; i < *position; i++)
 			new_args[i] = args[i];
-			i++;
-		}
+			
+		// Add the split parts
 		new_args[i++] = cmd_part;
 		new_args[i++] = redir_token;
-		j = *position + 1;
+		
+		// Copy remaining
+		int j = *position + 1;
 		while (args[j])
 			new_args[i++] = args[j++];
+			
 		new_args[i] = NULL;
+		
+		// Don't increment position to process the newly added redirection token
 		return new_args;
 	}
-	else if (redir_pos == 0) // Case 2: Redirection at start (e.g. ">file")
+	
+	// Case 2: Redirection at start (e.g. ">file")
+	else if (redir_pos == 0)
 	{
 		ft_putstr_fd("DEBUG - Case 2: Redirection at start\n", 2);
-		if (len > 1 && arg[1] == redir_type) // Check for double redirection
+		// Check for double redirection
+		if (len > 1 && arg[1] == redir_type)
 		{
-			redir_token = ft_strndup(gc, arg, 2); // Double redirection (>> or <<)
+			// Double redirection (>> or <<)
+			redir_token = ft_strndup(gc, arg, 2);
 			filename_part = ft_strdup(gc, arg + 2);
 		}
 		else
 		{
-			redir_token = ft_strndup(gc, arg, 1); // Single redirection
+			// Single redirection
+			redir_token = ft_strndup(gc, arg, 1);
 			filename_part = ft_strdup(gc, arg + 1);
 		}
+		
+		// Create new args array
 		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 2)); // One extra for NULL 
 		if (!new_args || !redir_token || !filename_part)
 			return args;
-		i = 0;
+			
+		// Copy before current
+		int i;
 		for (i = 0; i < *position; i++)
 			new_args[i] = args[i];
+			
+		// Add the split parts
 		new_args[i++] = redir_token;
 		new_args[i++] = filename_part;
+		
+		// Copy remaining
 		int j = *position + 1;
 		while (args[j])
-			new_args[i++] = args[j++];	
-		new_args[i] = NULL; // Don't increment position to process the newly added redirection token
+			new_args[i++] = args[j++];
+			
+		new_args[i] = NULL;
+		
+		// Don't increment position to process the newly added redirection token
 		return new_args;
 	}
+	
 	// Case 3: Redirection in the middle (e.g. "ls>file")
 	else
 	{
@@ -210,6 +243,7 @@ static char **process_attached_redirections(char **args, t_gc *gc, int *position
 		return new_args;
 	}
 }
+
 /* 
  * Find and extract all redirection files from command arguments
  * This is a helper function to get all the files that are redirection targets
@@ -444,6 +478,7 @@ void handle_redirection(t_cmd_node *cmd, t_gc *gc)
 		}
 		close(fd);
 	}
+	
 	// Handle output redirection
 	if (cmd->out)
 	{

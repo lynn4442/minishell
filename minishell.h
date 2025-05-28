@@ -1,13 +1,12 @@
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/26 23:57:40 by marvin           ###   ########.fr       */
+/*   Updated: 2025/05/28 19:55:58 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +135,15 @@ typedef	struct s_quote_check
 	char	quote_type;
 	int		escaped;
 } t_quote_check;
-
+//norminette
+typedef	struct s_argument_count
+{
+	int		i;
+	int		count;
+	char	quote;
+	int		escaped;
+	int		start;
+} t_argument_count;
 //init_data
 t_env_var	*create_env_var(t_exec *exec, char *name, char *value);
 t_cmd_node	*create_cmd_node(t_exec *exec, char **args);
@@ -231,7 +238,9 @@ char	*check_command_access(const char *full_path);
 char	*hunt_in_path_dirs(t_exec *exec, const char *expanded_cmd, char **path_dirs);
 char    *find_command_path(t_exec *exec, const char *cmd);
 char    **split_preserve_quotes(const char *input, t_gc *gc);
-
+int		count_arguments(const char *input, t_gc *gc);
+void 	handle_escape_and_quotes(char c, int *escaped, char *quote);
+void	set_value(t_argument_count *arg);
 // Add these function prototypes
 int setup_output_redirection(t_cmd_node *cmd, int *original_fd);
 int restore_output_redirection(int original_fd);
@@ -344,3 +353,4 @@ void	setup_parent_signals(void);
 void	setup_signal_handlers(int sigint_action, int sigquit_action);
 
 #endif
+

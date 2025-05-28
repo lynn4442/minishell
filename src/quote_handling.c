@@ -75,7 +75,6 @@ static int	calculate_max_result_length(const char *str, t_env_var *env)
 	return (max_len + 1); // +1 for '\0'
 }
 
-// hone mafroud nzid l quote handling eza heredoc
 char	*process_quotes(const char *str, t_env_var *env, t_exec *exec)
 {
 	char	*result;

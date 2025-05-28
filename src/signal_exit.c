@@ -12,42 +12,19 @@
 
 #include "../minishell.h"
 
-extern int g_signal_received;
-
-void	handle_sigint(int sig)
+void	handle_eof_signal(t_exec *exec)
 {
-	(void)sig;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-	g_signal_received = 0;
+	printf("exit\n");
+	exec->exit_status = 0;
+	cleanup_and_exit(exec, 0);
 }
 
-void	setup_interactive_signals(void)
+void	cleanup_and_exit(t_exec *exec, int exit_code)
 {
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-}
+	int	shlvl;
 
-void	setup_child_signals(void)
-{
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-}
-
-void	setup_parent_signals(void)
-{
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	setup_signal_handlers(int sigint_action, int sigquit_action)
-{
-	if (sigint_action == 1 && sigquit_action == 0)
-		setup_interactive_signals();
-	else if (sigint_action == 1 && sigquit_action == 1)
-		setup_child_signals();
-	else
-		setup_parent_signals();
+	shlvl = get_shell_level(exec);
+	if (shlvl <= 1 && exec)
+		ft_free_all(&exec->gc);
+	exit(exit_code);
 }

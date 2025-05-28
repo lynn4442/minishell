@@ -24,12 +24,28 @@ void	execute_child_process(t_cmd_node *cmd, char *cmd_path, char **env_array)
 void	handle_child_exit_status(t_exec *exec, pid_t pid)
 {
 	int	status;
+	int	sig;
 
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		exec->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		exec->exit_status = 128 + WTERMSIG(status);
+	{
+		sig = WTERMSIG(status);
+		if (sig == SIGINT)
+			exec->exit_status = 130;
+		else if (sig == SIGQUIT)
+		{
+			printf("Quit (core dumped)\n");
+			exec->exit_status = 131;
+		}
+		else if (sig == SIGKILL)
+			exec->exit_status = 137;
+		else if (sig == SIGSEGV)
+			exec->exit_status = 139;
+		else
+			exec->exit_status = 128 + sig;
+	}
 }
 
 int	prepare_process_environment(t_exec *exec, char ***env_array)

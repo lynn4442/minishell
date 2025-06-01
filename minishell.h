@@ -135,6 +135,16 @@ typedef	struct s_quote_check
 	char	quote_type;
 	int		escaped;
 } t_quote_check;
+typedef struct s_r_variabls
+{
+	int	i;
+	int j;
+	int k;
+	int	escaped;
+	int quote;
+	int	count;
+	int is_echo_command;
+} t_r_variables;
 
 //init_data
 t_env_var	*create_env_var(t_exec *exec, char *name, char *value);

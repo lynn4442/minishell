@@ -88,14 +88,4 @@ typedef struct s_elem {
 	int				space_after;
 	struct s_elem	*next;
 }	t_elem;
-typedef struct s_r_variables
-{
-	int	i;
-	int	j;
-	int k;
-	int escaped;
-	char quote;
-	int count;
-	int is_echo_command;
-} t_r_variables;
 #endif

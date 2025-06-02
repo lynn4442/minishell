@@ -6,54 +6,22 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 18:54:33 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/02 22:16:17 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* Check if debug mode is enabled via environment variable */
-static int is_debug_enabled(t_exec *exec)
+static	int	is_debug_enabled(t_exec *exec)/* Check if debug mode is enabled via environment variable */
 {
-	t_env_var *debug_var = get_env_var(exec, "MINISHELL_DEBUG");
-	return (debug_var && debug_var->value &&
-			(ft_strcmp(debug_var->value, "1") == 0 ||
-			 ft_strcmp(debug_var->value, "true") == 0));
+	t_env_var	*debug;
+
+	debug = get_env_var(exec, "MINISHELL_DEBUG");
+	return (debug && debug->value
+		&& (ft_strcmp(debug->value, "1") == 0
+			|| ft_strcmp(debug->value, "true") == 0));
 }
 
-/* Setup a single command's input from a pipe or file */
-// static void setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
-// {
-// 	int	fd;
-
-// 	if (cmd->in)// Handle input redirection first
-// 	{
-// 		// Input redirection
-// 		fd = open(cmd->in, O_RDONLY);
-// 		if (fd == -1)
-// 		{
-// 			ft_putstr_fd("minishell: ", 2);
-// 			ft_putstr_fd(cmd->in, 2);
-// 			ft_putstr_fd(": No such file or directory\n", 2);
-// 			cmd->exec->exit_status = 1;// Don't exit, just set error status and continue
-// 			if (prev_pipe_fd != -1)// Close pipe read end if it exists
-// 				close(prev_pipe_fd);
-// 			return ;
-// 		}
-// 		if (dup2(fd, STDIN_FILENO) == -1)// Redirect stdin from the file
-// 			perror("dup2 input file");
-// 		close(fd);
-// 		if (prev_pipe_fd != -1)// We're done with input - close pipe read end if it exists
-// 			close(prev_pipe_fd);
-// 		return ;
-// 	}
-// 	if (prev_pipe_fd != -1)	// If no input redirection, use pipe if available
-// 	{
-// 		if (dup2(prev_pipe_fd, STDIN_FILENO) == -1)
-// 			perror("dup2 pipe input");
-// 		close(prev_pipe_fd);
-// 	}
-// }
 static void	print_input_error(t_cmd_node *cmd)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -61,6 +29,7 @@ static void	print_input_error(t_cmd_node *cmd)
 	ft_putstr_fd(": No such file or directory\n", 2);
 	cmd->exec->exit_status = 1;
 }
+
 static void	handle_input_file(int fd, int prev_pipe_fd)
 {
 	if (dup2(fd, STDIN_FILENO) == -1)
@@ -69,12 +38,14 @@ static void	handle_input_file(int fd, int prev_pipe_fd)
 	if (prev_pipe_fd != -1)
 		close(prev_pipe_fd);
 }
+
 static void	handle_pipe_input(int prev_pipe_fd)
 {
 	if (dup2(prev_pipe_fd, STDIN_FILENO) == -1)
 		perror("dup2 pipe input");
 	close(prev_pipe_fd);
 }
+
 static void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
 {
 	int	fd;
@@ -95,94 +66,7 @@ static void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
 	if (prev_pipe_fd != -1)
 		handle_pipe_input(prev_pipe_fd);
 }
-/* Setup a single command's output to a pipe or file */
-// static void setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
-// {
-// 	if (cmd->out)// Handle output redirection first
-// 	{
-// 		int flags = O_WRONLY | O_CREAT;
-// 		flags |= cmd->append ? O_APPEND : O_TRUNC;
-// 		int file_fd = open(cmd->out, flags, 0644);// Open the output file
-// 		if (file_fd == -1)
-// 		{
-// 			ft_putstr_fd("minishell: ", 2);
-// 			ft_putstr_fd(cmd->out, 2);
-// 			ft_putstr_fd(": Error opening output file\n", 2);
-// 			exit(1);
-// 		}
-// 		if (next_pipe_fd != -1)// If we also have a pipe, we need to duplicate output to both
-// 		{
-// 			int tee_pipe[2];// Create a temporary pipe for tee-like functionality
-// 			if (pipe(tee_pipe) == -1)
-// 			{
-// 				perror("pipe");
-// 				close(file_fd);
-// 				exit(1);
-// 			}
-// 			pid_t tee_pid = fork();// Fork a child to handle the tee operation
-// 			if (tee_pid == -1)
-// 			{
-// 				perror("fork");
-// 				close(file_fd);
-// 				close(tee_pipe[0]);
-// 				close(tee_pipe[1]);
-// 				exit(1);
-// 			}
-// 			if (tee_pid == 0)
-// 			{
-// 				char buffer[4096];// Child process: read from pipe and write to both outputs
-// 				ssize_t n;
-// 				close(tee_pipe[1]);  // Close write end
-// 				while ((n = read(tee_pipe[0], buffer, sizeof(buffer))) > 0)
-// 				{
-// 					if (write(file_fd, buffer, n) != n)// Write to file
-// 					{
-// 						perror("write to file");
-// 						exit(1);
-// 					}
-// 					if (write(next_pipe_fd, buffer, n) != n)// Write to next pipe
-// 					{
-// 						perror("write to pipe");
-// 						exit(1);
-// 					}
-// 				}
-// 				close(tee_pipe[0]);
-// 				close(file_fd);
-// 				close(next_pipe_fd);
-// 				exit(0);
-// 			}
-// 			else
-// 			{
-// 				close(tee_pipe[0]);  // Close read end// Parent process: redirect stdout to the tee pipe
-// 				if (dup2(tee_pipe[1], STDOUT_FILENO) == -1)
-// 				{
-// 					perror("dup2");
-// 					exit(1);
-// 				}
-// 				close(tee_pipe[1]);
-// 				close(file_fd);// Don't close next_pipe_fd as the tee process needs it
-// 			}
-// 		}
-// 		else
-// 		{
-// 			if (dup2(file_fd, STDOUT_FILENO) == -1)// No pipe, just redirect to file
-// 			{
-// 				perror("dup2");
-// 				exit(1);
-// 			}
-// 			close(file_fd);
-// 		}
-// 	}
-// 	else if (next_pipe_fd != -1)
-// 	{
-// 		if (dup2(next_pipe_fd, STDOUT_FILENO) == -1)// No file redirection, just pipe
-// 		{
-// 			perror("dup2");
-// 			exit(1);
-// 		}
-// 		close(next_pipe_fd);
-// 	}
-// }
+
 static void print_output_error(t_cmd_node *cmd)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -191,10 +75,10 @@ static void print_output_error(t_cmd_node *cmd)
 	exit(1);
 }
 
-static void handle_tee_child(int file_fd, int next_pipe_fd, int read_end)
+static	void	handle_tee_child(int file_fd, int next_pipe_fd, int read_end)
 {
-	char buffer[4096];
-	ssize_t n;
+	char	buffer[4096];
+	ssize_t	n;
 
 	close(read_end + 1);
 	while ((n = read(read_end, buffer, sizeof(buffer))) > 0)
@@ -209,7 +93,6 @@ static void handle_tee_child(int file_fd, int next_pipe_fd, int read_end)
 	close(next_pipe_fd);
 	exit(0);
 }
-
 static void setup_tee_pipe(int file_fd, int next_pipe_fd)
 {
 	int tee_pipe[2];
@@ -266,55 +149,7 @@ static void setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
 	else if (next_pipe_fd != -1)
 		redirect_to_pipe(next_pipe_fd);
 }
-/* Execute a command in a pipeline (child process code) */
-// static void execute_pipeline_command(t_cmd_node *cmd, char **env_array)
-// {
-// 	int debug = is_debug_enabled(cmd->exec);
 
-// 	if (debug)// Debug info to stderr (won't interfere with redirections)
-// 	{
-// 		ft_putstr_fd("minishell: executing command: ", 2);
-// 		for (int i = 0; cmd->arr && cmd->arr[i]; i++)
-// 		{
-// 			ft_putstr_fd(cmd->arr[i], 2);
-// 			ft_putstr_fd(" ", 2);
-// 		}
-// 		ft_putstr_fd("\n", 2);
-// 		if (cmd->in)
-// 		{
-// 			ft_putstr_fd("minishell: with input redirection from: ", 2);
-// 			ft_putstr_fd(cmd->in, 2);
-// 			ft_putstr_fd("\n", 2);
-// 		}
-// 		if (cmd->out)
-// 		{
-// 			ft_putstr_fd("minishell: with output redirection to: ", 2);
-// 			ft_putstr_fd(cmd->out, 2);
-// 			ft_putstr_fd(cmd->append ? " (append)" : " (truncate)", 2);
-// 			ft_putstr_fd("\n", 2);
-// 		}
-// 	}
-
-// 	if (!cmd->arr || !cmd->arr[0])// Verify command exists
-// 		exit(1);// ft_putstr_fd("minishell: empty command\n", 2);
-// 	if (is_builtin_command(cmd->arr[0]))// Handle builtin commands
-// 	{
-// 		handle_builtin_command(cmd->exec, cmd);
-// 		exit(cmd->exec->exit_status);
-// 	}
-// 	char *cmd_path = find_command_path(cmd->exec, cmd->arr[0]);// Handle external commands
-// 	if (!cmd_path)
-// 	{
-// 		ft_putstr_fd("minishell: ", 2);
-// 		ft_putstr_fd(cmd->arr[0], 2);
-// 		ft_putstr_fd(": command not found\n", 2);
-// 		exit(127);
-// 	}
-// 	execve(cmd_path, cmd->arr, env_array);
-// 	ft_putstr_fd("minishell: ", 2);	// If execve fails
-// 	perror(cmd->arr[0]);
-// 	exit(126);
-// }
 static void	print_command_debug_info(t_cmd_node *cmd)
 {
 	int	i;
@@ -329,6 +164,7 @@ static void	print_command_debug_info(t_cmd_node *cmd)
 	}
 	ft_putstr_fd("\n", 2);
 }
+
 static void	print_redirection_debug_info(t_cmd_node *cmd)
 {
 	ft_putstr_fd("minishell: with input redirection from: ", 2);
@@ -342,12 +178,14 @@ static void	print_redirection_debug_info(t_cmd_node *cmd)
 		ft_putstr_fd(" (truncate)", 2);
 	ft_putstr_fd("\n", 2);
 }
+
 static void	handle_execve_failure(char *name)
 {
 	ft_putstr_fd("minishell: ", 2);
 	perror(name);
 	exit(126);
 }
+
 static void handle_builtin_or_empty(t_cmd_node *cmd)
 {
 	if (!cmd->arr || !cmd->arr[0])
@@ -359,6 +197,7 @@ static void handle_builtin_or_empty(t_cmd_node *cmd)
 		exit(cmd->exec->exit_status);
 	}
 }
+
 static void	execute_pipeline_command(t_cmd_node *cmd, char **env_array)
 {
 	int		debug;
@@ -383,7 +222,6 @@ static void	execute_pipeline_command(t_cmd_node *cmd, char **env_array)
 	execve(cmd_path, cmd->arr, env_array);
 	handle_execve_failure(cmd->arr[0]);
 }
-
 /* Close all unused pipe file descriptors */
 static void close_all_pipes(int pipe_count, int pipes[][2])
 {
@@ -399,157 +237,6 @@ static void close_all_pipes(int pipe_count, int pipes[][2])
 		i++;
 	}
 }
-
-/* Main function to execute a pipeline of commands */
-// void execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
-// {
-// 	t_cmd_node *current = cmd_list;
-// 	int cmd_count = 0;
-// 	int pipe_count = 0;
-// 	int debug = is_debug_enabled(exec);
-// 	// Count commands in pipeline
-// 	while (current)
-// 	{
-// 		cmd_count++;
-// 		current = current->next;
-// 	}
-// 	if (cmd_count <= 0)
-// 		return;
-// 	if (debug)// Debug output - show the command pipeline
-// 	{
-// 		ft_putstr_fd("minishell: setting up pipeline with ", 2);
-// 		ft_putstr_fd(ft_itoa(cmd_count, &exec->gc), 2);
-// 		ft_putstr_fd(" commands\n", 2);
-// 		current = cmd_list;// Print command details
-// 		int i = 0;
-// 		while (current)
-// 		{
-// 			ft_putstr_fd("minishell: cmd", 2);
-// 			ft_putstr_fd(ft_itoa(i++, &exec->gc), 2);
-// 			ft_putstr_fd(": ", 2);
-// 			if (current->arr && current->arr[0])
-// 			{
-// 				for (int j = 0; current->arr[j]; j++)
-// 				{
-// 					ft_putstr_fd(current->arr[j], 2);
-// 					ft_putstr_fd(" ", 2);
-// 				}
-// 			}
-// 			if (current->out)
-// 			{
-// 				if (current->append)
-// 					ft_putstr_fd(">> ", 2);
-// 				else
-// 					ft_putstr_fd("> ", 2);
-// 				ft_putstr_fd(current->out, 2);
-// 				ft_putstr_fd(" ", 2);
-// 			}
-// 			if (current->in)
-// 			{
-// 				ft_putstr_fd("< ", 2);
-// 				ft_putstr_fd(current->in, 2);
-// 				ft_putstr_fd(" ", 2);
-// 			}
-
-// 			ft_putstr_fd("\n", 2);
-// 			current = current->next;
-// 		}
-// 	}
-// 	if (cmd_count == 1)// If only one command, use the standard execution
-// 	{
-// 		execute_command_supreme(exec, cmd_list);
-// 		return ;
-// 	}
-// 	pipe_count = cmd_count - 1;// For multiple commands, we need pipes
-// 	int pipes[pipe_count][2];
-// 	pid_t pids[cmd_count];
-// 	for (int i = 0; i < pipe_count; i++)// Initialize pipe descriptors to -1
-// 	{
-// 		pipes[i][0] = -1;
-// 		pipes[i][1] = -1;
-// 	}
-// 	for (int i = 0; i < pipe_count; i++)// Create all pipes
-// 	{
-// 		if (pipe(pipes[i]) == -1)
-// 		{
-// 			perror("pipe");
-// 			close_all_pipes(i, pipes); // Close any pipes created so far
-// 			return;
-// 		}
-// 	}
-// 	char **env_array = convert_env_to_array(exec, &exec->gc);// Convert environment to array for child processes
-// 	if (!env_array)
-// 	{
-// 		ft_putstr_fd("minishell: environment conversion failed\n", 2);
-// 		close_all_pipes(pipe_count, pipes);
-// 		return;
-// 	}
-// 	current = cmd_list;// Fork for each command
-// 	for (int i = 0; i < cmd_count; i++)
-// 	{
-// 		if (debug)// Debug output - Command being executed
-// 		{
-// 			ft_putstr_fd("minishell: setting up command ", 2);
-// 			ft_putstr_fd(ft_itoa(i+1, &exec->gc), 2);
-// 			ft_putstr_fd("/", 2);
-// 			ft_putstr_fd(ft_itoa(cmd_count, &exec->gc), 2);
-// 			ft_putstr_fd("\n", 2);
-// 		}
-// 		pids[i] = fork();
-// 		if (pids[i] == -1)
-// 		{
-// 			perror("fork");
-// 			close_all_pipes(pipe_count, pipes);
-// 			return;
-// 		}
-// 		if (pids[i] == 0)
-// 		{
-// 			setup_child_signals();// Child process
-// 			if (debug)// Debug - show command details
-// 			{
-// 				ft_putstr_fd("minishell: child process for command: ", 2);
-// 				if (current->arr && current->arr[0])
-// 					ft_putstr_fd(current->arr[0], 2);
-// 				ft_putstr_fd("\n", 2);
-// 			}
-// 			int prev_pipe_fd = (i > 0) ? pipes[i - 1][0] : -1;// Setup input (from previous pipe or file)
-// 			setup_pipe_input(current, prev_pipe_fd);
-// 			int next_pipe_fd = (i < pipe_count) ? pipes[i][1] : -1;// Setup output (to next pipe or file)
-// 			setup_pipe_output(current, next_pipe_fd);
-// 			close_all_pipes(pipe_count, pipes);// Close all other pipe file descriptors
-// 			execute_pipeline_command(current, env_array);// Execute the command
-// 			exit(1);// Should never reach here
-// 		}
-// 		current = current->next;// Parent process continues
-// 	}
-// 	close_all_pipes(pipe_count, pipes);// Parent: close all pipe file descriptors
-// 	int status;// Wait for all children to finish
-// 	int last_status = 0;
-// 	for (int i = 0; i < cmd_count; i++)
-// 	{
-// 		waitpid(pids[i], &status, 0);
-// 		if (debug)// Debug - show exit status
-// 		{
-// 			ft_putstr_fd("minishell: command ", 2);
-// 			ft_putstr_fd(ft_itoa(i+1, &exec->gc), 2);
-// 			ft_putstr_fd(" finished with status ", 2);
-// 			ft_putstr_fd(ft_itoa(WEXITSTATUS(status), &exec->gc), 2);
-// 			ft_putstr_fd("\n", 2);
-// 		}
-// 		if (i == cmd_count - 1)// Save status of the last command in the pipeline
-// 		{
-// 			if (WIFEXITED(status))
-// 				last_status = WEXITSTATUS(status);
-// 			else if (WIFSIGNALED(status))
-// 				last_status = 128 + WTERMSIG(status);
-// 		}
-// 	}
-// 	exec->exit_status = last_status;// Set the exit status from the last command in the pipeline
-// 	if (debug)// Debug - pipeline execution complete
-// 	{
-// 		ft_putstr_fd("minishell: pipeline execution complete\n", 2);
-// 	}
-// }
 
 static int	count_pipeline_commands(t_cmd_node *cmd)
 {
@@ -784,46 +471,7 @@ int has_pipe(t_cmd_node *cmd)
 		return 0;
 	return (cmd->type == PIPE);
 }
-// void	execute_pipe(t_exec *exec, char ***commands, int cmd_count)
-// {
-// 	char		*input;
-// 	t_cmd_node	*pipe_cmds;
-// 	int			i;
-// 	int			j;
-// 	char		*cmd_str;
-// 	char		*tmp;
 
-// 	input = NULL;
-// 	pipe_cmds = NULL;
-// 	i = -1;
-// 	while (++i < cmd_count)
-// 	{
-// 		cmd_str = NULL;
-// 		j = -1;
-// 		while (commands[i][++j])
-// 		{
-// 			if (!cmd_str)
-// 				cmd_str = ft_strdup(&exec->gc, commands[i][j]);
-// 			else
-// 			{
-// 				tmp = ft_strjoin(cmd_str, " ", &exec->gc);
-// 				cmd_str = ft_strjoin(tmp, commands[i][j], &exec->gc);
-// 			}
-// 		}
-// 		if (!input)
-// 			input = cmd_str;
-// 		else
-// 		{
-// 			tmp = ft_strjoin(input, " | ", &exec->gc);
-// 			input = ft_strjoin(tmp, cmd_str, &exec->gc);
-// 		}
-// 	}
-// 	if (input)
-// 		pipe_cmds = parse_piped_commands(input, exec);
-// 	if (pipe_cmds)
-// 		execute_with_pipes(exec, pipe_cmds);
-// }
-/* Execute a pipe from string commands (old interface maintained for compatibility) */
 static char	*join_command_parts(t_exec *exec, char **parts)
 {
 	char	*cmd_str;

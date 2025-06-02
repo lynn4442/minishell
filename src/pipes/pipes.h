@@ -15,6 +15,16 @@
 
 # include "minishell.h"
 
+typedef struct s_r_variables
+{
+	int		i;
+	int		j;
+	int		k;
+	int		escaped;
+	char	quote;
+	int		count;
+	int		is_echo_command;
+}	t_r_variables;
 /* Forward declarations for functions from other modules */
 char	*find_command_path(t_exec *exec, const char *cmd);
 void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
@@ -30,4 +40,15 @@ void	execute_pipe(t_exec *exec, char ***commands, int cmd_count);
 char	***split_by_pipe(char *input, t_exec *exec);
 char	**split_preserve_quotes(const char *input, t_gc *gc);
 
+void	init_r_variables(t_r_variables *vars);
+void	skip_leading_spaces(const char *input, int *i, char *quote);
+char	*extract_redirection(const char *input, int *i, t_gc *gc);
+void	extract_argument_bounds(const char *input, int *i,
+			char *quote, int *escaped);
+int		count_arguments(const char *input, t_gc *gc);
+void	skip_space(const char *input, int *i);
+int		handle_redirection_pipe(const char *input, int *i, int *count);
+void	skip_argument_token(const char *input, int *i,
+			int *escaped, char *quote);
+void	handle_escape_and_quotes(char c, int *escaped, char *quote);
 #endif

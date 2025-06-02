@@ -13,7 +13,7 @@
 #ifndef EXPORT_H
 # define EXPORT_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* Core export functionality */
 int		execute_export(t_cmd_node *node, t_exec *exec);

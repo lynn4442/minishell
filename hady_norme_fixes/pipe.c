@@ -6,11 +6,11 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 16:21:23 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:51:50 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 // char ***split_by_pipe(char *input, t_exec *exec)
 // {
@@ -272,7 +272,7 @@ static int count_arguments(const char *input, t_gc *gc)
 // 	int		k;
 // 	char nested_quote;
 // 	int nested_escaped;
-	
+
 // 	while (input[*i] && ft_isspace(input[*i]) && !(*quote))
 // 		(*i)++;
 // 	if (!input[*i])
@@ -311,7 +311,7 @@ static int count_arguments(const char *input, t_gc *gc)
 // 	arg = ft_strndup(gc, input + start, *i - start);// Extract the raw argument
 // 	if (!arg)
 // 		return NULL;
-	
+
 // 	if (!is_echo_command)// If we're not in 'echo' command and need to process quotes for the result
 // 	{
 // 		len = ft_strlen(arg);// Handle nested quotes properly
@@ -339,7 +339,7 @@ static int count_arguments(const char *input, t_gc *gc)
 // 					continue ;
 // 				}
 // 			}
-			
+
 // 			if (arg[j] == '\\' && !nested_escaped && (nested_quote == 0 || nested_quote == '"'))// Handle escape sequences
 // 			{
 // 				nested_escaped = 1;

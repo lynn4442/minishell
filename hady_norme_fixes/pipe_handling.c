@@ -6,11 +6,11 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 16:17:10 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:51:50 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 /* Check if debug mode is enabled via environment variable */
 static int is_debug_enabled(t_exec *exec)
@@ -270,7 +270,7 @@ static void setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
 // static void execute_pipeline_command(t_cmd_node *cmd, char **env_array)
 // {
 // 	int debug = is_debug_enabled(cmd->exec);
-	
+
 // 	if (debug)// Debug info to stderr (won't interfere with redirections)
 // 	{
 // 		ft_putstr_fd("minishell: executing command: ", 2);
@@ -294,7 +294,7 @@ static void setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
 // 			ft_putstr_fd("\n", 2);
 // 		}
 // 	}
-	
+
 // 	if (!cmd->arr || !cmd->arr[0])// Verify command exists
 // 		exit(1);// ft_putstr_fd("minishell: empty command\n", 2);
 // 	if (is_builtin_command(cmd->arr[0]))// Handle builtin commands

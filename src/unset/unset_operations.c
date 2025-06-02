@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "unset.h"
-#include "../../minishell.h"
+#include "minishell.h"
 
 t_env_var	*handle_first_node_removal(t_exec *exec, t_env_var *current)
 {

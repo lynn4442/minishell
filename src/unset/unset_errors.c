@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "unset.h"
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	print_unset_error(const char *var_name, t_exec *exec)
 {

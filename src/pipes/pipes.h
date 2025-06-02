@@ -13,7 +13,7 @@
 #ifndef PIPES_H
 # define PIPES_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* Forward declarations for functions from other modules */
 char	*find_command_path(t_exec *exec, const char *cmd);
@@ -30,4 +30,4 @@ void	execute_pipe(t_exec *exec, char ***commands, int cmd_count);
 char	***split_by_pipe(char *input, t_exec *exec);
 char	**split_preserve_quotes(const char *input, t_gc *gc);
 
-#endif 
+#endif

@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "unset.h"
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	ft_unset(t_exec *exec, char **args)
 {

@@ -35,7 +35,7 @@ PWD_OBJ_DIR = obj/pwd
 EXIT_OBJ_DIR = obj/exit
 CORE_OBJ_DIR = obj/core
 UTILS_OBJ_DIR = obj/utils
-INCLUDES = -I headers -I libft -I src/parser -I src/env -I src/echo -I src/signals -I src/unset -I src/cd -I src/export -I src/quotes -I src/redirections -I src/pipes -I src/execution -I src/pwd -I src/exit -I src/core -I src/utils -g
+INCLUDES = -I include -I headers -I libft -I src/parser -I src/env -I src/echo -I src/signals -I src/unset -I src/cd -I src/export -I src/quotes -I src/redirections -I src/pipes -I src/execution -I src/pwd -I src/exit -I src/core -I src/utils -g
 
 ## Libraries
 LIBFT   = libft/libft.a

@@ -13,7 +13,7 @@
 #ifndef REDIRECTIONS_H
 # define REDIRECTIONS_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* Main redirection handling */
 void	handle_redirection(t_cmd_node *cmd, t_gc *gc);

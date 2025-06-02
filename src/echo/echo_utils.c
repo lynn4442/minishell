@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "echo.h"
-#include "../../minishell.h"
+#include "minishell.h"
 
 void	print_single_arg(char *arg, t_env_var *env, t_exec *exec)
 {

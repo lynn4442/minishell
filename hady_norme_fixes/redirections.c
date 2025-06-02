@@ -12,7 +12,7 @@
 
 // heredoc on its own to take care of
 
-# include "../minishell.h"
+# include "minishell.h"
 
 /* Display error message for file operations and exit */
 static void display_file_error(const char *file, const char *message, t_gc *gc)
@@ -39,13 +39,13 @@ static int is_redirection(const char *str)
 	if (!str || !*str)
 		return 0;
 	len = ft_strlen(str);
-	
+
 	if (ft_strcmp(str, ">") == 0 ||// Handle simple cases first
 		ft_strcmp(str, ">>") == 0 ||
 		ft_strcmp(str, "<") == 0 ||
 		ft_strcmp(str, "<<") == 0)
 		return (1);
-	
+
 	while (i < len)// Check for redirection characters at the start or middle
 	{
 		if (str[i] == '>' || str[i] == '<')
@@ -65,7 +65,7 @@ static int is_redirection(const char *str)
 // 	char *cmd_part = NULL;
 // 	char *filename_part = NULL;
 // 	char *redir_token = NULL;
-	
+
 // 	ft_putstr_fd("DEBUG - Processing attached redirection: [", 2);
 // 	ft_putstr_fd(arg, 2);
 // 	ft_putstr_fd("]\n", 2);
@@ -93,28 +93,28 @@ static int is_redirection(const char *str)
 // 		ft_putstr_fd("DEBUG - Case 1: Command with redirection at end\n", 2);
 // 		cmd_part = ft_strndup(gc, arg, len - 1);
 // 		redir_token = ft_strndup(gc, &arg[len - 1], 1);
-		
+
 // 		// Create new args array with space for additional token
 // 		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 2));
 // 		if (!new_args || !cmd_part || !redir_token)
 // 			return args;
-			
+
 // 		// Copy before current
 // 		int i;
 // 		for (i = 0; i < *position; i++)
 // 			new_args[i] = args[i];
-			
+
 // 		// Add the split parts
 // 		new_args[i++] = cmd_part;
 // 		new_args[i++] = redir_token;
-		
+
 // 		// Copy remaining
 // 		int j = *position + 1;
 // 		while (args[j])
 // 			new_args[i++] = args[j++];
-			
+
 // 		new_args[i] = NULL;
-		
+
 // 		// Don't increment position to process the newly added redirection token
 // 		return new_args;
 // 	}
@@ -135,39 +135,39 @@ static int is_redirection(const char *str)
 // 			redir_token = ft_strndup(gc, arg, 1);
 // 			filename_part = ft_strdup(gc, arg + 1);
 // 		}
-		
+
 // 		// Create new args array
-// 		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 2)); // One extra for NULL 
+// 		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 2)); // One extra for NULL
 // 		if (!new_args || !redir_token || !filename_part)
 // 			return args;
-			
+
 // 		// Copy before current
 // 		int i;
 // 		for (i = 0; i < *position; i++)
 // 			new_args[i] = args[i];
-			
+
 // 		// Add the split parts
 // 		new_args[i++] = redir_token;
 // 		new_args[i++] = filename_part;
-		
+
 // 		// Copy remaining
 // 		int j = *position + 1;
 // 		while (args[j])
 // 			new_args[i++] = args[j++];
-			
+
 // 		new_args[i] = NULL;
-		
+
 // 		// Don't increment position to process the newly added redirection token
 // 		return new_args;
 // 	}
-	
+
 // 	// Case 3: Redirection in the middle (e.g. "ls>file")
 // 	else
 // 	{
 // 		ft_putstr_fd("DEBUG - Case 3: Redirection in middle\n", 2);
 // 		// Get command part
 // 		cmd_part = ft_strndup(gc, arg, redir_pos);
-		
+
 // 		// Check for double redirection
 // 		if (redir_pos + 1 < len && arg[redir_pos + 1] == redir_type)
 // 		{
@@ -181,29 +181,29 @@ static int is_redirection(const char *str)
 // 			redir_token = ft_strndup(gc, arg + redir_pos, 1);
 // 			filename_part = ft_strdup(gc, arg + redir_pos + 1);
 // 		}
-		
+
 // 		// Create new args array
 // 		char **new_args = ft_malloc(gc, sizeof(char *) * (count + 3)); // Two extras plus NULL
 // 		if (!new_args || !cmd_part || !redir_token || !filename_part)
 // 			return args;
-			
+
 // 		// Copy before current
 // 		int i;
 // 		for (i = 0; i < *position; i++)
 // 			new_args[i] = args[i];
-			
+
 // 		// Add the split parts
 // 		new_args[i++] = cmd_part;
 // 		new_args[i++] = redir_token;
 // 		new_args[i++] = filename_part;
-		
+
 // 		// Copy remaining
 // 		int j = *position + 1;
 // 		while (args[j])
 // 			new_args[i++] = args[j++];
-			
+
 // 		new_args[i] = NULL;
-		
+
 // 		ft_putstr_fd("DEBUG - Split into: [", 2);
 // 		ft_putstr_fd(cmd_part, 2);
 // 		ft_putstr_fd("] [", 2);
@@ -211,7 +211,7 @@ static int is_redirection(const char *str)
 // 		ft_putstr_fd("] [", 2);
 // 		ft_putstr_fd(filename_part, 2);
 // 		ft_putstr_fd("]\n", 2);
-		
+
 // 		// For attached redirections, create the file immediately to handle cases like ls>file
 // 		// This ensures all redirection files are created regardless of parsing order
 // 		if (redir_type == '>' && filename_part && *filename_part)
@@ -219,16 +219,16 @@ static int is_redirection(const char *str)
 // 			int flags = O_WRONLY | O_CREAT;
 // 			int is_append = (redir_pos + 1 < len && arg[redir_pos + 1] == '>');
 // 			flags |= is_append ? O_APPEND : O_TRUNC;
-			
+
 // 			ft_putstr_fd("DEBUG - Creating file for attached redirection: ", 2);
 // 			ft_putstr_fd(filename_part, 2);
 // 			ft_putstr_fd("\n", 2);
-			
+
 // 			int fd = open(filename_part, flags, 0644);
 // 			if (fd >= 0)
 // 				close(fd);
 // 		}
-		
+
 // 		return new_args;
 // 	}
 // }
@@ -369,7 +369,7 @@ static char	**handle_redir_middle(t_gc *gc, char *arg, int redir_pos, char redir
 static char	**handle_redir_case(char **args, t_gc *gc, int *pos,
 	int redir_pos, char redir_type)
 {
-	char	*arg; 
+	char	*arg;
 	char	**tokens;
 
 	arg = args[*pos];
@@ -408,7 +408,7 @@ char	**process_attached_redirections(char **args, t_gc *gc, int *position)
 		return (args);
 	return (handle_redir_case(args, gc, position, redir_pos, redir_type));
 }
-/* 
+/*
  * Find and extract all redirection files from command arguments
  * This is a helper function to get all the files that are redirection targets
  */
@@ -417,7 +417,7 @@ char	**process_attached_redirections(char **args, t_gc *gc, int *position)
 // 	char **files;
 // 	int i = 0;
 // 	int file_count = 0;
-	
+
 // 	// First, count the number of redirections
 // 	while (args[i])
 // 	{
@@ -425,14 +425,14 @@ char	**process_attached_redirections(char **args, t_gc *gc, int *position)
 // 			file_count++;
 // 		i++;
 // 	}
-	
+
 // 	// If no redirections, return NULL
 // 	if (file_count == 0)
 // 	{
 // 		*count = 0;
 // 		return NULL;
 // 	}
-	
+
 // 	// Allocate memory for files and is_append arrays
 // 	files = ft_malloc(gc, sizeof(char *) * (file_count + 1));
 // 	*is_append = ft_malloc(gc, sizeof(int) * file_count);
@@ -550,9 +550,9 @@ static char	**extract_redirection_files(
 // {
 // 	int i;
 // 	char **processed_args = NULL;
-	
+
 // 	i = 0;
-	
+
 // 	// First, preprocess args to handle attached redirections
 // 	processed_args = args;
 // 	while (processed_args[i])
@@ -571,10 +571,10 @@ static char	**extract_redirection_files(
 // 		}
 // 		i++;
 // 	}
-	
+
 // 	// Update the command's arguments with the processed ones
 // 	cmd->arr = processed_args;
-	
+
 // 	// Find input redirection (last one wins)
 // 	i = 0;
 // 	while (processed_args[i])
@@ -590,12 +590,12 @@ static char	**extract_redirection_files(
 // 			i++;
 // 		}
 // 	}
-	
+
 // 	// Find and process output redirections
 // 	int file_count = 0;
 // 	int *is_append = NULL;
 // 	char **output_files = extract_redirection_files(processed_args, &is_append, &file_count, &cmd->exec->gc);
-	
+
 // 	if (file_count > 0)
 // 	{
 // 		// Create all files
@@ -603,28 +603,28 @@ static char	**extract_redirection_files(
 // 		{
 // 			int flags = O_WRONLY | O_CREAT;
 // 			flags |= is_append[i] ? O_APPEND : O_TRUNC;
-			
+
 // 			ft_putstr_fd("DEBUG - Creating redirection file: ", 2);
 // 			ft_putstr_fd(output_files[i], 2);
 // 			ft_putstr_fd("\n", 2);
-			
+
 // 			int fd = open(output_files[i], flags, 0644);
 // 			if (fd >= 0)
 // 				close(fd);
 // 		}
-		
+
 // 		// Set the last file as the command's output file
 // 		cmd->out = output_files[file_count - 1];
 // 		cmd->append = is_append[file_count - 1];
 // 	}
-	
+
 // 	// Filter out redirection operators and their targets from the command arguments
 // 	// This creates a new array with just the command and its normal arguments
 // 	int arg_count = 0;
 // 	i = 0;
 // 	while (processed_args[i])
 // 	{
-// 		if ((ft_strcmp(processed_args[i], ">") == 0 || 
+// 		if ((ft_strcmp(processed_args[i], ">") == 0 ||
 // 			 ft_strcmp(processed_args[i], ">>") == 0 ||
 // 			 ft_strcmp(processed_args[i], "<") == 0 ||
 // 			 ft_strcmp(processed_args[i], "<<") == 0) && processed_args[i + 1])
@@ -637,16 +637,16 @@ static char	**extract_redirection_files(
 // 			i++;
 // 		}
 // 	}
-	
+
 // 	char **filtered_args = ft_malloc(&cmd->exec->gc, sizeof(char *) * (arg_count + 1));
 // 	if (!filtered_args)
 // 		return;
-		
+
 // 	i = 0;
 // 	int j = 0;
 // 	while (processed_args[i])
 // 	{
-// 		if ((ft_strcmp(processed_args[i], ">") == 0 || 
+// 		if ((ft_strcmp(processed_args[i], ">") == 0 ||
 // 			 ft_strcmp(processed_args[i], ">>") == 0 ||
 // 			 ft_strcmp(processed_args[i], "<") == 0 ||
 // 			 ft_strcmp(processed_args[i], "<<") == 0) && processed_args[i + 1])
@@ -659,10 +659,10 @@ static char	**extract_redirection_files(
 // 		}
 // 	}
 // 	filtered_args[j] = NULL;
-	
+
 // 	// Replace the command's arguments with the filtered ones
 // 	cmd->arr = filtered_args;
-	
+
 // 	ft_putstr_fd("DEBUG - Final command after redirection processing: ", 2);
 // 	i = 0;
 // 	while (cmd->arr[i])
@@ -672,14 +672,14 @@ static char	**extract_redirection_files(
 // 		i++;
 // 	}
 // 	ft_putstr_fd("\n", 2);
-	
+
 // 	if (cmd->in)
 // 	{
 // 		ft_putstr_fd("DEBUG - Input from: ", 2);
 // 		ft_putstr_fd(cmd->in, 2);
 // 		ft_putstr_fd("\n", 2);
 // 	}
-	
+
 // 	if (cmd->out)
 // 	{
 // 		ft_putstr_fd("DEBUG - Output to: ", 2);
@@ -887,7 +887,7 @@ void	parse_redirections(t_cmd_node *cmd, char **args)
 // void handle_redirection(t_cmd_node *cmd, t_gc *gc)
 // {
 // 	int fd;
-	
+
 // 	// Handle input redirection
 // 	if (cmd->in)
 // 	{
@@ -899,7 +899,7 @@ void	parse_redirections(t_cmd_node *cmd, char **args)
 // 			ft_putstr_fd(": No such file or directory\n", 2);
 // 			return;
 // 		}
-		
+
 // 		if (dup2(fd, STDIN_FILENO) == -1)
 // 		{
 // 			perror("minishell");
@@ -909,17 +909,17 @@ void	parse_redirections(t_cmd_node *cmd, char **args)
 // 		}
 // 		close(fd);
 // 	}
-	
+
 // 	// Handle output redirection
 // 	if (cmd->out)
 // 	{
 // 		int flags = O_WRONLY | O_CREAT;
 // 		flags |= cmd->append ? O_APPEND : O_TRUNC;
-		
+
 // 		fd = open(cmd->out, flags, 0644);
 // 		if (fd < 0)
 // 			display_file_error(cmd->out, NULL, gc);
-		
+
 // 		if (dup2(fd, STDOUT_FILENO) == -1)
 // 		{
 // 			perror("minishell");

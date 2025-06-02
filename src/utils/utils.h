@@ -13,7 +13,7 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* Memory management utilities */
 void	*ft_malloc(t_gc *gc, size_t size);
@@ -22,4 +22,4 @@ void	ft_free_all(t_gc *gc);
 /* String utilities */
 int		ft_isspace(char c);
 
-#endif 
+#endif

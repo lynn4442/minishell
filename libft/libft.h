@@ -16,7 +16,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
-# include "../src/include/types.h"
+# include "../include/types.h"
 
 //ft_char_utils.c
 int		ft_isspace(char c);
@@ -62,4 +62,4 @@ void	*ft_malloc(t_gc *gc, size_t size);
 void	*ft_calloc(size_t count, size_t size);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 
-#endif 
+#endif

@@ -6,11 +6,11 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/22 16:17:10 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:51:50 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "minishell.h"
 
 /* Check if debug mode is enabled via environment variable */
 static int is_debug_enabled(t_exec *exec)

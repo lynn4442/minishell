@@ -13,7 +13,7 @@
 #ifndef QUOTES_H
 # define QUOTES_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* Main quote processing functions */
 int		check_quotes(const char *input);

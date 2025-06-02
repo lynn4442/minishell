@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 10:39:47 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:46:55 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define PARSER_H
 
 # include "../../libft/libft.h"
-# include "../../minishell.h"
+# include "minishell.h"
 # include <ctype.h>
 # include <fcntl.h>
 # include <limits.h>

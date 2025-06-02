@@ -13,10 +13,10 @@
 #ifndef PWD_H
 # define PWD_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* PWD builtin functionality */
 char	*get_current_directory(t_exec *exec);
 void	ft_pwd(t_exec *exec);
 
-#endif 
+#endif

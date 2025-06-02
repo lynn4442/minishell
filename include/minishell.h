@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 10:37:06 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:50:29 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,23 @@
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <stdbool.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include <signal.h>
-# include "src/include/types.h"
-# include "src/parser/parser.h"
-# include "src/env/env.h"
-# include "src/echo/echo.h"
-# include "src/unset/unset.h"
-# include "src/cd/cd.h"
-# include "src/export/export.h"
-# include "src/quotes/quotes.h"
-# include "src/redirections/redirections.h"
-# include "src/pipes/pipes.h"
-# include "src/execution/execution.h"
-# include "src/pwd/pwd.h"
-# include "src/exit/exit.h"
-# include "src/core/core.h"
-# include "src/utils/utils.h"
+# include "types.h"
+# include "parser.h"
+# include "env.h"
+# include "echo.h"
+# include "unset.h"
+# include "cd.h"
+# include "export.h"
+# include "quotes.h"
+# include "redirections.h"
+# include "pipes.h"
+# include "execution.h"
+# include "pwd.h"
+# include "exit.h"
+# include "core.h"
+# include "utils.h"
 
 //0	Success (No error)
 //1	General error (Miscellaneous error)

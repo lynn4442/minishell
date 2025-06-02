@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "signals.h"
-#include "../../minishell.h"
+#include "minishell.h"
 
 extern int	g_signal_received;
 

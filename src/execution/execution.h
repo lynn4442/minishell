@@ -13,7 +13,7 @@
 #ifndef EXECUTION_H
 # define EXECUTION_H
 
-# include "../../minishell.h"
+# include "minishell.h"
 
 /* Core execution functions */
 void	parse_and_execute(t_exec *exec, t_cmd_node *cmd);

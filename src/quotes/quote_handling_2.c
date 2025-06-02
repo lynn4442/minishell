@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling_2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 03:11:39 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/02 10:27:19 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int	check_quotes(const char *str)
 	{
 		if (str[i] == '\\')
 		{
-			i++;// Skip escaped character
+			i++;
 			if (str[i])
 				i++;
 			continue ;

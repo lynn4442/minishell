@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_handling.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 03:12:53 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/02 10:39:14 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,12 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	(void)original_in;
 	if (!cmd->in)
 		return (0);
-
-	// heyda l part li zeddto
-	// if (cmd->heredoc)
-	// {
-	// 	if (handle_heredoc(cmd, cmd->exec) == -1)
-	// 		return (-1);
-	// }
-
+	// heyda l part li zedto
+	//if (cmd->heredoc)
+	//{
+	//	if (handle_heredoc(cmd, cmd->exec) == -1)
+	//		return (-1);
+	//}
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{

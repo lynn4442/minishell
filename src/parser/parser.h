@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 01:18:05 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/02 10:39:47 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct t_parse_simple_cmd
 	char			*last_output;
 	int				sflag;
 	int				last_output_is_append;
-	char			*heredoc_delimiter;
+	//char			*heredoc_delimiter; heyda l part li zedto
 }					t_parse_simple_cmd;
 
 typedef struct t_parse_pipeline

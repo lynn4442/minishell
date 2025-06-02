@@ -21,18 +21,13 @@ void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 	original_out = -1;
 	if (!exec || !cmd || !cmd->arr)
 		return ;
-	
-	// Handle redirection-only commands (like "> file")
 	if (!cmd->arr[0] && (cmd->in || cmd->out))
 	{
 		execute_command_with_redirect(exec, cmd, original_in, original_out);
 		return ;
 	}
-	
-	// For commands with arguments
 	if (!cmd->arr[0])
 		return ;
-		
 	if (cmd->type == PIPE && handle_pipe_execution(exec))
 		return ;
 	if (is_builtin_command(cmd->arr[0])
@@ -50,21 +45,17 @@ void	command_mission_control(t_cmd_node *cmd)
 
 void	parse_and_execute(t_exec *exec, t_cmd_node *cmd)
 {
-	// Handle redirection-only commands
 	if (!exec || !cmd || !cmd->arr)
 	{
 		ft_putstr_fd("minishell: Error: Invalid command node\n", 2);
 		exec->exit_status = 1;
 		return ;
 	}
-	
-	// Allow commands with only redirections
 	if (!cmd->arr[0] && !(cmd->in || cmd->out))
 	{
 		ft_putstr_fd("minishell: Error: Invalid command node\n", 2);
 		exec->exit_status = 1;
 		return ;
 	}
-	
 	execute_command_supreme(exec, cmd);
 }

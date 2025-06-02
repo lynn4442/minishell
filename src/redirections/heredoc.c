@@ -26,7 +26,7 @@ static char *create_heredoc_temp_file(t_exec *exec)
 }
 */
 
-/* Process and expand variables in heredoc content 
+/* Process and expand variables in heredoc content
 static char *process_heredoc_line(const char *line, t_env_var *env, t_exec *exec)
 {
     // Implement this function to:
@@ -38,8 +38,8 @@ static char *process_heredoc_line(const char *line, t_env_var *env, t_exec *exec
 }
 */
 
-/* Read heredoc content until delimiter is found 
-static int read_heredoc_content(const char *delimiter, t_env_var *env, 
+/* Read heredoc content until delimiter is found
+static int read_heredoc_content(const char *delimiter, t_env_var *env,
                               t_exec *exec, int fd)
 {
     // Implement this function to:
@@ -67,7 +67,6 @@ int handle_heredoc(t_cmd_node *cmd, t_exec *exec)
 }
 */
 
-
 /* Clean up heredoc temporary files
 void cleanup_heredoc_files(t_cmd_node *cmd)
 {
@@ -75,15 +74,14 @@ void cleanup_heredoc_files(t_cmd_node *cmd)
     // 1. Check if cmd->in is a heredoc file (starts with "/tmp/heredoc_")
     // 2. Use unlink() to remove the temporary file
     // 3. Handle any errors silently
-} 
+}
 */
-
 
 /*
 	NOTE:
 	Hole list lal files li zabattoun kermel l heredoc + chou zabatet fiyoun:
 	1. src/minishell.h
-		- zeded heredoc_counter aal struct tabaa t_exec 
+		- zeded heredoc_counter aal struct tabaa t_exec
 		- fucntion prototype bi ekhir l header file
 		- zeded TOKEN_REDIR_HEREDOC aal enum tabaa l token types
 
@@ -97,7 +95,7 @@ void cleanup_heredoc_files(t_cmd_node *cmd)
 	4. src/parser.c
 		- zedet heredoc_delimiter handling in parse_simple_command()
 		- zedet TOKEN_REDIR_HEREDOC token processing
-		- zabatet command node creation ta tekhoud l heredoc field kmn 
+		- zabatet command node creation ta tekhoud l heredoc field kmn
 
 	5. src/redirections.c
 		- zeded heredoc handling in parse_redirections()

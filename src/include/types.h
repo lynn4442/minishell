@@ -37,15 +37,15 @@ typedef enum e_type {
 typedef struct s_env_var
 {
 	char				*key;
-	bool 				equal;
+	bool				equal;
 	char				*value;
 	char				*all;
 	struct s_env_var	*next;
 	struct s_env_var	*prev;
-} t_env_var;
+}	t_env_var;
 
 // Forward declaration for circular reference
-typedef struct s_exec t_exec;
+typedef struct s_exec	t_exec;
 
 // Command node structure
 typedef struct s_cmd_node
@@ -80,7 +80,7 @@ typedef struct s_quote_check
 	char	*res;
 	char	quote_type;
 	int		escaped;
-} t_quote_check;
+}	t_quote_check;
 
 // Token element structure for parsing
 typedef struct s_elem {
@@ -89,4 +89,4 @@ typedef struct s_elem {
 	struct s_elem	*next;
 }	t_elem;
 
-#endif 
+#endif

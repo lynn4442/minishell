@@ -12,46 +12,43 @@
 
 #include "redirections.h"
 
-int handle_output_redirection(t_cmd_node *cmd)
+int	handle_output_redirection(t_cmd_node *cmd)
 {
-	int fd;
+	int	fd;
 
 	if (!cmd->out)
-		return STDOUT_FILENO;
-
+		return (STDOUT_FILENO);
 	if (cmd->append)
 		fd = open(cmd->out, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		fd = open(cmd->out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
 	if (fd == -1)
 	{
 		perror("minishell");
-		return -1;
+		return (-1);
 	}
-
-	return fd;
+	return (fd);
 }
 
 /* Process command arguments and extract redirection operators */
-void process_and_update_args(t_cmd_node *cmd, char **args)
+void	process_and_update_args(t_cmd_node *cmd, char **args)
 {
-	int i = 0;
-	int j = 0;
-	char **new_args;
-	int arg_count = 0;
+	int		i;
+	int		j;
+	char	**new_args;
+	int		arg_count;
 
-	// First, we're just counting the number of non-redirection arguments
-	// This assumes parse_redirections has already processed the
-	// redirection tokens and set cmd->in and cmd->out accordingly
+	i = 0;
+	j = 0;
+	arg_count = 0;
 	while (args[i])
 	{
-		if ((ft_strcmp(args[i], ">") == 0 ||
-			 ft_strcmp(args[i], ">>") == 0 ||
-			 ft_strcmp(args[i], "<") == 0 ||
-			 ft_strcmp(args[i], "<<") == 0) && args[i + 1])
+		if ((ft_strcmp(args[i], ">") == 0
+				|| ft_strcmp(args[i], ">>") == 0
+				|| ft_strcmp(args[i], "<") == 0
+				|| ft_strcmp(args[i], "<<") == 0) && args[i + 1])
 		{
-			i += 2; // Skip redirection operator and its target
+			i += 2;
 		}
 		else
 		{
@@ -59,69 +56,63 @@ void process_and_update_args(t_cmd_node *cmd, char **args)
 			i++;
 		}
 	}
-
-	// Second pass: create new args array without redirections
 	new_args = ft_malloc(&cmd->exec->gc, sizeof(char *) * (arg_count + 1));
 	if (!new_args)
-		return;
+		return ;
 	i = 0;
 	j = 0;
 	while (args[i])
 	{
-		if ((ft_strcmp(args[i], ">") == 0 ||
-			 ft_strcmp(args[i], ">>") == 0 ||
-			 ft_strcmp(args[i], "<") == 0 ||
-			 ft_strcmp(args[i], "<<") == 0) && args[i + 1])
+		if ((ft_strcmp(args[i], ">") == 0
+				|| ft_strcmp(args[i], ">>") == 0
+				|| ft_strcmp(args[i], "<") == 0
+				|| ft_strcmp(args[i], "<<") == 0) && args[i + 1])
 		{
 			i += 2;
-			continue;
+			continue ;
 		}
 		new_args[j++] = ft_strdup(&cmd->exec->gc, args[i++]);
 	}
 	new_args[j] = NULL;
-
-	// Update the command arguments to exclude redirection tokens
 	cmd->arr = new_args;
 }
 
 /* Setup output redirection and save original stdout */
-int setup_output_redirection(t_cmd_node *cmd, int *original_fd)
+int	setup_output_redirection(t_cmd_node *cmd, int *original_fd)
 {
-	int fd;
+	int	fd;
 
 	if (!cmd->out)
-		return 0;
-
+		return (0);
 	if (cmd->append)
 		fd = open(cmd->out, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		fd = open(cmd->out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
 	if (fd == -1)
 	{
 		perror("minishell");
-		return -1;
+		return (-1);
 	}
 	*original_fd = dup(STDOUT_FILENO);
 	if (*original_fd == -1)
 	{
 		perror("minishell");
 		close(fd);
-		return -1;
+		return (-1);
 	}
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("minishell");
 		close(fd);
 		close(*original_fd);
-		return -1;
+		return (-1);
 	}
 	close(fd);
-	return fd;
+	return (fd);
 }
 
 /* Restore stdout to its original state */
-int restore_output_redirection(int original_fd)
+int	restore_output_redirection(int original_fd)
 {
 	if (original_fd != -1)
 	{
@@ -129,52 +120,48 @@ int restore_output_redirection(int original_fd)
 		{
 			perror("minishell");
 			close(original_fd);
-			return -1;
+			return (-1);
 		}
 		close(original_fd);
 	}
-	return 0;
+	return (0);
 }
 
 /* Setup input redirection and save original stdin */
-int setup_input_redirection(t_cmd_node *cmd, int *original_fd)
+int	setup_input_redirection(t_cmd_node *cmd, int *original_fd)
 {
-	int fd;
+	int	fd;
 
 	if (!cmd->in)
-		return 0;
-
-	// Try to open the input file
+		return (0);
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{
-		// Just print the error but don't fail unless we need it
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->in, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
-		return -1;
+		return (-1);
 	}
-
 	*original_fd = dup(STDIN_FILENO);
 	if (*original_fd == -1)
 	{
 		perror("minishell");
 		close(fd);
-		return -1;
+		return (-1);
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)
 	{
 		perror("minishell");
 		close(fd);
 		close(*original_fd);
-		return -1;
+		return (-1);
 	}
 	close(fd);
-	return fd;
+	return (fd);
 }
 
 /* Restore stdin to its original state */
-int restore_input_redirection(int original_fd)
+int	restore_input_redirection(int original_fd)
 {
 	if (original_fd != -1)
 	{
@@ -182,9 +169,9 @@ int restore_input_redirection(int original_fd)
 		{
 			perror("minishell");
 			close(original_fd);
-			return -1;
+			return (-1);
 		}
 		close(original_fd);
 	}
-	return 0;
+	return (0);
 }

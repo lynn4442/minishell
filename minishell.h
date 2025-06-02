@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 10:06:56 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:37:06 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@
 # include "src/core/core.h"
 # include "src/utils/utils.h"
 
-
 //0	Success (No error)
 //1	General error (Miscellaneous error)
 //2	Incorrect usage (Misuse of shell builtins)
@@ -56,7 +55,7 @@
 //139	Segmentation fault (SIGSEGV)
 //255	Exit status out of range
 
-extern int g_signal_received;
+extern int	g_signal_received;
 
 // Core execution functions used across modules
 void		execute_command_supreme(t_exec *exec, t_cmd_node *cmd);

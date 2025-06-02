@@ -12,7 +12,7 @@
 
 #include "pwd.h"
 
-char *get_current_directory(t_exec *exec)
+char	*get_current_directory(t_exec *exec)
 {
 	char	*buf;
 
@@ -23,12 +23,15 @@ char *get_current_directory(t_exec *exec)
 	{
 		return (NULL);
 	}
-	return buf;
+	return (buf);
 }
 
-void ft_pwd(t_exec *exec)
+void	ft_pwd(t_exec *exec)
 {
-	char *cwd = get_current_directory(exec);
+	char		*cwd;
+	t_env_var	*pwd_var;
+
+	cwd = get_current_directory(exec);
 	if (cwd)
 	{
 		ft_putstr_fd(cwd, 1);
@@ -36,7 +39,7 @@ void ft_pwd(t_exec *exec)
 	}
 	else
 	{
-		t_env_var *pwd_var = get_env_var(exec, "PWD");
+		pwd_var = get_env_var(exec, "PWD");
 		if (pwd_var && pwd_var->value)
 		{
 			ft_putstr_fd(pwd_var->value, 1);
@@ -46,7 +49,7 @@ void ft_pwd(t_exec *exec)
 		{
 			ft_putstr_fd("pwd: error retrieving current directory\n", 2);
 			exec->exit_status = 1;
-			return;
+			return ;
 		}
 	}
 	exec->exit_status = 0;

@@ -12,9 +12,9 @@
 
 #include "core.h"
 
-int g_signal_received = 0;
+int	g_signal_received = 0;
 
-int main(int ac, char **av, char **envp)
+int	main(int ac, char **av, char **envp)
 {
 	t_gc		hello;
 	t_exec		*exec;
@@ -36,27 +36,25 @@ int main(int ac, char **av, char **envp)
 	init_env(exec, envp);
 	update_shlvl(exec);
 	setup_interactive_signals();
-
 	while (1)
 	{
 		g_signal_received = 0;
 		input = readline("minihell> ");
-
 		if (!input)
 		{
 			handle_eof_signal(exec);
-			break;
+			break ;
 		}
 		if (g_signal_received)
 		{
 			exec->exit_status = g_signal_received;
 			free(input);
-			continue;
+			continue ;
 		}
 		if (ft_strlen(input) == 0)
 		{
 			free(input);
-			continue;
+			continue ;
 		}
 		add_history(input);
 		error_status = 0;
@@ -65,7 +63,7 @@ int main(int ac, char **av, char **envp)
 		{
 			exec->exit_status = error_status;
 			free(input);
-			continue;
+			continue ;
 		}
 		cmd_list = parse_command_line(copied_input, exec);
 		if (cmd_list)
@@ -82,4 +80,3 @@ int main(int ac, char **av, char **envp)
 	ft_free_all(&exec->gc);
 	return (exec->exit_status);
 }
-

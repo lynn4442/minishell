@@ -33,6 +33,7 @@ void	ft_export(t_env_var *env_list);
 
 /* Utility functions */
 int		ft_isspace(char c);
-void	add_or_update_env_var(t_gc *gc, t_env_var **env_list, const char *name, const char *value);
+void	add_or_update_env_var(t_gc *gc, t_env_var **env_list,
+			const char *name, const char *value);
 
-#endif 
+#endif

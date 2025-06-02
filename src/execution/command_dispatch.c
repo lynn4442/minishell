@@ -51,14 +51,11 @@ int	execute_command_with_redirect(t_exec *exec, t_cmd_node *cmd,
 {
 	if (setup_redirections(cmd, &original_in, &original_out) == -1)
 		return (1);
-	
 	if (!cmd->arr[0])
 	{
-		// Just set up redirections without executing any command
 		restore_og_redirections(original_in, original_out);
 		return (0);
 	}
-	
 	if (is_builtin_command(cmd->arr[0]))
 		execute_builtin_command(exec, cmd);
 	else

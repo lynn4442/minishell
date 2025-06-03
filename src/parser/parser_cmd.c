@@ -50,7 +50,10 @@ void	parse_simple_command_analyze_token(t_token *current,
 		else if (current->type == TOKEN_REDIR_IN)
 		{
 			if (parse_simple_command_input(current, parse, parser) == 1)
+			{
+				current = current->next;
 				continue ;
+			}
 		}
 		// heyda l part li zedto
 		//else if (current->type == TOKEN_REDIR_HEREDOC && current->next)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_handling.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 10:39:14 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/03 22:28:56 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->in, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putstr_fd(": No such file or directory5\n", 2);
 		cmd->exec->exit_status = 1;
 		return (-1);
 	}

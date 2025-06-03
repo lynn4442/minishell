@@ -512,7 +512,7 @@ static void	handle_input_redirection(t_cmd_node *cmd, t_gc *gc)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->in, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putstr_fd(": No such file or directory7\n", 2);
 		return ;
 	}
 	if (dup2(fd, STDIN_FILENO) == -1)

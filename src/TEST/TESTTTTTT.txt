@@ -64,7 +64,6 @@ echo $?
 #ls | grep .c | wc -l > count.txt - Multiple pipes with output redirection
 #cat < input.txt | grep "pattern" | sort | uniq > output.txt - Complex pipeline with redirections
 #echo $PATH | tr ':' '\n' | sort > sorted_path.txt - Environment variable expansion with pipes and redirection
-#ps aux | grep bash | awk '{print $2}' > pids.txt - Pipeline with awk and redirection
 #echo "Current user: $USER" > user.txt - Environment variable expansion with output redirection
 #cat < /dev/null | grep "pattern" > output.txt - Special file with pipe and redirection
 
@@ -72,7 +71,6 @@ echo $?
 #ls | > output.txt - Empty command in pipe
 #ls > output.txt | grep .c - Redirection before pipe
 #ls | grep .c < input.txt - Input redirection after pipe
-#ls > /nonexistent/dir/file.txt 2>&1 - Error handling with combined redirection
 #echo $NONEXISTENT_VAR - Non-existent environment variable
 #echo $? after a failed command - Exit status of failed command
 

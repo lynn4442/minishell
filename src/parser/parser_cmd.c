@@ -54,6 +54,7 @@ void	parse_simple_command_analyze_token(t_token *current,
 				current = current->next;
 				continue ;
 			}
+				
 		}
 		// heyda l part li zedto
 		//else if (current->type == TOKEN_REDIR_HEREDOC && current->next)

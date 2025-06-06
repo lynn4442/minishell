@@ -81,7 +81,6 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	parse->last_input = filename;
 	if (validate_input_file(filename, parse))
 	{
-		
 		if (current && current->next)
 			parser->current_token = current->next;
 		return (1);

@@ -15,6 +15,12 @@
 
 # include "minishell.h"
 
+typedef struct s_redirect_norm
+{
+	int		redir_pos;
+	char	redir_type;
+}	t_redir_norm;
+
 /* Main redirection handling */
 void	handle_redirection(t_cmd_node *cmd, t_gc *gc);
 void	parse_redirections(t_cmd_node *cmd, char **args);
@@ -36,5 +42,19 @@ int		setup_redirections(t_cmd_node *cmd, int *original_in,
 /* Heredoc functionality */
 int		handle_heredoc(t_cmd_node *cmd, t_exec *exec);
 void	cleanup_heredoc_files(t_cmd_node *cmd);
-
+void	preprocess_attached_redirs(t_cmd_node *cmd, char ***args);
+void	process_input_redirection(t_cmd_node *cmd, char **args);
+void	process_output_redirection(t_cmd_node *cmd, char **args);
+char	**filter_command_args(t_cmd_node *cmd, char **args);
+void	print_debug_output(t_cmd_node *cmd);
+char	**process_attached_redirections(char **args, t_gc *gc, int *position);
+char	**extract_redirection_files(
+			char **args, int **is_append, int *count, t_gc *gc);
+char	**handle_redir_case(char **args, t_gc *gc, int *pos,
+			t_redir_norm *red);
+void	display_file_error(const char *file, const char *message, t_gc *gc);
+int		is_redirection(const char *str);
+int		find_redir_pos(const char *arg, char *redir_type);
+void	print_split_debug(char *cmd, char *redir, char *file);
+void	create_file_for_redir(char *filename, char *arg, int pos);
 #endif

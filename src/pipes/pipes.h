@@ -74,7 +74,8 @@ void	fork_and_exec_commands(t_exec *exec, t_cmd_node *cmd_list,
 void	print_parent_debug(t_exec *exec, int i, int cmd_count);
 void	print_child_debug(t_cmd_node *current);
 void	debug_print_cmd(t_exec *exec, t_cmd_node *cmd, int index);
-void	debug_pipeline_commands(t_exec *exec, t_cmd_node *cmd_list, int cmd_count);
+void	debug_pipeline_commands(t_exec *exec,
+			t_cmd_node *cmd_list, int cmd_count);
 void	print_wait_debug(t_exec *exec, int i, int status);
 void	print_redirection_debug_info(t_cmd_node *cmd);
 void	print_command_debug_info(t_cmd_node *cmd);

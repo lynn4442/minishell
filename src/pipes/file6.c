@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:48:14 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/03 22:24:11 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:33:04 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static void	execute_pipeline_command(t_cmd_node *cmd, char **env_array)
 	exit(126);
 }
 
-static	void	fork_exec_helper(int debug, t_r_variables *var, t_cmd_node *current, char **env_array)
+static	void	fork_exec_helper(int debug, t_r_variables *var,
+				t_cmd_node *current, char **env_array)
 {
 	setup_child_signals();
 	if (debug)

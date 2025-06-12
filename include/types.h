@@ -83,7 +83,8 @@ typedef struct s_quote_check
 }	t_quote_check;
 
 // Token element structure for parsing
-typedef struct s_elem {
+typedef struct s_elem
+{
 	char			*token;
 	int				space_after;
 	struct s_elem	*next;

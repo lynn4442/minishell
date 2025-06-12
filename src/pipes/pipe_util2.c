@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 20:54:20 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/02 21:59:01 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/12 19:47:06 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ void	skip_space(const char *input, int *i)
 		(*i)++;
 }
 
-static	int	is_redirection(char c)
+static	int	is_redirect(char c)
 {
 	return (c == '<' || c == '>');
 }
 
 int	handle_redirection_pipe(const char *input, int *i, int *count)
 {
-	if (!is_redirection(input[*i]))
+	if (!is_redirect(input[*i]))
 		return (0);
 	(*count)++;
 	if (input[*i + 1] && input[*i] == input[*i + 1])
@@ -69,7 +69,7 @@ void	skip_argument_token(const char *input,
 			(*i)++;
 			continue ;
 		}
-		if (!*quote && (ft_isspace(input[*i]) || is_redirection(input[*i])))
+		if (!*quote && (ft_isspace(input[*i]) || is_redirect(input[*i])))
 			break ;
 		(*i)++;
 	}

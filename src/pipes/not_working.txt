@@ -1,2 +1,4 @@
 cat < input.txt | grep "pattern" > output1.txt | wc -l > output2.txt (check redirection logic)
 validate_input_file error here
+
+cat <file3.txt <file3.txt <file3.txt

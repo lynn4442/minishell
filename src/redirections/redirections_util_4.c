@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:14:11 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/06 17:25:38 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:41:45 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ void	process_input_redirection(t_cmd_node *cmd, char **args)
 	{
 		if (ft_strcmp(args[i], "<") == 0 && args[i + 1])
 		{
+			if (cmd->in)
+				free(cmd->in);
 			cmd->in = args[i + 1];
 			i += 2;
 		}

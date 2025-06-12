@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/04 21:11:23 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/07 18:36:56 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ typedef struct t_parse_simple_cmd
 	char			*last_output;
 	int				sflag;
 	int				last_output_is_append;
-	//char			*heredoc_delimiter; heyda l part li zedto
+	char			*heredoc_delimiter;
 }					t_parse_simple_cmd;
 
 typedef struct t_parse_pipeline

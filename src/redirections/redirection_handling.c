@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/06 19:12:05 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/07 16:15:28 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,11 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	if (!cmd->in)
 		return (0);
 	// heyda l part li zedto
-	//if (cmd->heredoc)
-	//{
-	//	if (handle_heredoc(cmd, cmd->exec) == -1)
-	//		return (-1);
-	//}
+	// if (cmd->heredoc)
+	// {
+	// 	if (handle_heredoc(cmd, cmd->exec) == -1)
+	// 		return (-1);
+	// }
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{

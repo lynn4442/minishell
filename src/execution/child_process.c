@@ -21,12 +21,13 @@ void	execute_child_process(t_cmd_node *cmd, char *cmd_path, char **env_array)
 	exit(126);
 }
 
-void	handle_child_exit_status(t_exec *exec, pid_t pid)
+void	handle_child_exit_status(t_exec *exec, pid_t pid, t_cmd_node *cmd)
 {
 	int	status;
 	int	sig;
 
 	waitpid(pid, &status, 0);
+	cleanup_heredoc_files(cmd);
 	if (WIFEXITED(status))
 		exec->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
@@ -75,6 +76,6 @@ int	create_and_execute_process(t_exec *exec, t_cmd_node *cmd,
 	if (pid == 0)
 		execute_child_process(cmd, cmd_path, env_array);
 	else
-		handle_child_exit_status(exec, pid);
+		handle_child_exit_status(exec, pid, cmd);
 	return (0);
 }

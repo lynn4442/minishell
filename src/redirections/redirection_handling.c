@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/18 18:47:37 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/19 20:30:18 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	(void)original_in;
 	if (!cmd->in)
 		return (0);
-	 if (cmd->heredoc_delimiter)
-	 {
-		if (handle_heredoc(cmd, cmd->exec) == -1)
-			return (-1);
-	 }
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{

@@ -35,7 +35,7 @@ int		prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd,
 /* Child process handling functions */
 void	execute_child_process(t_cmd_node *cmd, char *cmd_path,
 			char **env_array);
-void	handle_child_exit_status(t_exec *exec, pid_t pid);
+void	handle_child_exit_status(t_exec *exec, pid_t pid, t_cmd_node *cmd);
 int		prepare_process_environment(t_exec *exec, char ***env_array);
 int		create_and_execute_process(t_exec *exec, t_cmd_node *cmd,
 			char *cmd_path, char **env_array);

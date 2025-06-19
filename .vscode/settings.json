@@ -4,6 +4,7 @@
 		"minishell.h": "c",
 		"parser.h": "c",
 		"redirections.h": "c",
-		"stdlib.h": "c"
+		"stdlib.h": "c",
+		"execution.h": "c"
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/07 18:36:56 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/16 21:02:27 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,8 @@ typedef struct t_parse_simple_cmd
 	char			*last_output;
 	int				sflag;
 	int				last_output_is_append;
-	char			*heredoc_delimiter;
+	char			**heredoc_delimiter;
+	int				heredoc_count;
 }					t_parse_simple_cmd;
 
 typedef struct t_parse_pipeline
@@ -157,5 +158,5 @@ t_cmd_node			*parse_input(char *input, t_exec *exec);
 int					check_syntax(t_cmd_node *cmd_list, t_exec *exec);
 t_cmd_node			*parse_piped_commands(char *input, t_exec *exec);
 t_cmd_node			*parse_command_line(char *input, t_exec *exec);
-
+int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser);
 #endif

@@ -54,10 +54,9 @@ typedef struct s_cmd_node
 	char				*in;
 	char				*out;
 	t_type				type;
-	char				*heredoc;
+	char				**heredoc_delimiter;
 	int					append;
 	int					err;
-	int					ex_heredoc;
 	t_exec				*exec;
 	struct s_cmd_node	*next;
 }	t_cmd_node;

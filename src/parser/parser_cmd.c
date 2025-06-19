@@ -21,7 +21,7 @@ void	init_parse_simple_cmd_struct(t_parse_simple_cmd *parse)
 	parse->last_output = NULL;
 	parse->sflag = 0;
 	parse->last_output_is_append = 0;
-	//parse->heredoc_delimiter = NULL; heyda l part li zedto
+	parse->heredoc_delimiter = NULL;
 }
 
 void	parse_simple_command_token_word(t_token *current,
@@ -55,12 +55,14 @@ void	parse_simple_command_analyze_token(t_token *current,
 				continue ;
 			}
 		}
-		// heyda l part li zedto
-		//else if (current->type == TOKEN_REDIR_HEREDOC && current->next)
-		//{
-		//	parse->heredoc_delimiter = current->next->value;
-		//	current = current->next->next;
-		//}
+		else if (current->type == TOKEN_REDIR_HEREDOC && current->next->value == TOKEN_WORD)
+		{
+			if (parse_simple_command_heredoc(current, parse, parser) == 1)
+			{
+				current = current->next;
+				continue ;
+			}
+		}
 		current = current->next;
 	}
 }
@@ -110,11 +112,12 @@ t_cmd_node	*parse_simple_command(t_parser *parser)
 		parse.cmd->out = ft_strdup(&parser->exec->gc, parse.last_output);
 		parse.cmd->append = parse.last_output_is_append;
 	}
-	// heyda l part li zedto
-	//if (parse.heredoc_delimiter)
-	//{
-	//	parse.cmd->heredoc = ft_strdup(&parser->exec->gc,
-	//			parse.heredoc_delimiter);
-	//}
+	if (parse.heredoc_delimiter)
+	{
+		// parse.cmd->heredoc_delimiter = ft_strdup(&parser->exec->gc,
+		// 		parse.heredoc_delimiter);
+		parse.cmd->heredoc_delimiter = parse.heredoc_delimiter;
+		parse.heredoc_delimiter = NULL;
+	}
 	return (parse.cmd);
 }

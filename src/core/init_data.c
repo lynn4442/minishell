@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_data.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 10:20:01 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/16 20:17:23 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,9 @@ void	init_cmd_fields(t_cmd_node *cmd, t_exec *exec)
 	cmd->in = NULL;
 	cmd->out = NULL;
 	cmd->type = SMP_CMD;
-	cmd->heredoc = NULL;
+	cmd->heredoc_delimiter = NULL;
 	cmd->append = 0;
 	cmd->err = 0;
-	cmd->ex_heredoc = 0;
 	cmd->exec = exec;
 	cmd->next = NULL;
 }

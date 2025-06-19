@@ -87,3 +87,35 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	}
 	return (0);
 }
+char	**ft_realloc_append_str_array(char **old, char *new_str, int count, t_gc *gc)
+{
+	char	**new_arr;
+	int		i;
+
+	i = 0;
+	new_arr = ft_malloc(gc, sizeof(char *) * (count + 1));
+	while (old && old[i])
+	{
+		new_arr[i] = old[i];
+		i++;
+	}
+	new_arr[i++] = new_str;
+	new_arr[i] = NULL;
+	return (new_arr);
+}
+int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser)
+{
+	t_token	*next;
+
+	next = current->next;
+	if (!next || next->type != TOKEN_WORD)
+		return (0);
+	parse->heredoc_delimiter = ft_realloc_append_str_array(
+		parse->heredoc_delimiter,
+		ft_strdup(&parser->exec->gc, next->value),
+		++parse->heredoc_count,
+		&parser->exec->gc
+	);
+	parse->last_input = next->value;
+	return (1);
+}

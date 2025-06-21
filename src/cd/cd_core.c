@@ -22,7 +22,7 @@ int	cd_change_directory(const char *path, t_exec *exec)
 	}
 	if (access(path, F_OK) != 0)
 	{
-		printf("minihell: cd: %s: No such file or directory\n", path);
+		printf("minihell: cd: %s: No such file or directory 2\n", path);
 		exec->exit_status = 1;
 		return (1);
 	}

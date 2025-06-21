@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:43:55 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/03 22:39:37 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/21 20:44:44 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	print_input_error(t_cmd_node *cmd)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd->in, 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
+	ft_putstr_fd(": No such file or directory 5\n", 2);
 	cmd->exec->exit_status = 1;
 }
 

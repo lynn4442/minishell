@@ -30,7 +30,7 @@ void	report_cmd_failure(t_exec *exec, const char *cmd, int error_type)
 	}
 	else if (error_type == 3)
 	{
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putstr_fd(": No such file or directory 3\n", 2);
 		exec->exit_status = 1;
 	}
 	else

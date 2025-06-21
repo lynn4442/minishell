@@ -27,7 +27,7 @@ static	int	create_heredoc_temp_file(char *f_name)
 
 static	char	*process_heredoc_line(const char *line,	t_env_var *env, t_exec *exec)
 {
-	return (process_quotes(line, env, exec ));
+	return (process_heredoc_quotes(line, env, exec ));
 }
 
 static	int	read_heredoc_content(const char *delimiter, t_env_var *env, t_exec *exec, int fd)
@@ -83,6 +83,7 @@ int	handle_heredoc(t_cmd_node *cmd, t_exec *exec)
 		if (read == -1)
 			return (-1);
 		close(fd);
+		printf("%s", f_name);
 		cmd->in = f_name;
 		exec->heredoc_counter++;
 		i++;

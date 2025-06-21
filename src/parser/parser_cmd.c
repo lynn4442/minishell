@@ -114,8 +114,6 @@ t_cmd_node	*parse_simple_command(t_parser *parser)
 	}
 	if (parse.heredoc_delimiter)
 	{
-		// parse.cmd->heredoc_delimiter = ft_strdup(&parser->exec->gc,
-		// 		parse.heredoc_delimiter);
 		parse.cmd->heredoc_delimiter = parse.heredoc_delimiter;
 		parse.heredoc_delimiter = NULL;
 	}

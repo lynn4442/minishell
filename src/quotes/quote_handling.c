@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 03:11:19 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/21 19:19:01 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static int	process_var_length(const char *str, int *i,
 	return (max_len);
 }
 
-static int	calculate_max_result_length(const char *str, t_env_var *env)
+int	calculate_max_result_length(const char *str, t_env_var *env)
 {
 	int	i;
 	int	max_len;

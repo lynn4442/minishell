@@ -63,7 +63,7 @@ int	validate_input_file(char *filename, t_parse_simple_cmd *parse)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(filename, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putstr_fd(": No such file or directory 4\n", 2);
 		parse->sflag = 1;
 		return (1);
 	}
@@ -90,6 +90,7 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 char	**ft_realloc_append_str_array(char **old, char *new_str, t_gc *gc)
 {
 	char	**new_arr;
+	// char	*dequoted;
 	int		i;
 	int		j;
 
@@ -112,13 +113,23 @@ char	**ft_realloc_append_str_array(char **old, char *new_str, t_gc *gc)
 int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser)
 {
 	t_token	*next;
+	char	*raw;
+	char	*cleaned;
+	size_t	len;
 
 	next = current->next;
 	if (!next || next->type != TOKEN_WORD)
 		return (0);
+	raw = next->value;
+	len = ft_strlen(raw);
+	if ((raw[0] == '"' && raw[len - 1] == '"') ||
+		(raw[0] == '\'' && raw[len - 1] == '\''))
+		cleaned = ft_substr(raw, 1, len - 2);
+	else
+		cleaned = ft_strdup(&parser->exec->gc, raw);
 	parse->heredoc_delimiter = ft_realloc_append_str_array(
 		parse->heredoc_delimiter,
-		ft_strdup(&parser->exec->gc, next->value),
+		cleaned,
 		&parser->exec->gc);
 	parse->last_input = next->value;
 	return (1);

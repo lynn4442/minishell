@@ -12,11 +12,77 @@
 
 #include "execution.h"
 
+
+void	print_cmd_node(t_cmd_node *cmd)
+{
+	int	i;
+
+	if (!cmd)
+	{
+		printf("Command node is NULL.\n");
+		return;
+	}
+
+	printf("---- CMD NODE ----\n");
+
+	// Command + args
+	printf("arr: ");
+	if (cmd->arr)
+	{
+		i = 0;
+		while (cmd->arr[i])
+		{
+			printf("\"%s\" ", cmd->arr[i]);
+			i++;
+		}
+		printf("\n");
+	}
+	else
+		printf("NULL\n");
+
+	// Input redirection
+	printf("in: %s\n", cmd->in ? cmd->in : "NULL");
+
+	// Output redirection
+	printf("out: %s\n", cmd->out ? cmd->out : "NULL");
+
+	// Type
+	printf("type: %d\n", cmd->type);
+
+	// Heredoc delimiters
+	printf("heredoc_delimiter: ");
+	if (cmd->heredoc_delimiter)
+	{
+		i = 0;
+		while (cmd->heredoc_delimiter[i])
+		{
+			printf("\"%s\" ", cmd->heredoc_delimiter[i]);
+			i++;
+		}
+		printf("\n");
+	}
+	else
+		printf("NULL\n");
+
+	// Flags
+	printf("append: %d\n", cmd->append);
+	printf("err: %d\n", cmd->err);
+
+	// Exec pointer
+	printf("exec: %p\n", (void *)cmd->exec);
+
+	// Next pointer
+	printf("next: %p\n", (void *)cmd->next);
+
+	printf("------------------\n");
+}
+
 void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 {
 	int	original_in;
 	int	original_out;
 
+	// print_cmd_node(cmd);
 	original_in = -1;
 	original_out = -1;
 	if (!exec || !cmd || !cmd->arr)

@@ -55,7 +55,7 @@ void	parse_simple_command_analyze_token(t_token *current,
 				continue ;
 			}
 		}
-		else if (current->type == TOKEN_REDIR_HEREDOC && current->next->type == TOKEN_WORD)
+		else if (current->type == TOKEN_REDIR_HEREDOC && current->next && current->next->type == TOKEN_WORD)
 		{
 			if (parse_simple_command_heredoc(current, parse, parser) == 1)
 			{

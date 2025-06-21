@@ -87,20 +87,26 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	}
 	return (0);
 }
-char	**ft_realloc_append_str_array(char **old, char *new_str, int count, t_gc *gc)
+char	**ft_realloc_append_str_array(char **old, char *new_str, t_gc *gc)
 {
 	char	**new_arr;
 	int		i;
+	int		j;
 
 	i = 0;
-	new_arr = ft_malloc(gc, sizeof(char *) * (count + 1));
 	while (old && old[i])
-	{
-		new_arr[i] = old[i];
 		i++;
+	new_arr = ft_malloc(gc, sizeof(char *) * (i + 2));
+	if (!new_arr)
+		return (NULL);
+	j = 0;
+	while (j < i)
+	{
+		new_arr[j] = old[j];
+		j++;
 	}
-	new_arr[i++] = new_str;
-	new_arr[i] = NULL;
+	new_arr[j++] = new_str;
+	new_arr[j] = NULL;
 	return (new_arr);
 }
 int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser)
@@ -113,9 +119,7 @@ int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_
 	parse->heredoc_delimiter = ft_realloc_append_str_array(
 		parse->heredoc_delimiter,
 		ft_strdup(&parser->exec->gc, next->value),
-		++parse->heredoc_count,
-		&parser->exec->gc
-	);
+		&parser->exec->gc);
 	parse->last_input = next->value;
 	return (1);
 }

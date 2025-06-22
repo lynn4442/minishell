@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Heredoc_quotes_handling.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 19:16:31 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/21 19:26:08 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/23 01:30:47 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void	init_heredoc_state(t_quote_check *st, char *result)
 	st->res = result;
 	st->quote_type = '\0';
 }
+
 static int	handle_heredoc_exit_status(t_quote_check *st, t_exec *exec)
 {
 	char	*exit_status;
@@ -31,6 +32,7 @@ static int	handle_heredoc_exit_status(t_quote_check *st, t_exec *exec)
 	st->i += 2;
 	return (1);
 }
+
 static int	handle_heredoc_variable(const char *str, t_quote_check *st,
 									t_env_var *env, t_exec *exec)
 {
@@ -50,6 +52,7 @@ static int	handle_heredoc_variable(const char *str, t_quote_check *st,
 	st->i = end;
 	return (1);
 }
+
 static int	handle_heredoc_dollar(const char *str, t_quote_check *st,
 									t_env_var *env, t_exec *exec)
 {
@@ -59,6 +62,7 @@ static int	handle_heredoc_dollar(const char *str, t_quote_check *st,
 		return (handle_heredoc_variable(str, st, env, exec));
 	return (0);
 }
+
 char	*process_heredoc_quotes(const char *str, t_env_var *env, t_exec *exec)
 {
 	t_quote_check	st;
@@ -86,4 +90,3 @@ char	*process_heredoc_quotes(const char *str, t_env_var *env, t_exec *exec)
 	st.res[st.len] = '\0';
 	return (st.res);
 }
-

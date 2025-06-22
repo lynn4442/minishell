@@ -54,34 +54,8 @@ void	pipe_file_creation(t_parse_pipeline *parse, t_parser *parser)
 	while (parser->current_token && parser->current_token->type != TOKEN_EOF
 		&& parse->sflag == 0)
 	{
-		if (parser->current_token->type == TOKEN_REDIR_OUT
-			|| parser->current_token->type == TOKEN_REDIR_APPEND)
-		{
-			parse->is_append = (parser->current_token->type
-					== TOKEN_REDIR_APPEND);
-			advance_token(parser);
-			parse_pipeline_token_word(parse, parser);
-		}
-		else if (parser->current_token->type == TOKEN_REDIR_IN)
-		{
-			advance_token(parser);
-			if (!parser->current_token
-				|| parser->current_token->type != TOKEN_WORD)
-			{
-				parser->error = 1;
-				break ;
-			}
-		}
-		else if (parser->current_token->type == TOKEN_REDIR_HEREDOC)
-		{
-			advance_token(parser);
-			if (!parser->current_token
-				|| parser->current_token->type != TOKEN_WORD)
-			{
-				parser->error = 1;
-				break ;
-			}
-		}
+		if (process_redirection_token(parse, parser) == 1)
+			break ;
 		advance_token(parser);
 	}
 }

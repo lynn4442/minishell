@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 03:32:04 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 00:01:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ int	handle_builtin_command(t_exec *exec, t_cmd_node *cmd)
 {
 	if (!exec || !cmd || !cmd->arr || !cmd->arr[0])
 		return (0);
+	update_underscore_var(exec, cmd->arr[0]);
 	if (handle_echo_cd_pwd(exec, cmd))
 		return (1);
 	if (handle_env_export_unset(exec, cmd))

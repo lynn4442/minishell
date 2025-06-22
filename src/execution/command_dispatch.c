@@ -22,17 +22,15 @@ int	execute_external_command(t_exec *exec, t_cmd_node *cmd)
 	char	*cmd_path;
 	char	**env_array;
 	char	*expanded_cmd;
+	int		result;
 
 	if (prep_cmd_for_launch(exec, cmd, &expanded_cmd, &cmd_path))
 		return (1);
-	// if (handle_heredoc(cmd, exec) == -1)
-	// {
-	// 	exec->exit_status = 1;
-	// 	return (1);
-	// }
+	update_underscore_var(exec, cmd_path);
 	if (prepare_process_environment(exec, &env_array))
 		return (1);
-	return (create_and_execute_process(exec, cmd, cmd_path, env_array));
+	result = create_and_execute_process(exec, cmd, cmd_path, env_array);
+	return (result);
 }
 
 int	handle_pipe_execution(t_exec *exec)

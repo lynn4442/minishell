@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/21 19:19:01 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/23 01:09:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static int	process_var_length(const char *str, int *i,
 		var_value = get_env_value(env, var_name);
 		free(var_name);
 		if (var_value)
-			max_len += strlen(var_value);
+			max_len += ft_strlen(var_value);
 		*i = end;
 	}
 	else

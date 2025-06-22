@@ -45,6 +45,6 @@ char	*is_path_absolute(t_exec *exec, const char *expanded_cmd);
 char	*try_local_path(t_exec *exec, const char *expanded_cmd);
 char	*cmd_search_prequel(t_exec *exec, const char *cmd);
 char	*hunt_in_path_dirs(t_exec *exec, const char *expanded_cmd,
-	char **path_dirs);
+			char **path_dirs);
 
 #endif

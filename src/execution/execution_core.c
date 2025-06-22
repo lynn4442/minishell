@@ -20,7 +20,7 @@ void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 	original_in = -1;
 	original_out = -1;
 	if (!exec || !cmd || !cmd->arr)
-		return ; 
+		return ;
 	if (!cmd->arr[0] && (cmd->in || cmd->out || cmd->heredoc_delimiter))
 	{
 		execute_command_with_redirect(exec, cmd, original_in, original_out);

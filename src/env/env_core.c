@@ -24,6 +24,21 @@ static void	parse_and_add_env_var(t_exec *exec, char *env_var)
 		handle_export(&exec->gc, &exec->env_list, env_var);
 }
 
+static void	setup_default_env_vars(t_exec *exec)
+{
+	char		*cwd;
+	t_env_var	*pwd_var;
+
+	pwd_var = get_env_var(exec, "PWD");
+	if (!pwd_var)
+	{
+		cwd = ft_malloc(&exec->gc, 1024);
+		if (cwd && getcwd(cwd, 1024))
+			add_or_update_env_var(&exec->gc, &exec->env_list, "PWD", cwd);
+	}
+	add_or_update_env_var(&exec->gc, &exec->env_list, "_", "/usr/bin/env");
+}
+
 void	init_env(t_exec *exec, char **envp)
 {
 	int	i;
@@ -33,6 +48,7 @@ void	init_env(t_exec *exec, char **envp)
 	i = 0;
 	while (envp[i])
 		parse_and_add_env_var(exec, envp[i++]);
+	setup_default_env_vars(exec);
 }
 
 void	ft_env(t_exec *exec, char **args)
@@ -55,4 +71,11 @@ void	ft_env(t_exec *exec, char **args)
 		current = current->next;
 	}
 	exec->exit_status = 0;
+}
+
+void	update_underscore_var(t_exec *exec, const char *last_command)
+{
+	if (!exec || !last_command)
+		return ;
+	add_or_update_env_var(&exec->gc, &exec->env_list, "_", last_command);
 }

@@ -73,5 +73,6 @@ int	prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd,
 		report_cmd_failure(exec, *expanded_cmd, 2);
 		return (1);
 	}
+	cmd->arr[0] = *expanded_cmd;
 	return (0);
 }

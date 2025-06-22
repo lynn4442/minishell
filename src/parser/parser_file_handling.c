@@ -12,32 +12,7 @@
 
 #include "parser.h"
 
-void	parse_simple_command_output(t_token *current,
-		t_parse_simple_cmd *parse, t_parser *parser)
-{
-	char	*unquoted;
-
-	unquoted = NULL;
-	parse->last_output_is_append = (current->type == TOKEN_REDIR_APPEND);
-	if (current->next && current->next->type == TOKEN_WORD)
-	{
-		parse->filename = current->next->value;
-		if (parse->filename[0] == '"'
-			&& parse->filename[ft_strlen(parse->filename) - 1] == '"')
-		{
-			unquoted = ft_substr(parse->filename, 1, ft_strlen(parse->filename)
-					- 2);
-			if (unquoted)
-			{
-				parse->filename = ft_strdup(&parser->exec->gc, unquoted);
-				free(unquoted);
-			}
-		}
-		parse->last_output = parse->filename;
-	}
-}
-
-char	*process_input_filename(t_token *current, t_parser *parser)
+static char	*process_output_filename(t_token *current, t_parser *parser)
 {
 	char	*filename;
 	char	*unquoted;
@@ -57,63 +32,32 @@ char	*process_input_filename(t_token *current, t_parser *parser)
 	return (filename);
 }
 
-int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
-		t_parser *parser)
+static void	validate_output_file(char *filename, int is_append)
+{
+	int	fd;
+	int	flags;
+
+	flags = O_WRONLY | O_CREAT;
+	if (is_append)
+		flags |= O_APPEND;
+	else
+		flags |= O_TRUNC;
+	fd = open(filename, flags, 0644);
+	if (fd >= 0)
+		close(fd);
+}
+
+void	parse_simple_command_output(t_token *current,
+		t_parse_simple_cmd *parse, t_parser *parser)
 {
 	char	*filename;
 
-	filename = process_input_filename(current, parser);
-	if (!filename)
-		return (0);
-	parse->last_input = filename;
-	return (0);
-}
-
-char	**ft_realloc_append_str_array(char **old, char *new_str, t_gc *gc)
-{
-	char	**new_arr;
-	// char	*dequoted;
-	int		i;
-	int		j;
-
-	i = 0;
-	while (old && old[i])
-		i++;
-	new_arr = ft_malloc(gc, sizeof(char *) * (i + 2));
-	if (!new_arr)
-		return (NULL);
-	j = 0;
-	while (j < i)
+	parse->last_output_is_append = (current->type == TOKEN_REDIR_APPEND);
+	filename = process_output_filename(current, parser);
+	if (filename)
 	{
-		new_arr[j] = old[j];
-		j++;
+		parse->filename = filename;
+		validate_output_file(filename, parse->last_output_is_append);
+		parse->last_output = filename;
 	}
-	new_arr[j++] = new_str;
-	new_arr[j] = NULL;
-	return (new_arr);
-}
-
-int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser)
-{
-	t_token	*next;
-	char	*raw;
-	char	*cleaned;
-	size_t	len;
-
-	next = current->next;
-	if (!next || next->type != TOKEN_WORD)
-		return (0);
-	raw = next->value;
-	len = ft_strlen(raw);
-	if ((raw[0] == '"' && raw[len - 1] == '"') ||
-		(raw[0] == '\'' && raw[len - 1] == '\''))
-		cleaned = ft_substr(raw, 1, len - 2);
-	else
-		cleaned = ft_strdup(&parser->exec->gc, raw);
-	parse->heredoc_delimiter = ft_realloc_append_str_array(
-		parse->heredoc_delimiter,
-		cleaned,
-		&parser->exec->gc);
-	parse->last_input = next->value;
-	return (1);
 }

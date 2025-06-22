@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:43:55 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/22 00:34:09 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 01:36:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,8 @@ void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
 {
 	int	fd;
 
-	/* Handle heredoc before opening input file in pipeline */
 	if (cmd->heredoc_delimiter)
 		handle_heredoc(cmd, cmd->exec);
-
 	if (cmd->in)
 	{
 		fd = open(cmd->in, O_RDONLY);

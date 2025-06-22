@@ -28,7 +28,8 @@ typedef struct s_garbage_collector
 }	t_gc;
 
 // Command type enumeration
-typedef enum e_type {
+typedef enum e_type
+{
 	PIPE,
 	SMP_CMD
 }	t_type;

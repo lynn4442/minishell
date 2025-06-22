@@ -23,6 +23,7 @@
 //env_core.c
 void		init_env(t_exec *exec, char **envp);
 void		ft_env(t_exec *exec, char **args);
+void		update_underscore_var(t_exec *exec, const char *last_command);
 
 //env_utils.c
 char		*get_env_value(t_env_var *env_list, char *var_name);

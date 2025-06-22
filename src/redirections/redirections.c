@@ -24,7 +24,6 @@ void	parse_redirections(t_cmd_node *cmd, char **args)
 	process_input_redirection(cmd, processed_args);
 	process_output_redirection(cmd, processed_args);
 	cmd->arr = filter_command_args(cmd, processed_args);
-	print_debug_output(cmd);
 }
 
 static void	handle_input_redirection(t_cmd_node *cmd, t_gc *gc)

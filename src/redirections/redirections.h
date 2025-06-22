@@ -25,6 +25,9 @@ typedef struct s_redirect_norm
 void	handle_redirection(t_cmd_node *cmd, t_gc *gc);
 void	parse_redirections(t_cmd_node *cmd, char **args);
 
+/* Argument processing */
+void	process_and_update_args(t_cmd_node *cmd, char **args);
+
 /* Redirection setup and restoration */
 int		setup_output_redirection(t_cmd_node *cmd, int *original_fd);
 int		restore_output_redirection(int original_fd);

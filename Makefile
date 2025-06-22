@@ -36,13 +36,19 @@ SRCS = 	src/cd/cd_core.c \
 		src/export/export_display.c \
 		src/parser/lexer_tokens.c \
 		src/parser/lexer_words.c \
-		src/parser/parser_cmd.c \
 		src/parser/parser_file_handling.c \
+		src/parser/parser_file_input.c \
 		src/parser/parser_lexer.c \
+		src/parser/parser_lexer_utils.c \
 		src/parser/parser_pipeline.c \
+		src/parser/parser_pipeline_redirections.c \
 		src/parser/parser_tokenizer.c \
 		src/parser/parser_utils.c \
 		src/parser/parser_utils2.c \
+		src/parser/parser_cmd_core.c \
+		src/parser/parser_cmd_utils.c \
+		src/parser/parser_cmd_redirections.c \
+		src/parser/parser_cmd_quotes.c \
 		src/pipes/debug_pipe.c \
 		src/pipes/pipe_execution.c \
 		src/pipes/pipe_input.c \
@@ -60,8 +66,10 @@ SRCS = 	src/cd/cd_core.c \
 		src/quotes/quote_handling_2.c \
 		src/quotes/quote_handling_helper.c \
 		src/redirections/heredoc.c \
+		src/redirections/redirection_args.c \
 		src/redirections/redirection_handling.c \
-		src/redirections/redirection_utils.c \
+		src/redirections/redirection_input.c \
+		src/redirections/redirection_output.c \
 		src/redirections/redirections.c \
 		src/redirections/redirections_util_1.c \
 		src/redirections/redirections_util_2.c \

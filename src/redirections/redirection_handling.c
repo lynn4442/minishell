@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/21 22:30:58 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 01:20:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,11 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	(void)original_in;
 	if (!cmd->in)
 		return (0);
-	if(cmd->heredoc_delimiter)
-	{
+	if (cmd->heredoc_delimiter)
 		handle_heredoc(cmd, cmd->exec);
-	}
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{
-		// ft_putstr_fd("minishell: ", 2);
-		// ft_putstr_fd(cmd->in, 2);
-		// ft_putstr_fd(": No such file or directory5\n", 2);
 		cmd->exec->exit_status = 1;
 		return (-1);
 	}

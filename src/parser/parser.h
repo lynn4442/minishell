@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/22 00:30:51 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 02:03:34 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,5 +158,12 @@ t_cmd_node			*parse_input(char *input, t_exec *exec);
 int					check_syntax(t_cmd_node *cmd_list, t_exec *exec);
 t_cmd_node			*parse_piped_commands(char *input, t_exec *exec);
 t_cmd_node			*parse_command_line(char *input, t_exec *exec);
-int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser);
+int					parse_simple_command_heredoc(t_token *current,
+						t_parse_simple_cmd *parse, t_parser *parser);
+void				set_command_redirections(t_cmd_node *cmd,
+						t_parse_simple_cmd *parse, t_parser *parser);
+char				*process_quoted_token(char *val, t_parser *parser);
+int					process_redirection_token(t_parse_pipeline *parse,
+						t_parser *parser);
+
 #endif

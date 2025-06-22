@@ -32,6 +32,6 @@ char	*extract_var_name(const char *str, int start, int end);
 int		process_special_chars(const char *str, t_quote_check *st,
 			t_env_var *env, t_exec *exec);
 
-int	calculate_max_result_length(const char *str, t_env_var *env);
+int		calculate_max_result_length(const char *str, t_env_var *env);
 char	*process_heredoc_quotes(const char *str, t_env_var *env, t_exec *exec);
 #endif

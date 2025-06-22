@@ -34,7 +34,6 @@ SRCS = 	src/cd/cd_core.c \
 		src/export/export.c \
 		src/export/export_cmd.c \
 		src/export/export_display.c \
-		src/parser/lexer_symbols.c \
 		src/parser/lexer_tokens.c \
 		src/parser/lexer_words.c \
 		src/parser/parser_cmd.c \

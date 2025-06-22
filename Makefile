@@ -1,85 +1,90 @@
 # Compiler and flags
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror -g
-
-# Directories
-SRC_DIR = src
-PARSER_DIR = src/parser
-ENV_DIR = src/env
-ECHO_DIR = src/echo
-SIGNALS_DIR = src/signals
-UNSET_DIR = src/unset
-CD_DIR = src/cd
-EXPORT_DIR = src/export
-QUOTES_DIR = src/quotes
-REDIRECTIONS_DIR = src/redirections
-PIPES_DIR = src/pipes
-EXECUTION_DIR = src/execution
-PWD_DIR = src/pwd
-EXIT_DIR = src/exit
-CORE_DIR = src/core
-UTILS_DIR = src/utils
-OBJ_DIR = obj
-PARSER_OBJ_DIR = obj/parser
-ENV_OBJ_DIR = obj/env
-ECHO_OBJ_DIR = obj/echo
-SIGNALS_OBJ_DIR = obj/signals
-UNSET_OBJ_DIR = obj/unset
-CD_OBJ_DIR = obj/cd
-EXPORT_OBJ_DIR = obj/export
-QUOTES_OBJ_DIR = obj/quotes
-REDIRECTIONS_OBJ_DIR = obj/redirections
-PIPES_OBJ_DIR = obj/pipes
-EXECUTION_OBJ_DIR = obj/execution
-PWD_OBJ_DIR = obj/pwd
-EXIT_OBJ_DIR = obj/exit
-CORE_OBJ_DIR = obj/core
-UTILS_OBJ_DIR = obj/utils
-INCLUDES = -I include -I headers -I libft -I src/parser -I src/env -I src/echo -I src/signals -I src/unset -I src/cd -I src/export -I src/quotes -I src/redirections -I src/pipes -I src/execution -I src/pwd -I src/exit -I src/core -I src/utils -g
-
-## Libraries
-LIBFT   = libft/libft.a
-LDFLAGS = -Llibft -lft -lreadline -lncurses
-
-# Source files explicitly listed
-SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
-PARSER_FILES = $(wildcard $(PARSER_DIR)/*.c)
-ENV_FILES = $(wildcard $(ENV_DIR)/*.c)
-ECHO_FILES = $(wildcard $(ECHO_DIR)/*.c)
-SIGNALS_FILES = $(wildcard $(SIGNALS_DIR)/*.c)
-UNSET_FILES = $(wildcard $(UNSET_DIR)/*.c)
-CD_FILES = $(wildcard $(CD_DIR)/*.c)
-EXPORT_FILES = $(wildcard $(EXPORT_DIR)/*.c)
-QUOTES_FILES = $(wildcard $(QUOTES_DIR)/*.c)
-REDIRECTIONS_FILES = $(wildcard $(REDIRECTIONS_DIR)/*.c)
-PIPES_FILES = $(wildcard $(PIPES_DIR)/*.c)
-EXECUTION_FILES = $(wildcard $(EXECUTION_DIR)/*.c)
-PWD_FILES = $(wildcard $(PWD_DIR)/*.c)
-EXIT_FILES = $(wildcard $(EXIT_DIR)/*.c)
-CORE_FILES = $(wildcard $(CORE_DIR)/*.c)
-UTILS_FILES = $(wildcard $(UTILS_DIR)/*.c)
-
-# Object files
-MAIN_OBJS = $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-PARSER_OBJS = $(PARSER_FILES:$(PARSER_DIR)/%.c=$(PARSER_OBJ_DIR)/%.o)
-ENV_OBJS = $(ENV_FILES:$(ENV_DIR)/%.c=$(ENV_OBJ_DIR)/%.o)
-ECHO_OBJS = $(ECHO_FILES:$(ECHO_DIR)/%.c=$(ECHO_OBJ_DIR)/%.o)
-SIGNALS_OBJS = $(SIGNALS_FILES:$(SIGNALS_DIR)/%.c=$(SIGNALS_OBJ_DIR)/%.o)
-UNSET_OBJS = $(UNSET_FILES:$(UNSET_DIR)/%.c=$(UNSET_OBJ_DIR)/%.o)
-CD_OBJS = $(CD_FILES:$(CD_DIR)/%.c=$(CD_OBJ_DIR)/%.o)
-EXPORT_OBJS = $(EXPORT_FILES:$(EXPORT_DIR)/%.c=$(EXPORT_OBJ_DIR)/%.o)
-QUOTES_OBJS = $(QUOTES_FILES:$(QUOTES_DIR)/%.c=$(QUOTES_OBJ_DIR)/%.o)
-REDIRECTIONS_OBJS = $(REDIRECTIONS_FILES:$(REDIRECTIONS_DIR)/%.c=$(REDIRECTIONS_OBJ_DIR)/%.o)
-PIPES_OBJS = $(PIPES_FILES:$(PIPES_DIR)/%.c=$(PIPES_OBJ_DIR)/%.o)
-EXECUTION_OBJS = $(EXECUTION_FILES:$(EXECUTION_DIR)/%.c=$(EXECUTION_OBJ_DIR)/%.o)
-PWD_OBJS = $(PWD_FILES:$(PWD_DIR)/%.c=$(PWD_OBJ_DIR)/%.o)
-EXIT_OBJS = $(EXIT_FILES:$(EXIT_DIR)/%.c=$(EXIT_OBJ_DIR)/%.o)
-CORE_OBJS = $(CORE_FILES:$(CORE_DIR)/%.c=$(CORE_OBJ_DIR)/%.o)
-UTILS_OBJS = $(UTILS_FILES:$(UTILS_DIR)/%.c=$(UTILS_OBJ_DIR)/%.o)
-OBJS = $(MAIN_OBJS) $(PARSER_OBJS) $(ENV_OBJS) $(ECHO_OBJS) $(SIGNALS_OBJS) $(UNSET_OBJS) $(CD_OBJS) $(EXPORT_OBJS) $(QUOTES_OBJS) $(REDIRECTIONS_OBJS) $(PIPES_OBJS) $(EXECUTION_OBJS) $(PWD_OBJS) $(EXIT_OBJS) $(CORE_OBJS) $(UTILS_OBJS)
+RM		= rm -f
 
 # Final executable
 NAME	= minishell
+
+# Directories
+OBJ_DIR = obj
+SRC_DIR = src
+
+# Source files
+SRCS = 	src/cd/cd_core.c \
+		src/cd/cd_utils.c \
+		src/core/check_builtins.c \
+		src/core/init_data.c \
+		src/core/main.c \
+		src/echo/echo_core.c \
+		src/echo/echo_redirection.c \
+		src/echo/echo_utils.c \
+		src/env/env_convert.c \
+		src/env/env_core.c \
+		src/env/env_utils.c \
+		src/env/env_var_utils.c \
+		src/env/shlvl.c \
+		src/execution/child_process.c \
+		src/execution/command_dispatch.c \
+		src/execution/command_preparation.c \
+		src/execution/execution_core.c \
+		src/execution/path_handling.c \
+		src/execution/path_handling2.c \
+		src/exit/exit.c \
+		src/export/export.c \
+		src/export/export_cmd.c \
+		src/export/export_display.c \
+		src/parser/lexer_symbols.c \
+		src/parser/lexer_tokens.c \
+		src/parser/lexer_words.c \
+		src/parser/parser_cmd.c \
+		src/parser/parser_file_handling.c \
+		src/parser/parser_lexer.c \
+		src/parser/parser_pipeline.c \
+		src/parser/parser_tokenizer.c \
+		src/parser/parser_utils.c \
+		src/parser/parser_utils2.c \
+		src/pipes/debug_pipe.c \
+		src/pipes/pipe_execution.c \
+		src/pipes/pipe_input.c \
+		src/pipes/pipe_output.c \
+		src/pipes/pipe_setup.c \
+		src/pipes/pipe_utils.c \
+		src/pipes/pipe.c \
+		src/pipes/pipe_handling.c \
+		src/pipes/pipe_util1.c \
+		src/pipes/pipe_util2.c \
+		src/pipes/pipe_util3.c \
+		src/pwd/pwd.c \
+		src/quotes/heredoc_quotes_handling.c \
+		src/quotes/quote_handling.c \
+		src/quotes/quote_handling_2.c \
+		src/quotes/quote_handling_helper.c \
+		src/redirections/heredoc.c \
+		src/redirections/redirection_handling.c \
+		src/redirections/redirection_utils.c \
+		src/redirections/redirections.c \
+		src/redirections/redirections_util_1.c \
+		src/redirections/redirections_util_2.c \
+		src/redirections/redirections_util_3.c \
+		src/redirections/redirections_util_4.c \
+		src/redirections/redirections_util_5.c \
+		src/signals/signal_exit.c \
+		src/signals/signal_handling.c \
+		src/unset/unset_core.c \
+		src/unset/unset_errors.c \
+		src/unset/unset_operations.c \
+		src/utils/utils.c
+
+# Object files
+OBJS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRCS))
+
+# Include paths
+INCLUDES = -I include -I libft -I src/parser -I src/env -I src/echo -I src/signals -I src/unset -I src/cd -I src/export -I src/quotes -I src/redirections -I src/pipes -I src/execution -I src/pwd -I src/exit -I src/core -I src/utils
+
+# Libraries
+LIBFT   = libft/libft.a
+LDFLAGS = -Llibft -lft -lreadline -lncurses
 
 # Rules
 all: $(NAME)
@@ -88,67 +93,7 @@ $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(PARSER_OBJ_DIR)/%.o: $(PARSER_DIR)/%.c
-	mkdir -p $(PARSER_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(ENV_OBJ_DIR)/%.o: $(ENV_DIR)/%.c
-	mkdir -p $(ENV_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(ECHO_OBJ_DIR)/%.o: $(ECHO_DIR)/%.c
-	mkdir -p $(ECHO_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(SIGNALS_OBJ_DIR)/%.o: $(SIGNALS_DIR)/%.c
-	mkdir -p $(SIGNALS_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(UNSET_OBJ_DIR)/%.o: $(UNSET_DIR)/%.c
-	mkdir -p $(UNSET_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(CD_OBJ_DIR)/%.o: $(CD_DIR)/%.c
-	mkdir -p $(CD_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(EXPORT_OBJ_DIR)/%.o: $(EXPORT_DIR)/%.c
-	mkdir -p $(EXPORT_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(QUOTES_OBJ_DIR)/%.o: $(QUOTES_DIR)/%.c
-	mkdir -p $(QUOTES_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(REDIRECTIONS_OBJ_DIR)/%.o: $(REDIRECTIONS_DIR)/%.c
-	mkdir -p $(REDIRECTIONS_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(PIPES_OBJ_DIR)/%.o: $(PIPES_DIR)/%.c
-	mkdir -p $(PIPES_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(EXECUTION_OBJ_DIR)/%.o: $(EXECUTION_DIR)/%.c
-	mkdir -p $(EXECUTION_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(PWD_OBJ_DIR)/%.o: $(PWD_DIR)/%.c
-	mkdir -p $(PWD_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(EXIT_OBJ_DIR)/%.o: $(EXIT_DIR)/%.c
-	mkdir -p $(EXIT_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(CORE_OBJ_DIR)/%.o: $(CORE_DIR)/%.c
-	mkdir -p $(CORE_OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-$(UTILS_OBJ_DIR)/%.o: $(UTILS_DIR)/%.c
-	mkdir -p $(UTILS_OBJ_DIR)
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):
@@ -162,6 +107,6 @@ fclean: clean
 	rm -f $(NAME)
 	make -C libft fclean
 
-re: fclean $(NAME)
+re: fclean all
 
 .PHONY: all clean fclean re

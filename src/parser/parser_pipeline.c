@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_pipeline.c                                  :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wasmar <wasmar@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 00:00:00 by wasmar            #+#    #+#             */
-/*   Updated: 2025/01/11 00:00:00 by wasmar           ###   ########.fr       */
+/*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/03/25 12:48:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,23 @@ void	pipe_file_creation(t_parse_pipeline *parse, t_parser *parser)
 		}
 		else if (parser->current_token->type == TOKEN_REDIR_IN)
 		{
-			parse->fd = open(parser->current_token->value, O_RDONLY);
-			if (parse->fd < 0)
-				parse->sflag = 1;
+			advance_token(parser);
+			if (!parser->current_token
+				|| parser->current_token->type != TOKEN_WORD)
+			{
+				parser->error = 1;
+				break ;
+			}
+		}
+		else if (parser->current_token->type == TOKEN_REDIR_HEREDOC)
+		{
+			advance_token(parser);
+			if (!parser->current_token
+				|| parser->current_token->type != TOKEN_WORD)
+			{
+				parser->error = 1;
+				break ;
+			}
 		}
 		advance_token(parser);
 	}
@@ -76,16 +90,12 @@ t_cmd_node	*parse_pipeline(t_parser *parser)
 {
 	t_parse_pipeline	parse;
 
-	init_parse_pipeline(&parse, parser);
-	pipe_file_creation(&parse, parser);
-	parser->current_token = parse.start_token;
 	parse.first_cmd = parse_simple_command(parser);
 	if (!parse.first_cmd || parser->error)
 		return (NULL);
 	parse.current_cmd = parse.first_cmd;
 	while (parser->current_token && parser->current_token->type == TOKEN_PIPE)
 	{
-		parse.pipe_count++;
 		advance_token(parser);
 		parse.current_cmd->type = PIPE;
 		parse.next_cmd = parse_simple_command(parser);

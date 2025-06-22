@@ -1,9 +1,0 @@
-hady_norme_fixes
-hi.txt
-include
-libft
-Makefile
-minishell
-obj
-push.sh
-src

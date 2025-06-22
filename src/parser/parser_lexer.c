@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_lexer.c                                     :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/01 23:52:02 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/01 23:52:02 by marvin           ###   ########.fr       */
+/*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/03/25 12:48:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,27 +41,37 @@ void	skip_whitespace(t_lexer *lexer)
 t_token	*get_next_token(t_lexer *lexer, t_gc *gc)
 {
 	char	current;
-	t_token	*word_token;
-	t_token	*temp;
 
 	skip_whitespace(lexer);
 	if (!lexer->input[lexer->position])
 		return (create_token(TOKEN_EOF, NULL, gc));
 	current = lexer->input[lexer->position];
-	temp = get_next_token_pipe(lexer, gc, &current);
-	if (temp != NULL)
-		return (temp);
-	temp = get_next_token_input_r(lexer, gc, &current);
-	if (temp != NULL)
-		return (temp);
-	temp = get_next_token_output(lexer, gc, &current);
-	if (temp != NULL)
-		return (temp);
-	word_token = get_word_token(lexer, gc);
-	if (word_token)
-		return (word_token);
-	lexer->position++;
-	return (get_next_token(lexer, gc));
+	if (current == '<')
+	{
+		lexer->position++;
+		if (lexer->input[lexer->position] == '<')
+		{
+			lexer->position++;
+			return (create_token(TOKEN_REDIR_HEREDOC, "<<", gc));
+		}
+		return (create_token(TOKEN_REDIR_IN, "<", gc));
+	}
+	if (current == '>')
+	{
+		lexer->position++;
+		if (lexer->input[lexer->position] == '>')
+		{
+			lexer->position++;
+			return (create_token(TOKEN_REDIR_APPEND, ">>", gc));
+		}
+		return (create_token(TOKEN_REDIR_OUT, ">", gc));
+	}
+	if (current == '|')
+	{
+		lexer->position++;
+		return (create_token(TOKEN_PIPE, "|", gc));
+	}
+	return (get_word_token(lexer, gc));
 }
 
 char	*copy_input_string(char *input, t_gc *gc)

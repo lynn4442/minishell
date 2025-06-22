@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_cmd.c                                       :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wasmar <wasmar@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 00:00:00 by wasmar            #+#    #+#             */
-/*   Updated: 2025/01/11 00:00:00 by wasmar           ###   ########.fr       */
+/*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/03/25 12:48:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,20 @@ void	parse_simple_command_loop_2(t_token *current,
 						|| current->prev->type == TOKEN_REDIR_APPEND
 						|| current->prev->type == TOKEN_REDIR_HEREDOC)))
 			{
-				parse->args[parse->i++] = ft_strdup(&parser->exec->gc,
-						current->value);
+				char *val = current->value;
+				char *unquoted = NULL;
+				int len = ft_strlen(val);
+				if ((val[0] == '"' && val[len - 1] == '"') ||
+					(val[0] == '\'' && val[len - 1] == '\''))
+				{
+					unquoted = ft_substr(val, 1, len - 2);
+					parse->args[parse->i++] = ft_strdup(&parser->exec->gc,
+						unquoted);
+					free(unquoted);
+				}
+				else
+					parse->args[parse->i++] = ft_strdup(&parser->exec->gc,
+						val);
 			}
 		}
 		current = current->next;
@@ -99,6 +111,12 @@ t_cmd_node	*parse_simple_command(t_parser *parser)
 	init_parse_simple_cmd_struct(&parse);
 	current = parser->current_token;
 	parse_simple_command_analyze_token(current, &parse, parser);
+	if (parse.sflag)
+	{
+		parser->error = 1;
+		advance_parser_position(parser);
+		return (NULL);
+	}
 	parse_simple_command_loop_2(current, &parse, parser);
 	parse.args[parse.i] = NULL;
 	advance_parser_position(parser);

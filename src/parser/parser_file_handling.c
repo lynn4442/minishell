@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_file_handling.c                             :+:      :+:    :+:   */
+/*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: wasmar <wasmar@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/11 00:00:00 by wasmar            #+#    #+#             */
-/*   Updated: 2025/01/11 00:00:00 by wasmar           ###   ########.fr       */
+/*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/03/25 12:48:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,6 @@ char	*process_input_filename(t_token *current, t_parser *parser)
 	return (filename);
 }
 
-int	validate_input_file(char *filename, t_parse_simple_cmd *parse)
-{
-	if (access(filename, F_OK) == -1)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(filename, 2);
-		ft_putstr_fd(": No such file or directory 4\n", 2);
-		parse->sflag = 1;
-		return (1);
-	}
-	return (0);
-}
-
 int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 		t_parser *parser)
 {
@@ -79,14 +66,9 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	if (!filename)
 		return (0);
 	parse->last_input = filename;
-	if (validate_input_file(filename, parse))
-	{
-		if (current && current->next)
-			parser->current_token = current->next;
-		return (1);
-	}
 	return (0);
 }
+
 char	**ft_realloc_append_str_array(char **old, char *new_str, t_gc *gc)
 {
 	char	**new_arr;
@@ -110,6 +92,7 @@ char	**ft_realloc_append_str_array(char **old, char *new_str, t_gc *gc)
 	new_arr[j] = NULL;
 	return (new_arr);
 }
+
 int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse, t_parser *parser)
 {
 	t_token	*next;

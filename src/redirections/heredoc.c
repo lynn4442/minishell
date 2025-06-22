@@ -83,7 +83,7 @@ int	handle_heredoc(t_cmd_node *cmd, t_exec *exec)
 		if (read == -1)
 			return (-1);
 		close(fd);
-		printf("%s", f_name);
+		//printf("%s", f_name);
 		cmd->in = f_name;
 		exec->heredoc_counter++;
 		i++;

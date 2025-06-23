@@ -90,7 +90,7 @@ int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse,
 	len = ft_strlen(raw);
 	if ((raw[0] == '"' && raw[len - 1] == '"')
 		|| (raw[0] == '\'' && raw[len - 1] == '\''))
-		cleaned = ft_substr(raw, 1, len - 2);
+		cleaned = ft_strndup(&parser->exec->gc, raw + 1, len - 2);
 	else
 		cleaned = ft_strdup(&parser->exec->gc, raw);
 	parse->heredoc_delimiter = ft_realloc_append_str_array(
@@ -98,5 +98,5 @@ int	parse_simple_command_heredoc(t_token *current, t_parse_simple_cmd *parse,
 			cleaned,
 			&parser->exec->gc);
 	parse->last_input = next->value;
-	return (1);
+	return (0);
 }

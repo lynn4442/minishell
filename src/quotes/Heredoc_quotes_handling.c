@@ -6,12 +6,12 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 19:16:31 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/23 16:54:58 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 16:56:55 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "quotes.h"
-//this should be changed
+//this should be changed to heredoc_quotes_handling.c
 static void	init_heredoc_state(t_quote_check *st, char *result)
 {
 	st->i = 0;

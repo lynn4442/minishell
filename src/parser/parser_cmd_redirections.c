@@ -44,8 +44,9 @@ void	parse_simple_command_analyze_token(t_token *current,
 			parse_simple_command_token_word(current, parse, parser);
 		else if (handle_cmd_redirection_token(current, parse, parser) == 1)
 		{
-			current = current->next;
-			continue ;
+			parser->error = 1;
+			parse->sflag = 1;
+			break;
 		}
 		current = current->next;
 	}

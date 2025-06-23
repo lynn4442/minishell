@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/23 03:12:48 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 15:43:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	(void)original_in;
 	if (!cmd->in)
 		return (0);
+	
 	if (validate_redirection_file(cmd->exec, cmd->in, O_RDONLY) != 0)
 		return (-1);
 	if (cmd->heredoc_delimiter)

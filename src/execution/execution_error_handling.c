@@ -85,7 +85,7 @@ int	validate_redirection_file(t_exec *exec, const char *filename, int mode)
 
 	if (!filename || !*filename)
 	{
-		ft_putstr_fd("minishell: : No such file or directory\n", 2);
+		ft_putstr_fd("minishell: : No such file or directory SFFQ\n", 2);
 		exec->exit_status = 1;
 		return (1);
 	}
@@ -110,7 +110,7 @@ int	validate_redirection_file(t_exec *exec, const char *filename, int mode)
 		{
 			ft_putstr_fd("minishell: ", 2);
 			ft_putstr_fd(filename, 2);
-			ft_putstr_fd(": No such file or directory\n", 2);
+			ft_putstr_fd(": No such file or directory QSCQFQ\n", 2);
 			exec->exit_status = 1;
 			return (1);
 		}

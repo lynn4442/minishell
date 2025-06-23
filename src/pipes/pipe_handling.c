@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/22 22:45:53 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 20:24:30 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,24 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 {
 	t_r_variables	var;
 	char			**env_array;
+	t_cmd_node		*cmd;
 
 	var.cmd_count = count_pipeline_commands(cmd_list);
 	if (var.cmd_count <= 0)
 		return ;
+	cmd = cmd_list;
+	while (cmd)
+	{
+		if (cmd->heredoc_delimiter)
+		{
+			int heredoc_result = handle_heredoc(cmd, exec);
+			if (heredoc_result == 130)
+				return;
+			else if (heredoc_result == -1)
+				return;
+		}
+		cmd = cmd->next;
+	}
 	if (is_debug_enabled(exec))
 		debug_pipeline_commands(exec, cmd_list, var.cmd_count);
 	if (var.cmd_count == 1)
@@ -51,7 +65,6 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 	if (is_debug_enabled(exec))
 		ft_putstr_fd("minishell: pipeline execution complete\n", 2);
 }
-
 static char	*join_command_parts(t_exec *exec, char **parts)
 {
 	char	*cmd_str;

@@ -5,6 +5,7 @@
 		"parser.h": "c",
 		"redirections.h": "c",
 		"stdlib.h": "c",
-		"execution.h": "c"
+		"execution.h": "c",
+		"signals.h": "c"
 	}
 }

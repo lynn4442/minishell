@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_input.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:43:55 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/23 01:36:09 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 20:55:56 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	print_input_error(t_cmd_node *cmd)
 {
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd->in, 2);
-	ft_putstr_fd(": No such file or directory\n", 2);
+	ft_putstr_fd(": No such file or directoryQWDQFQFQQ\n", 2);
 	cmd->exec->exit_status = 1;
 }
 
@@ -40,9 +40,6 @@ void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
 {
 	int	fd;
 
-	if (cmd->heredoc_delimiter)
-		handle_heredoc(cmd, cmd->exec);
-	if (cmd->in)
 	{
 		fd = open(cmd->in, O_RDONLY);
 		if (fd == -1)

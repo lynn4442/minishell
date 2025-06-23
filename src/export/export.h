@@ -31,6 +31,12 @@ void	print_env_var(t_env_var *var);
 int		check_env_list(t_env_var *env_list);
 void	ft_export(t_env_var *env_list);
 
+/* Export validation functions */
+int		validate_export_argument(const char *arg, t_exec *exec);
+int		validate_unset_argument(const char *name, t_exec *exec);
+int		is_valid_variable_name(const char *name);
+int		is_valid_identifier_char(char c, int is_first);
+
 /* Utility functions */
 int		ft_isspace(char c);
 void	add_or_update_env_var(t_gc *gc, t_env_var **env_list,

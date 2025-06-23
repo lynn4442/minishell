@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 03:11:29 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 04:04:29 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,20 @@ int	handle_quote(const char *str, t_quote_check *st)
 	if (str[st->i] == '\'' || str[st->i] == '"')
 	{
 		if (st->quote_type == '\0')
+		{
 			st->quote_type = str[st->i];
+			fprintf(stderr, "DEBUG: Start quote '%c' at pos %d\n", str[st->i], st->i);
+		}
 		else if (str[st->i] == st->quote_type)
+		{
 			st->quote_type = '\0';
+			fprintf(stderr, "DEBUG: End quote '%c' at pos %d\n", str[st->i], st->i);
+		}
 		else
+		{
 			st->res[st->len++] = str[st->i];
+			fprintf(stderr, "DEBUG: Add quote '%c' to result at pos %d\n", str[st->i], st->i);
+		}
 		st->i++;
 		return (1);
 	}

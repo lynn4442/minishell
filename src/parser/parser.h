@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/23 02:03:34 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/23 03:11:46 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,5 +165,11 @@ void				set_command_redirections(t_cmd_node *cmd,
 char				*process_quoted_token(char *val, t_parser *parser);
 int					process_redirection_token(t_parse_pipeline *parse,
 						t_parser *parser);
+
+/* Error handling functions */
+int					validate_syntax(char *input, t_token *tokens, t_exec *exec);
+int					check_pipe_syntax_errors(t_token *tokens, t_exec *exec);
+int					check_redirection_syntax_errors(t_token *tokens, t_exec *exec);
+int					check_quote_syntax_errors(char *input, t_exec *exec);
 
 #endif

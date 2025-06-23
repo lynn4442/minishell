@@ -24,11 +24,8 @@ int	display_env_vars(t_exec *exec)
 
 int	process_export_arg(t_exec *exec, char *arg)
 {
-	if (!is_valid_var_name(arg) && !ft_strchr(arg, '='))
-	{
-		printf("export: `%s': not a valid identifier\n", arg);
+	if (!validate_export_argument(arg, exec))
 		return (0);
-	}
 	handle_export(&exec->gc, &exec->env_list, arg);
 	return (1);
 }

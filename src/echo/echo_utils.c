@@ -19,9 +19,13 @@ void	print_single_arg(char *arg, t_env_var *env, t_exec *exec)
 
 	if (!arg)
 		return ;
+	fprintf(stderr, "DEBUG: Raw arg: [%s]\n", arg);
 	processed = process_quotes(arg, env, exec);
 	if (processed)
+	{
+		fprintf(stderr, "DEBUG: Processed: [%s]\n", processed);
 		printf("%s", processed);
+	}
 }
 
 int	parse_echo_options(char **args, int *i)

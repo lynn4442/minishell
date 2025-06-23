@@ -14,12 +14,17 @@
 # define REDIRECTIONS_H
 
 # include "minishell.h"
+# include <errno.h>
+# include <sys/stat.h>
 
 typedef struct s_redirect_norm
 {
 	int		redir_pos;
 	char	redir_type;
 }	t_redir_norm;
+
+/* Error handling functions */
+int		validate_redirection_file(t_exec *exec, const char *filename, int mode);
 
 /* Main redirection handling */
 void	handle_redirection(t_cmd_node *cmd, t_gc *gc);
@@ -60,4 +65,5 @@ int		is_redirection(const char *str);
 int		find_redir_pos(const char *arg, char *redir_type);
 void	print_split_debug(char *cmd, char *redir, char *file);
 void	create_file_for_redir(char *filename, char *arg, int pos);
+
 #endif

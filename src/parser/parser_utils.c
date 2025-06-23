@@ -58,6 +58,8 @@ t_cmd_node	*parse_input(char *input, t_exec *exec)
 	tokens = tokenize(input, &exec->gc);
 	if (!tokens)
 		return (NULL);
+	if (validate_syntax(input, tokens, exec))
+		return (NULL);
 	parser = init_parser(tokens, exec);
 	if (!parser)
 		return (NULL);
@@ -95,4 +97,28 @@ int	check_syntax(t_cmd_node *cmd_list, t_exec *exec)
 		current = current->next;
 	}
 	return (0);
+}
+
+/* Moved from parser_utils2.c */
+t_cmd_node	*parse_piped_commands(char *input, t_exec *exec)
+{
+	return (parse_input(input, exec));
+}
+
+/* Main parse function for external call */
+t_cmd_node	*parse_command_line(char *input, t_exec *exec)
+{
+	t_cmd_node	*cmd_list;
+
+	cmd_list = parse_input(input, exec);
+	if (cmd_list)
+	{
+		if (check_syntax(cmd_list, exec))
+		{
+			exec->cmd_list = NULL;
+			return (NULL);
+		}
+		exec->cmd_list = cmd_list;
+	}
+	return (cmd_list);
 }

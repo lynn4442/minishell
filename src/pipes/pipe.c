@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 22:01:54 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/23 04:02:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,37 +37,11 @@ int	handle_escape_state(const char *arg, int *j, int *escaped, char quote)
 	return (0);
 }
 
-char	*process_argument(const char *arg, t_gc *gc)
-{
-	char			*processed;
-	t_r_variables	var;
-
-	init_r_variables(&var);
-	processed = ft_malloc(gc, ft_strlen(arg) + 1);
-	if (!processed)
-		return (NULL);
-	while (arg[var.j])
-	{
-		if ((arg[var.j] == '\'' || arg[var.j] == '"') && var.escaped == 0)
-		{
-			handle_quote_state(arg[var.j], &var.quote, &var.j);
-			continue ;
-		}
-		if (handle_escape_state(arg, &var.j, &var.escaped, var.quote))
-			continue ;
-		processed[var.k++] = arg[var.j++];
-		var.escaped = 0;
-	}
-	processed[var.k] = '\0';
-	return (processed);
-}
-
 static char	*extract_argument(const char *input, t_r_variables *var,
-	t_gc *gc, int is_echo_command)
+	t_gc *gc)
 {
 	int		start;
 	char	*arg;
-	char	*processed;
 
 	skip_leading_spaces(input, &var->i, &var->quote);
 	if (!input[var->i])
@@ -82,12 +56,6 @@ static char	*extract_argument(const char *input, t_r_variables *var,
 	arg = ft_strndup(gc, input + start, var->i - start);
 	if (!arg)
 		return (NULL);
-	if (!is_echo_command)
-	{
-		processed = process_argument(arg, gc);
-		if (processed)
-			return (processed);
-	}
 	return (arg);
 }
 
@@ -105,7 +73,7 @@ char	**split_preserve_quotes(const char *input, t_gc *gc)
 		return (NULL);
 	while (var.count < arg_count)
 	{
-		arg = extract_argument(input, &var, gc, var.is_echo_command);
+		arg = extract_argument(input, &var, gc);
 		if (!arg)
 			break ;
 		if (var.count == 0 && ft_strcmp(arg, "echo") == 0)
@@ -113,7 +81,6 @@ char	**split_preserve_quotes(const char *input, t_gc *gc)
 		result[var.count++] = arg;
 		if (!input[var.i])
 			break ;
-		var.i++;
 	}
 	result[var.count] = NULL;
 	return (result);

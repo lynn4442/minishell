@@ -68,3 +68,10 @@ void	parse_simple_command_loop_2(t_token *current,
 		current = current->next;
 	}
 }
+
+/* Moved from parser_cmd_quotes.c */
+char	*process_quoted_token(char *val, t_parser *parser)
+{
+	// Don't do any quote processing here - leave it to the commands
+	return (ft_strdup(&parser->exec->gc, val));
+}

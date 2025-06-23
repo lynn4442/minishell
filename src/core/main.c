@@ -37,25 +37,29 @@ static void	process_command_line(t_exec *exec, char *input)
 {
 	char		*copied_input;
 	t_cmd_node	*cmd_list;
-	int			error_status;
 
-	error_status = 0;
 	copied_input = copy_input_string(input, &exec->gc);
 	if (!copied_input)
 	{
-		exec->exit_status = error_status;
+		exec->exit_status = 1;
 		return ;
 	}
+	
 	cmd_list = parse_command_line(copied_input, exec);
-	if (cmd_list)
+	if (!cmd_list)
 	{
-		setup_parent_signals();
-		if (cmd_list->type == PIPE || cmd_list->next)
-			execute_with_pipes(exec, cmd_list);
-		else
-			parse_and_execute(exec, cmd_list);
-		setup_interactive_signals();
+		// If parsing failed, the error message was already printed
+		// and exit_status was set in the parser
+		return ;
 	}
+	
+	// Only execute if parsing was successful
+	setup_parent_signals();
+	if (cmd_list->type == PIPE || cmd_list->next)
+		execute_with_pipes(exec, cmd_list);
+	else
+		parse_and_execute(exec, cmd_list);
+	setup_interactive_signals();
 }
 
 /* Handle user input and basic validation */

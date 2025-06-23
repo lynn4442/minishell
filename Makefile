@@ -61,7 +61,7 @@ SRCS = 	src/cd/cd_core.c \
 		src/pipes/pipe_util2.c \
 		src/pipes/pipe_util3.c \
 		src/pwd/pwd.c \
-		src/quotes/heredoc_quotes_handling.c \
+		src/quotes/Heredoc_quotes_handling.c \
 		src/quotes/quote_handling.c \
 		src/quotes/quote_handling_2.c \
 		src/quotes/quote_handling_helper.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_execution.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:48:14 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/22 22:51:52 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/24 21:38:31 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,13 @@ static void	execute_pipeline_command(t_cmd_node *cmd, char **env_array)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->arr[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
+		ft_free_all(&cmd->exec->gc);
 		exit(127);
 	}
 	execve(cmd_path, cmd->arr, env_array);
 	ft_putstr_fd("minishell: ", 2);
 	perror(cmd->arr[0]);
+	ft_free_all(&cmd->exec->gc);
 	exit(126);
 }
 
@@ -48,6 +50,7 @@ static	void	fork_exec_helper(int debug, t_r_variables *var,
 	setup_child_pipes(current, var->i, var->pipe_count, var->pipes);
 	close_all_pipes(var->pipe_count, var->pipes);
 	execute_pipeline_command(current, env_array);
+	ft_free_all(&current->exec->gc);
 	exit(1);
 }
 

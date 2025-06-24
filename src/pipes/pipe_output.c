@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file2.c                                            :+:      :+:    :+:   */
+/*   pipe_output.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:44:10 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/03 22:09:17 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/24 21:07:44 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	print_output_error(t_cmd_node *cmd)
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd->out, 2);
 	ft_putstr_fd(": Error opening output file\n", 2);
+	ft_free_all(&cmd->exec->gc);
 	exit(1);
 }
 

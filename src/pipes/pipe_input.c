@@ -6,7 +6,7 @@
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:43:55 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/24 20:14:26 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/24 21:07:28 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
             print_input_error(cmd);
             if (prev_pipe_fd != -1)
                 close(prev_pipe_fd);
+			ft_free_all(&cmd->exec->gc);
             exit(1);
         }
         handle_input_file(fd, prev_pipe_fd);

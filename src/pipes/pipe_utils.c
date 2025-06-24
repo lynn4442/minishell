@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file4.c                                            :+:      :+:    :+:   */
+/*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:44:38 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/03 21:46:54 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/24 21:42:16 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	handle_builtin_or_empty(t_cmd_node *cmd)
 {
 	if (!cmd->arr || !cmd->arr[0])
 		exit(1);
+		
 	if (is_builtin_command(cmd->arr[0]))
 	{
 		handle_builtin_command(cmd->exec, cmd);

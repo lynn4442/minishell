@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/23 20:24:30 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/24 14:47:13 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 	t_r_variables	var;
 	char			**env_array;
 	t_cmd_node		*cmd;
+	int				heredoc_result;
 
 	var.cmd_count = count_pipeline_commands(cmd_list);
 	if (var.cmd_count <= 0)
@@ -41,11 +42,11 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 	{
 		if (cmd->heredoc_delimiter)
 		{
-			int heredoc_result = handle_heredoc(cmd, exec);
+			heredoc_result = handle_heredoc(cmd, exec);
 			if (heredoc_result == 130)
-				return;
+				return ;
 			else if (heredoc_result == -1)
-				return;
+				return ;
 		}
 		cmd = cmd->next;
 	}
@@ -65,6 +66,7 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 	if (is_debug_enabled(exec))
 		ft_putstr_fd("minishell: pipeline execution complete\n", 2);
 }
+
 static char	*join_command_parts(t_exec *exec, char **parts)
 {
 	char	*cmd_str;
@@ -97,9 +99,9 @@ static char	*append_command_with_pipe(t_exec *exec, char *input, char *cmd_str)
 void	execute_pipe(t_exec *exec, char ***commands, int cmd_count)
 {
 	char		*input;
-	t_cmd_node	*pipe_cmds;
 	int			i;
 	char		*cmd_str;
+	t_cmd_node	*pipe_cmds;
 
 	input = NULL;
 	pipe_cmds = NULL;

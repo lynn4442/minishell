@@ -42,6 +42,7 @@ char	*ft_strcpy(char *dest, char *src);
 char	*ft_strdup(t_gc *gc, const char *src);
 char	*ft_strncpy(char *dest, const char *src, unsigned int n);
 char	*ft_strndup(t_gc *free, const char *s, size_t len);
+void	*ft_memset(void *s, int c, size_t n);
 
 //ft_string_join.c
 char	*ft_strjoin(const char *s1, const char *s2, t_gc *x);

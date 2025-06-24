@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_handling.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/23 17:16:00 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/24 14:45:36 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,12 @@ int	setup_input_redirection_local(t_cmd_node *cmd, int *original_in)
 	int	fd;
 
 	(void)original_in;
-	
 	if (!cmd->in)
 		return (0);
-	
 	if (validate_redirection_file(cmd->exec, cmd->in, O_RDONLY) != 0)
 		return (-1);
 	if (cmd->heredoc_delimiter)
 		handle_heredoc(cmd, cmd->exec);
-	
 	fd = open(cmd->in, O_RDONLY);
 	if (fd == -1)
 	{

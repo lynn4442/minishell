@@ -32,6 +32,7 @@ int	execute_external_command(t_exec *exec, t_cmd_node *cmd)
 	result = create_and_execute_process(exec, cmd, cmd_path, env_array);
 	return (result);
 }
+
 int	handle_pipe_execution(t_exec *exec)
 {
 	execute_with_pipes(exec, exec->cmd_list);

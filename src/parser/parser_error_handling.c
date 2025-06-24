@@ -19,28 +19,23 @@ int	check_pipe_syntax_errors(t_token *tokens, t_exec *exec)
 
 	current = tokens;
 	consecutive_pipes = 0;
-	
-	// Check for pipe at the beginning
 	if (current && current->type == TOKEN_PIPE)
 	{
 		ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
 		exec->exit_status = 2;
 		return (1);
 	}
-	
 	while (current)
 	{
 		if (current->type == TOKEN_PIPE)
 		{
 			consecutive_pipes++;
-			// Check for pipe at the end
 			if (!current->next || current->next->type == TOKEN_EOF)
 			{
 				ft_putstr_fd("minishell: syntax error near unexpected token `|'\n", 2);
 				exec->exit_status = 2;
 				return (1);
 			}
-			// Check for consecutive pipes (|| or |||)
 			if (current->next && current->next->type == TOKEN_PIPE)
 			{
 				ft_putstr_fd("minishell: syntax error near unexpected token `||'\n", 2);
@@ -49,9 +44,7 @@ int	check_pipe_syntax_errors(t_token *tokens, t_exec *exec)
 			}
 		}
 		else
-		{
 			consecutive_pipes = 0;
-		}
 		current = current->next;
 	}
 	return (0);
@@ -64,10 +57,9 @@ int	check_redirection_syntax_errors(t_token *tokens, t_exec *exec)
 	current = tokens;
 	while (current)
 	{
-		if (current->type == TOKEN_REDIR_OUT || current->type == TOKEN_REDIR_APPEND 
+		if (current->type == TOKEN_REDIR_OUT || current->type == TOKEN_REDIR_APPEND
 			|| current->type == TOKEN_REDIR_IN || current->type == TOKEN_REDIR_HEREDOC)
 		{
-			// Check if there's no next token or next token is not a word
 			if (!current->next || current->next->type != TOKEN_WORD)
 			{
 				if (current->type == TOKEN_REDIR_OUT)
@@ -81,8 +73,7 @@ int	check_redirection_syntax_errors(t_token *tokens, t_exec *exec)
 				exec->exit_status = 2;
 				return (1);
 			}
-			// Check if the filename is empty
-			if (current->next && current->next->value && 
+			if (current->next && current->next->value &&
 				ft_strlen(current->next->value) == 0)
 			{
 				if (current->type == TOKEN_REDIR_OUT)
@@ -113,7 +104,7 @@ int	check_quote_syntax_errors(char *input, t_exec *exec)
 	single_quote_open = 0;
 	double_quote_open = 0;
 	escaped = 0;
-	
+
 	while (input[i])
 	{
 		if (escaped)
@@ -123,9 +114,7 @@ int	check_quote_syntax_errors(char *input, t_exec *exec)
 			continue;
 		}
 		if (input[i] == '\\' && double_quote_open)
-		{
 			escaped = 1;
-		}
 		else if (input[i] == '\'' && !double_quote_open)
 		{
 			if (!single_quote_open)

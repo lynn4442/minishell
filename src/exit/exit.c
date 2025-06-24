@@ -12,50 +12,69 @@
 
 #include "exit.h"
 
-void	ft_exit(char **args, int last_exit_status, t_exec *exec)
+static void	print_numeric_error(const char *arg)
+{
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+}
+
+static void	print_too_many_args_error(void)
+{
+	ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+}
+
+static int	normalize_exit_code(int exit_code)
+{
+	if (exit_code < 0)
+		return (256 + (exit_code % 256));
+	return (exit_code % 256);
+}
+
+static void	handle_no_arguments(t_exec *exec)
+{
+	cleanup_and_exit(exec, 0);
+}
+
+static void	handle_non_numeric_argument(const char *arg, t_exec *exec)
+{
+	print_numeric_error(arg);
+	cleanup_and_exit(exec, 2);
+}
+
+static void	handle_too_many_arguments(const char *first_arg, t_exec *exec)
+{
+	if (is_numeric(first_arg))
+	{
+		print_too_many_args_error();
+		exec->exit_status = 1;
+	}
+	else
+		handle_non_numeric_argument(first_arg, exec);
+}
+
+static void	handle_single_argument(const char *arg, t_exec *exec)
 {
 	int	exit_code;
-	
-	(void)last_exit_status;
-	printf("exit\n");
-	
-	if (!args[1])
-		cleanup_and_exit(exec, 0);
-		
-	// Check for multiple arguments
-	if (args[2])
+
+	if (is_numeric(arg))
 	{
-		if (is_numeric(args[1]))
-		{
-			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-			exec->exit_status = 1;
-			return ;
-		}
-		else
-		{
-			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(args[1], 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
-			cleanup_and_exit(exec, 2);
-		}
-	}
-	
-	// Check if argument is numeric
-	if (is_numeric(args[1]))
-	{
-		exit_code = ft_atoi(args[1]);
-		// Handle negative numbers and wrap around for values > 255
-		if (exit_code < 0)
-			exit_code = 256 + (exit_code % 256);
-		else
-			exit_code = exit_code % 256;
+		exit_code = ft_atoi(arg);
+		exit_code = normalize_exit_code(exit_code);
 		cleanup_and_exit(exec, exit_code);
 	}
 	else
-	{
-		ft_putstr_fd("minishell: exit: ", 2);
-		ft_putstr_fd(args[1], 2);
-		ft_putstr_fd(": numeric argument required\n", 2);
-		cleanup_and_exit(exec, 2);
-	}
+		handle_non_numeric_argument(arg, exec);
+}
+
+void	ft_exit(char **args, int last_exit_status, t_exec *exec)
+{
+	(void)last_exit_status;
+	printf("exit\n");
+	if (!args[1])
+		handle_no_arguments(exec);
+	else if (args[2])
+		handle_too_many_arguments(args[1], exec);
+	else
+		handle_single_argument(args[1], exec);
 }

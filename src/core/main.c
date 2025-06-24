@@ -44,16 +44,9 @@ static void	process_command_line(t_exec *exec, char *input)
 		exec->exit_status = 1;
 		return ;
 	}
-	
 	cmd_list = parse_command_line(copied_input, exec);
 	if (!cmd_list)
-	{
-		// If parsing failed, the error message was already printed
-		// and exit_status was set in the parser
 		return ;
-	}
-	
-	// Only execute if parsing was successful
 	setup_parent_signals();
 	if (cmd_list->type == PIPE || cmd_list->next)
 		execute_with_pipes(exec, cmd_list);
@@ -95,7 +88,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-	memset(&hello, 0, sizeof(t_gc));
+	ft_memset(&hello, 0, sizeof(t_gc));
 	exec = initialize_shell(&hello, envp);
 	if (!exec)
 		return (1);

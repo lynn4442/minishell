@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_5.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:14:33 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/23 01:22:40 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/24 14:44:33 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,32 +79,32 @@ char	**filter_command_args(t_cmd_node *cmd, char **args)
 	return (filtered);
 }
 
-void	print_debug_output(t_cmd_node *cmd)
-{
-	int	i;
+//void	print_debug_output(t_cmd_node *cmd)
+//{
+//	int	i;
 
-	ft_putstr_fd("DEBUG - Final command after redirection processing: ", 2);
-	i = 0;
-	while (cmd->arr[i])
-	{
-		ft_putstr_fd(cmd->arr[i], 2);
-		ft_putstr_fd(" ", 2);
-		i++;
-	}
-	ft_putstr_fd("\n", 2);
-	if (cmd->in)
-	{
-		ft_putstr_fd("DEBUG - Input from: ", 2);
-		ft_putstr_fd(cmd->in, 2);
-		ft_putstr_fd("\n", 2);
-	}
-	if (cmd->out)
-	{
-		ft_putstr_fd("DEBUG - Output to: ", 2);
-		ft_putstr_fd(cmd->out, 2);
-		if (cmd->append)
-			ft_putstr_fd(" (append)\n", 2);
-		else
-			ft_putstr_fd(" (truncate)\n", 2);
-	}
-}
+//	ft_putstr_fd("DEBUG - Final command after redirection processing: ", 2);
+//	i = 0;
+//	while (cmd->arr[i])
+//	{
+//		ft_putstr_fd(cmd->arr[i], 2);
+//		ft_putstr_fd(" ", 2);
+//		i++;
+//	}
+//	ft_putstr_fd("\n", 2);
+//	if (cmd->in)
+//	{
+//		ft_putstr_fd("DEBUG - Input from: ", 2);
+//		ft_putstr_fd(cmd->in, 2);
+//		ft_putstr_fd("\n", 2);
+//	}
+//	if (cmd->out)
+//	{
+//		ft_putstr_fd("DEBUG - Output to: ", 2);
+//		ft_putstr_fd(cmd->out, 2);
+//		if (cmd->append)
+//			ft_putstr_fd(" (append)\n", 2);
+//		else
+//			ft_putstr_fd(" (truncate)\n", 2);
+//	}
+//}

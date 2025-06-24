@@ -77,3 +77,18 @@ char	*ft_strndup(t_gc *free, const char *s, size_t len)
 	dup_str[len] = '\0';
 	return (dup_str);
 }
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*a;
+	size_t			i;
+
+	a = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		a[i] = (unsigned char) c;
+		i++;
+	}
+	return (s);
+}

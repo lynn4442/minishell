@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "redirections.h"
-#include "signals.h"
-
-extern int	g_signal_received;
 
 static	int	create_heredoc_temp_file(char *f_name)
 {
@@ -51,16 +48,13 @@ static	int	read_heredoc_content(const char *delimiter, t_env_var *env,
 	char	*expanded;
 	void	(*old_handler)(int);
 
-	// Set up heredoc-specific signal handling
 	old_handler = signal(SIGINT, heredoc_sigint_handler);
 	g_signal_received = 0;
-	
 	while (1)
 	{
 		line = readline("> ");
 		if (!line || g_signal_received == 130)
 		{
-			// Ctrl+C was pressed or EOF
 			if (g_signal_received == 130)
 			{
 				signal(SIGINT, old_handler);
@@ -68,10 +62,6 @@ static	int	read_heredoc_content(const char *delimiter, t_env_var *env,
 					free(line);
 				return (130);
 			}
-			// EOF without Ctrl+C - this is an error in heredoc
-			ft_putstr_fd("minishell: warning: here-document delimited by end-of-file (wanted `", 2);
-			ft_putstr_fd(delimiter, 2);
-			ft_putstr_fd("')\n", 2);
 			break ;
 		}
 		if (ft_strcmp(line, delimiter) == 0)
@@ -90,8 +80,6 @@ static	int	read_heredoc_content(const char *delimiter, t_env_var *env,
 		write(fd, "\n", 1);
 		free(line);
 	}
-	
-	// Restore original signal handler
 	signal(SIGINT, old_handler);
 	return (0);
 }
@@ -123,14 +111,12 @@ int	handle_heredoc(t_cmd_node *cmd, t_exec *exec)
 		close(fd);
 		if (read_result == 130)
 		{
-			// Ctrl+C was pressed - clean up and return with signal exit status
 			unlink(f_name);
 			exec->exit_status = 130;
 			return (130);
 		}
 		if (read_result == -1)
 			return (-1);
-		//printf("%s", f_name);
 		cmd->in = f_name;
 		exec->heredoc_counter++;
 		i++;
@@ -138,7 +124,7 @@ int	handle_heredoc(t_cmd_node *cmd, t_exec *exec)
 	return (0);
 }
 
-void cleanup_heredoc_files(t_cmd_node *cmd)
+void	cleanup_heredoc_files(t_cmd_node *cmd)
 {
 	if (!cmd || !cmd->in)
 		return ;

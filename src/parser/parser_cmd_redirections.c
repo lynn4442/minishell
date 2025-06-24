@@ -46,7 +46,7 @@ void	parse_simple_command_analyze_token(t_token *current,
 		{
 			parser->error = 1;
 			parse->sflag = 1;
-			break;
+			break ;
 		}
 		current = current->next;
 	}

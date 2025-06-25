@@ -43,7 +43,9 @@ int	cd_change_directory(const char *path, t_exec *exec)
 
 int	cd_validate_args(t_cmd_node *cmd, t_exec *exec)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (cmd && cmd->arr[i])
 		i++;
 	if (i > 2)

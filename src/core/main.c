@@ -103,6 +103,7 @@ int	main(int ac, char **av, char **envp)
 		process_command_line(exec, input);
 		free(input);
 	}
+	clear_history();
 	ft_free_all(&exec->gc);
 	return (exec->exit_status);
 }

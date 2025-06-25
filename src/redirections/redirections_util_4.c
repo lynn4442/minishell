@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:14:11 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 14:32:59 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 22:37:15 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,29 @@ void	preprocess_attached_redirs(t_cmd_node *cmd, char ***args)
 
 void	process_input_redirection(t_cmd_node *cmd, char **args)
 {
-	int	i;
+	int		i;
+	int		fd;
 
 	i = 0;
 	while (args[i])
 	{
 		if (ft_strcmp(args[i], "<") == 0 && args[i + 1])
 		{
+			fd = open(args[i + 1], O_RDONLY);
+			if (fd == -1)
+			{
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(args[i + 1], 2);
+				ft_putstr_fd(": No such file or directory\n", 2);
+				cmd->exec->exit_status = 1;
+			}
+			else
+				close(fd);
 			cmd->in = args[i + 1];
 			i += 2;
+			continue ;
 		}
-		else
-			i++;
+		i++;
 	}
 }
 

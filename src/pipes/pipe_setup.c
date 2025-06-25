@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:47:37 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 13:14:45 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 22:35:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,9 @@ static void	setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
 		file_fd = open(cmd->out, flags, 0644);
 		if (file_fd == -1)
 			print_output_error(cmd);
+		redirect_to_file(file_fd, &cmd->exec->gc);
 		if (next_pipe_fd != -1)
-			setup_tee_pipe(file_fd, next_pipe_fd, &cmd->exec->gc);
-		else
-			redirect_to_file(file_fd, &cmd->exec->gc);
+			close(next_pipe_fd);
 	}
 	else if (next_pipe_fd != -1)
 		redirect_to_pipe(next_pipe_fd, &cmd->exec->gc);

@@ -3,46 +3,71 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/02 11:50:29 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/25 16:31:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <readline/readline.h>
-# include <readline/history.h>
+/*                               SYSTEM INCLUDES                             */
+
+/* Standard C Library */
 # include <stdio.h>
-# include <fcntl.h>
 # include <stdlib.h>
-# include <ctype.h>
 # include <unistd.h>
-# include <limits.h>
 # include <string.h>
-# include <stdlib.h>
+# include <stdbool.h>
+# include <ctype.h>
+# include <limits.h>
+# include <fcntl.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
-# include <stdbool.h>
-# include "../libft/libft.h"
+# include <errno.h>
+# include <unistd.h>
+# include <sys/wait.h>
+# include <stdlib.h>
+# include <stdio.h>
 # include <signal.h>
+
+
+/* Readline Library */
+#ifdef READLINE_MOCK
+// Mock readline for Windows development
+char *readline(const char *prompt);
+void add_history(const char *line);
+#else
+# include <readline/readline.h>
+# include <readline/history.h>
+#endif
+
+/*                               PROJECT INCLUDES                            */
+
+# include "../libft/libft.h"
 # include "types.h"
-# include "parser.h"
-# include "env.h"
-# include "echo.h"
-# include "unset.h"
-# include "cd.h"
-# include "export.h"
-# include "quotes.h"
-# include "redirections.h"
-# include "pipes.h"
-# include "execution.h"
-# include "pwd.h"
-# include "exit.h"
-# include "core.h"
-# include "utils.h"
+
+//all headers 
+# include "../src/env/env.h"
+# include "../src/echo/echo.h"
+# include "../src/cd/cd.h"
+# include "../src/core/core.h"
+# include "../src/pwd/pwd.h"
+# include "../src/export/export.h"
+# include "../src/unset/unset.h"
+# include "../src/exit/exit.h"
+# include "../src/parser/parser.h"
+# include "../src/pipes/pipes.h"
+# include "../src/execution/execution.h"
+# include "../src/utils/utils.h"
+# include "../src/quotes/quotes.h"
+# include "../src/redirections/redirections.h"
+# include "../src/signals/signals.h"
+
+/*                                EXIT CODES                                 */
 
 //0	Success (No error)
 //1	General error (Miscellaneous error)
@@ -55,18 +80,24 @@
 //139	Segmentation fault (SIGSEGV)
 //255	Exit status out of range
 
+/*                              GLOBAL VARIABLES                             */
+
 extern int	g_signal_received;
 
-// Core execution functions used across modules
+/*                           FUNCTION DECLARATIONS                           */
+
+/* Core Functions */
 void		execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
 char		*find_command_path(t_exec *exec, const char *cmd);
 
-// Signal handling functions used across modules
+/* Signal Handling */
 void		setup_interactive_signals(void);
 void		setup_parent_signals(void);
 void		setup_child_signals(void);
-void		cleanup_and_exit(t_exec *exec, int exit_code);
 void		handle_eof_signal(t_exec *exec);
-int			get_signal_exit_status(int status);
+
+
+/* Forward Declarations for Module Functions */
+/* (Each module will have its own header with detailed declarations) */
 
 #endif

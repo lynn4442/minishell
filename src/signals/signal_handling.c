@@ -43,12 +43,4 @@ void	setup_parent_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	setup_signal_handlers(int sigint_action, int sigquit_action)
-{
-	if (sigint_action == 1 && sigquit_action == 0)
-		setup_interactive_signals();
-	else if (sigint_action == 1 && sigquit_action == 1)
-		setup_child_signals();
-	else
-		setup_parent_signals();
-}
+

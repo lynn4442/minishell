@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/24 14:47:13 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/25 15:30:28 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,55 +67,6 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 		ft_putstr_fd("minishell: pipeline execution complete\n", 2);
 }
 
-static char	*join_command_parts(t_exec *exec, char **parts)
-{
-	char	*cmd_str;
-	char	*tmp;
-	int		j;
 
-	cmd_str = NULL;
-	j = -1;
-	while (parts[++j])
-	{
-		if (!cmd_str)
-			cmd_str = ft_strdup(&exec->gc, parts[j]);
-		else
-		{
-			tmp = ft_strjoin(cmd_str, " ", &exec->gc);
-			cmd_str = ft_strjoin(tmp, parts[j], &exec->gc);
-		}
-	}
-	return (cmd_str);
-}
 
-static char	*append_command_with_pipe(t_exec *exec, char *input, char *cmd_str)
-{
-	char	*tmp;
 
-	tmp = ft_strjoin(input, " | ", &exec->gc);
-	return (ft_strjoin(tmp, cmd_str, &exec->gc));
-}
-
-void	execute_pipe(t_exec *exec, char ***commands, int cmd_count)
-{
-	char		*input;
-	int			i;
-	char		*cmd_str;
-	t_cmd_node	*pipe_cmds;
-
-	input = NULL;
-	pipe_cmds = NULL;
-	i = -1;
-	while (++i < cmd_count)
-	{
-		cmd_str = join_command_parts(exec, commands[i]);
-		if (!input)
-			input = cmd_str;
-		else
-			input = append_command_with_pipe(exec, input, cmd_str);
-	}
-	if (input)
-		pipe_cmds = parse_piped_commands(input, exec);
-	if (pipe_cmds)
-		execute_with_pipes(exec, pipe_cmds);
-}

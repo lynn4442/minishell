@@ -12,7 +12,8 @@
 
 // heredoc on its own to take care of
 
-#include "minishell.h"
+#include "redirections.h"
+#include "../utils/utils.h"
 
 void	parse_redirections(t_cmd_node *cmd, char **args)
 {

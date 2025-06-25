@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/23 01:09:12 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 12:27:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static int	get_end(const char *str, int start)
 }
 
 static int	process_var_length(const char *str, int *i,
-							int max_len, t_env_var *env)
+							int max_len, t_env_var *env, t_gc *gc)
 {
 	int		start;
 	int		end;
@@ -34,11 +34,10 @@ static int	process_var_length(const char *str, int *i,
 	end = get_end(str, start);
 	if (end > start)
 	{
-		var_name = extract_var_name(str, start, end);
+		var_name = extract_var_name(str, start, end, gc);
 		if (!var_name)
 			return (-1);
 		var_value = get_env_value(env, var_name);
-		free(var_name);
 		if (var_value)
 			max_len += ft_strlen(var_value);
 		*i = end;
@@ -51,7 +50,7 @@ static int	process_var_length(const char *str, int *i,
 	return (max_len);
 }
 
-int	calculate_max_result_length(const char *str, t_env_var *env)
+int	calculate_max_result_length(const char *str, t_env_var *env, t_gc *gc)
 {
 	int	i;
 	int	max_len;
@@ -62,7 +61,7 @@ int	calculate_max_result_length(const char *str, t_env_var *env)
 	{
 		if (str[i] == '$')
 		{
-			max_len = process_var_length(str, &i, max_len, env);
+			max_len = process_var_length(str, &i, max_len, env, gc);
 			if (max_len < 0)
 				return (-1);
 		}
@@ -82,7 +81,7 @@ char	*process_quotes(const char *str, t_env_var *env, t_exec *exec)
 
 	if (!str)
 		return (NULL);
-	max_len = calculate_max_result_length(str, env);
+	max_len = calculate_max_result_length(str, env, &exec->gc);
 	if (max_len < 0)
 		return (NULL);
 	result = ft_malloc(&exec->gc, max_len);

@@ -6,60 +6,46 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 03:13:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/22 22:45:53 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 16:28:09 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPES_H
 # define PIPES_H
 
-# include "minishell.h"
+# include "../../include/minishell.h"
 
-typedef struct s_r_variables
-{
-	int		i;
-	int		j;
-	int		k;
-	int		escaped;
-	char	quote;
-	int		count;
-	int		is_echo_command;
-	int		cmd_count;
-	int		pipe_count;
-	int		pipes[1024][2];
-	pid_t	pids[1024];
-}	t_r_variables;
+
 /* Forward declarations for functions from other modules */
 char	*find_command_path(t_exec *exec, const char *cmd);
 void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd);
 void	setup_child_signals(void);
 char	**convert_env_to_array(t_exec *exec, t_gc *gc);
+t_env_var	*get_env_var(t_exec *exec, const char *key);
+
+/* Forward declarations for heredoc and parser functions */
+int		handle_heredoc(t_cmd_node *cmd, t_exec *exec);
+t_cmd_node	*parse_piped_commands(char *input, t_exec *exec);
 
 /* Main pipe functionality */
 // int		has_pipe(t_cmd_node *cmd);
 void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list);
-void	execute_pipe(t_exec *exec, char ***commands, int cmd_count);
+
 
 /* Pipe parsing and processing */
-char	***split_by_pipe(char *input, t_exec *exec);
-char	**split_preserve_quotes(const char *input, t_gc *gc);
 
-void	init_r_variables(t_r_variables *vars);
-void	skip_leading_spaces(const char *input, int *i, char *quote);
-char	*extract_redirection(const char *input, int *i, t_gc *gc);
-void	extract_argument_bounds(const char *input, int *i,
-			char *quote, int *escaped);
-int		count_arguments(const char *input, t_gc *gc);
-void	skip_space(const char *input, int *i);
-int		handle_redirection_pipe(const char *input, int *i, int *count);
-void	skip_argument_token(const char *input, int *i,
-			int *escaped, char *quote);
-void	handle_escape_and_quotes(char c, int *escaped, char *quote);
+
+
+
+
+
+
+
 void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd);
 int		is_debug_enabled(t_exec *exec);
-void	redirect_to_pipe(int next_pipe_fd);
-void	redirect_to_file(int file_fd);
-void	setup_tee_pipe(int file_fd, int next_pipe_fd);
+void	redirect_to_pipe(int next_pipe_fd, t_gc *gc);
+void	redirect_to_file(int file_fd, t_gc *gc);
+void	setup_tee_pipe(int file_fd, int next_pipe_fd, t_gc *gc);
 void	print_output_error(t_cmd_node *cmd);
 void	close_all_pipes(int pipe_count, int pipes[][2]);
 int		count_pipeline_commands(t_cmd_node *cmd);

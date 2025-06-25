@@ -55,11 +55,7 @@ SRCS = 	src/cd/cd_core.c \
 		src/pipes/pipe_output.c \
 		src/pipes/pipe_setup.c \
 		src/pipes/pipe_utils.c \
-		src/pipes/pipe.c \
 		src/pipes/pipe_handling.c \
-		src/pipes/pipe_util1.c \
-		src/pipes/pipe_util2.c \
-		src/pipes/pipe_util3.c \
 		src/pwd/pwd.c \
 		src/quotes/Heredoc_quotes_handling.c \
 		src/quotes/quote_handling.c \

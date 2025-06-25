@@ -69,17 +69,17 @@ char	*ft_strtrim(char const *s1, char const *set, t_gc *gc)
 	return (result);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char const *s, unsigned int start, size_t len, t_gc *gc)
 {
 	size_t	slen;
 	char	*substr;
 
 	slen = ft_strlen(s);
 	if (start >= slen)
-		return (ft_calloc(1, sizeof(char)));
+		return (ft_malloc(gc, 1));
 	if (len > slen - start)
 		len = slen - start;
-	substr = malloc(len + 1);
+	substr = ft_malloc(gc, len + 1);
 	if (!substr)
 		return (NULL);
 	ft_memcpy(substr, s + start, len);

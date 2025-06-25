@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:44:38 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/24 21:42:16 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:14:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "pipes.h"
 
 void	close_all_pipes(int pipe_count, int pipes[][2])
 {
@@ -30,11 +30,15 @@ void	close_all_pipes(int pipe_count, int pipes[][2])
 void	handle_builtin_or_empty(t_cmd_node *cmd)
 {
 	if (!cmd->arr || !cmd->arr[0])
+	{
+		ft_free_all(&cmd->exec->gc);
 		exit(1);
+	}
 		
 	if (is_builtin_command(cmd->arr[0]))
 	{
 		handle_builtin_command(cmd->exec, cmd);
+		ft_free_all(&cmd->exec->gc);
 		exit(cmd->exec->exit_status);
 	}
 }

@@ -99,11 +99,7 @@ int	check_syntax(t_cmd_node *cmd_list, t_exec *exec)
 	return (0);
 }
 
-/* Moved from parser_utils2.c */
-t_cmd_node	*parse_piped_commands(char *input, t_exec *exec)
-{
-	return (parse_input(input, exec));
-}
+
 
 /* Main parse function for external call */
 t_cmd_node	*parse_command_line(char *input, t_exec *exec)

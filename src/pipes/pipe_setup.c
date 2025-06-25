@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   file5.c                                            :+:      :+:    :+:   */
+/*   pipe_setup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:47:37 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/03 22:10:15 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:14:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "pipes.h"
 
 static void	setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
 {
@@ -28,12 +28,12 @@ static void	setup_pipe_output(t_cmd_node *cmd, int next_pipe_fd)
 		if (file_fd == -1)
 			print_output_error(cmd);
 		if (next_pipe_fd != -1)
-			setup_tee_pipe(file_fd, next_pipe_fd);
+			setup_tee_pipe(file_fd, next_pipe_fd, &cmd->exec->gc);
 		else
-			redirect_to_file(file_fd);
+			redirect_to_file(file_fd, &cmd->exec->gc);
 	}
 	else if (next_pipe_fd != -1)
-		redirect_to_pipe(next_pipe_fd);
+		redirect_to_pipe(next_pipe_fd, &cmd->exec->gc);
 }
 
 int	create_all_pipes(int pipe_count, int pipes[][2])

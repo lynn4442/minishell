@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_quotes_handling.c                          :+:      :+:    :+:   */
+/*   Heredoc_quotes_handling.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 19:16:31 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/23 16:56:55 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 12:41:31 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char	*process_heredoc_quotes(const char *str, t_env_var *env, t_exec *exec)
 	char			*result;
 	int				max_len;
 
-	max_len = calculate_max_result_length(str, env);
+	max_len = calculate_max_result_length(str, env, &exec->gc);
 	if (max_len < 0)
 		return (NULL);
 	result = ft_malloc(&exec->gc, max_len);

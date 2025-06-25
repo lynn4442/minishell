@@ -1,0 +1,55 @@
+# Test basic commands
+echo "1. Testing basic commands..."
+echo "echo hello"
+echo "pwd"
+echo "cd .."
+echo "cd -"
+
+# Test quotes
+echo "2. Testing quote handling..."
+echo 'echo "hello world"'
+echo "echo 'single quotes'"
+echo 'echo "nested $USER quotes"'
+echo "echo \$HOME"
+
+# Test variable expansion
+echo "3. Testing variable expansion..."
+echo "echo \$USER"
+echo "echo \$?"
+echo "export TEST=value"
+echo "echo \$TEST"
+
+# Test pipes
+echo "4. Testing pipes..."
+echo "echo hello | cat"
+echo "ls | grep test"
+echo "echo one | echo two | echo three"
+
+# Test redirections
+echo "5. Testing redirections..."
+echo "echo hello > output.txt"
+echo "cat < output.txt"
+echo "echo world >> output.txt"
+echo "cat output.txt"
+
+# Test heredoc
+echo "6. Testing heredoc..."
+echo "cat << EOF"
+echo "line 1"
+echo "line 2"
+echo "EOF"
+
+# Test error cases
+echo "7. Testing error handling..."
+echo "nonexistent_command"
+echo "echo hello |"
+echo "echo hello >"
+echo 'echo "unclosed quote'
+
+# Test builtins
+echo "8. Testing builtins..."
+echo "export VAR=test"
+echo "env | grep VAR"
+echo "unset VAR"
+echo "env | grep VAR"
+echo "exit 42"

@@ -31,11 +31,10 @@ void	parse_pipeline_token_word(t_parse_pipeline *parse, t_parser *parser)
 		filename = parser->current_token->value;
 		if (filename[0] == '"' && filename[ft_strlen(filename) - 1] == '"')
 		{
-			unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2);
+			unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2, &parser->exec->gc);
 			if (unquoted)
 			{
 				filename = ft_strdup(&parser->exec->gc, unquoted);
-				free(unquoted);
 			}
 		}
 		if (parse->is_append)

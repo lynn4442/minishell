@@ -13,7 +13,10 @@
 #ifndef PWD_H
 # define PWD_H
 
-# include "minishell.h"
+# include "../../include/minishell.h"
+
+/* Forward declaration */
+t_env_var	*get_env_var(t_exec *exec, const char *key);
 
 /* PWD builtin functionality */
 char	*get_current_directory(t_exec *exec);

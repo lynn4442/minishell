@@ -13,7 +13,7 @@
 #ifndef CD_H
 # define CD_H
 
-# include "minishell.h"
+# include "../../include/minishell.h"
 
 /* Core cd functionality */
 int			ft_cd(t_exec *exec, t_cmd_node *cmd);

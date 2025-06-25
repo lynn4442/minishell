@@ -13,10 +13,7 @@
 #ifndef UNSET_H
 # define UNSET_H
 
-# include "../include/types.h"
-# include <stdio.h>
-# include <unistd.h>
-# include <stdlib.h>
+# include "../../include/minishell.h"
 
 // unset_core.c
 void		ft_unset(t_exec *exec, char **args);

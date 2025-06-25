@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_output.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:44:10 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/24 21:07:44 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:14:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "pipes.h"
 
 void	print_output_error(t_cmd_node *cmd)
 {
@@ -21,7 +21,7 @@ void	print_output_error(t_cmd_node *cmd)
 	exit(1);
 }
 
-static	void	handle_tee_child(int file_fd, int next_pipe_fd, int read_end)
+static	void	handle_tee_child(int file_fd, int next_pipe_fd, int read_end, t_gc *gc)
 {
 	char	buffer[4096];
 	ssize_t	n;
@@ -35,36 +35,40 @@ static	void	handle_tee_child(int file_fd, int next_pipe_fd, int read_end)
 		if (write(file_fd, buffer, n) != n)
 		{
 			perror("write to file");
+			ft_free_all(gc);
 			exit(1);
 		}
 		if (write(next_pipe_fd, buffer, n) != n)
 		{
 			perror("write to pipe");
+			ft_free_all(gc);
 			exit(1);
 		}
 	}
 	close(read_end);
 	close(file_fd);
 	close(next_pipe_fd);
+	ft_free_all(gc);
 	exit(0);
 }
 
-static	void	check_error(int *tee_pipe, int file_fd)
+static	void	check_error(int *tee_pipe, int file_fd, t_gc *gc)
 {
 	if (pipe(tee_pipe) == -1)
 	{
 		perror("pipe");
 		close(file_fd);
+		ft_free_all(gc);
 		exit(1);
 	}
 }
 
-void	setup_tee_pipe(int file_fd, int next_pipe_fd)
+void	setup_tee_pipe(int file_fd, int next_pipe_fd, t_gc *gc)
 {
 	int		tee_pipe[2];
 	pid_t	tee_pid;
 
-	check_error(tee_pipe, file_fd);
+	check_error(tee_pipe, file_fd, gc);
 	tee_pid = fork();
 	if (tee_pid == -1)
 	{
@@ -72,25 +76,28 @@ void	setup_tee_pipe(int file_fd, int next_pipe_fd)
 		close(file_fd);
 		close(tee_pipe[0]);
 		close(tee_pipe[1]);
+		ft_free_all(gc);
 		exit(1);
 	}
 	if (tee_pid == 0)
-		handle_tee_child(file_fd, next_pipe_fd, tee_pipe[0]);
+		handle_tee_child(file_fd, next_pipe_fd, tee_pipe[0], gc);
 	close(tee_pipe[0]);
 	if (dup2(tee_pipe[1], STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
+		ft_free_all(gc);
 		exit(1);
 	}
 	close(tee_pipe[1]);
 	close(file_fd);
 }
 
-void	redirect_to_file(int file_fd)
+void	redirect_to_file(int file_fd, t_gc *gc)
 {
 	if (dup2(file_fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
+		ft_free_all(gc);
 		exit(1);
 	}
 	close(file_fd);

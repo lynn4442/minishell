@@ -13,7 +13,7 @@
 #ifndef CORE_H
 # define CORE_H
 
-# include "minishell.h"
+# include "../../include/minishell.h"
 
 /* Main shell entry point */
 int			main(int ac, char **av, char **envp);
@@ -33,7 +33,7 @@ int			handle_env_export_unset(t_exec *exec, t_cmd_node *cmd);
 int			handle_exit(t_exec *exec, t_cmd_node *cmd);
 
 /* Core execution coordination */
-void		command_mission_control(t_cmd_node *cmd);
+
 void		process_and_update_args(t_cmd_node *cmd, char **args);
 char		*copy_input_string(char *input, t_gc *gc);
 

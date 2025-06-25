@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_3.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:13:57 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/06 17:47:12 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 14:32:15 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "redirections.h"
 
 char	**process_attached_redirections(char **args, t_gc *gc, int *position)
 {

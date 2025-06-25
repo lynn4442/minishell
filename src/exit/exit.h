@@ -13,7 +13,7 @@
 #ifndef EXIT_H
 # define EXIT_H
 
-# include "minishell.h"
+# include "../../include/minishell.h"
 
 void	ft_exit(char **args, int last_exit_status, t_exec *exec);
 

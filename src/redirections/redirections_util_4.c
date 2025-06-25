@@ -6,11 +6,11 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:14:11 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/23 15:57:48 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 14:32:59 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "redirections.h"
 
 static int	is_attached_redir(char *arg)
 {
@@ -50,8 +50,6 @@ void	process_input_redirection(t_cmd_node *cmd, char **args)
 	{
 		if (ft_strcmp(args[i], "<") == 0 && args[i + 1])
 		{
-			if (cmd->in)
-				free(cmd->in);
 			cmd->in = args[i + 1];
 			i += 2;
 		}

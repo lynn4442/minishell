@@ -54,7 +54,7 @@ void	ft_putstr_fd(const char *s, int fd);
 
 //ft_string_extract.c
 char	*ft_strtrim(char const *s1, char const *set, t_gc *gc);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_substr(char const *s, unsigned int start, size_t len, t_gc *gc);
 
 //ft_array_utils.c
 char	**ft_split(char const *s, char c, t_gc *free);

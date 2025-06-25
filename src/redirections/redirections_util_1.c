@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:13:20 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/17 19:51:34 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 14:31:46 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "redirections.h"
+#include "../utils/utils.h"
 
 /* Display error message for file operations and exit */
 void	display_file_error(const char *file, const char *message, t_gc *gc)

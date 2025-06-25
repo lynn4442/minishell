@@ -22,11 +22,10 @@ char	*process_input_filename(t_token *current, t_parser *parser)
 	filename = current->next->value;
 	if (filename[0] == '"' && filename[ft_strlen(filename) - 1] == '"')
 	{
-		unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2);
+		unquoted = ft_substr(filename, 1, ft_strlen(filename) - 2, &parser->exec->gc);
 		if (unquoted)
 		{
 			filename = ft_strdup(&parser->exec->gc, unquoted);
-			free(unquoted);
 		}
 	}
 	return (filename);
@@ -44,7 +43,7 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(filename, 2);
-		ft_putstr_fd(": No such file or directory QWDQD\n", 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
 		parser->exec->exit_status = 1;
 		return (1);
 	}

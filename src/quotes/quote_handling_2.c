@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/23 14:50:11 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 12:27:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,11 @@ int	process_special_chars(const char *str, t_quote_check *st,
 	return (st->len);
 }
 
-char	*extract_var_name(const char *str, int start, int end)
+char	*extract_var_name(const char *str, int start, int end, t_gc *gc)
 {
 	char	*var_name;
 
-	var_name = malloc(end - start + 1);
+	var_name = ft_malloc(gc, end - start + 1);
 	if (!var_name)
 		return (NULL);
 	ft_strncpy(var_name, str + start, end - start);

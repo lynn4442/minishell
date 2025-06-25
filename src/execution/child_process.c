@@ -18,6 +18,7 @@ void	execute_child_process(t_cmd_node *cmd, char *cmd_path, char **env_array)
 	execve(cmd_path, cmd->arr, env_array);
 	ft_putstr_fd("minishell: ", 2);
 	perror(cmd->arr[0]);
+	ft_free_all(&cmd->exec->gc);
 	exit(126);
 }
 

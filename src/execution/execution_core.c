@@ -36,12 +36,7 @@ void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 	execute_command_with_redirect(exec, cmd, original_in, original_out);
 }
 
-void	command_mission_control(t_cmd_node *cmd)
-{
-	if (!cmd || !cmd->exec)
-		return ;
-	execute_command_supreme(cmd->exec, cmd);
-}
+
 
 void	parse_and_execute(t_exec *exec, t_cmd_node *cmd)
 {

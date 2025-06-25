@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_input.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:43:55 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/24 21:07:28 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:14:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "pipes.h"
 
 static void	print_input_error(t_cmd_node *cmd)
 {
@@ -58,11 +58,12 @@ void	setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd)
         handle_pipe_input(prev_pipe_fd);
 }
 
-void	redirect_to_pipe(int next_pipe_fd)
+void	redirect_to_pipe(int next_pipe_fd, t_gc *gc)
 {
 	if (dup2(next_pipe_fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
+		ft_free_all(gc);
 		exit(1);
 	}
 	close(next_pipe_fd);

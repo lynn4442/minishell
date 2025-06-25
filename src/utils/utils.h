@@ -13,7 +13,7 @@
 #ifndef UTILS_H
 # define UTILS_H
 
-# include "minishell.h"
+# include "../../include/minishell.h"
 
 /* Memory management utilities */
 void	*ft_malloc(t_gc *gc, size_t size);

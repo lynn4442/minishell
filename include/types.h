@@ -13,9 +13,10 @@
 #ifndef TYPES_H
 # define TYPES_H
 
-# include <stdbool.h>
+#include "minishell.h"
 
-// Memory management structures
+/*                            MEMORY MANAGEMENT                              */
+
 typedef struct s_mem_node
 {
 	void				*ptr;
@@ -27,14 +28,25 @@ typedef struct s_garbage_collector
 	t_mem_node	*head;
 }	t_gc;
 
-// Command type enumeration
+//ENUMERATIONS
 typedef enum e_type
 {
 	PIPE,
 	SMP_CMD
 }	t_type;
 
-// Environment variable structure
+typedef enum e_token_type
+{
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND,
+	TOKEN_REDIR_HEREDOC,
+	TOKEN_EOF
+}	t_token_type;
+
+
 typedef struct s_env_var
 {
 	char				*key;
@@ -45,10 +57,7 @@ typedef struct s_env_var
 	struct s_env_var	*prev;
 }	t_env_var;
 
-// Forward declaration for circular reference
-typedef struct s_exec	t_exec;
-
-// Command node structure
+/* Command node structure */
 typedef struct s_cmd_node
 {
 	char				**arr;
@@ -62,7 +71,7 @@ typedef struct s_cmd_node
 	struct s_cmd_node	*next;
 }	t_cmd_node;
 
-// Execution context structure
+/* Execution context structure */
 typedef struct s_exec
 {
 	t_cmd_node	*cmd_list;
@@ -72,7 +81,34 @@ typedef struct s_exec
 	int			heredoc_counter;
 }	t_exec;
 
-// Quote checking structure
+//parsing structs
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
+	struct s_token	*prev;
+}	t_token;
+
+/* Lexer structure */
+typedef struct s_lexer
+{
+	char			*input;
+	int				position;
+	t_gc			*gc;
+	int				error;
+}	t_lexer;
+
+/* Parser structure */
+typedef struct s_parser
+{
+	t_token			*current_token;
+	t_token			*token_list;
+	t_exec			*exec;
+	int				error;
+}	t_parser;
+
+/* Quote checking structure */
 typedef struct s_quote_check
 {
 	int		i;
@@ -82,11 +118,76 @@ typedef struct s_quote_check
 	int		escaped;
 }	t_quote_check;
 
-// Token element structure for parsing
+// utils struct
+
+/* Token element structure for parsing */
 typedef struct s_elem
 {
 	char			*token;
 	int				space_after;
 	struct s_elem	*next;
 }	t_elem;
+
+/* Redirection normalization structure */
+typedef struct s_redirect_norm
+{
+	int		redir_pos;
+	char	redir_type;
+}	t_redir_norm;
+
+/* Pipe execution variables */
+typedef struct s_r_variables
+{
+	int		i;
+	int		j;
+	int		k;
+	int		escaped;
+	char	quote;
+	int		count;
+	int		is_echo_command;
+	int		cmd_count;
+	int		pipe_count;
+	int		pipes[1024][2];
+	pid_t	pids[1024];
+}	t_r_variables;
+
+/* Parser helper structures */
+typedef struct t_get_word_token
+{
+	char			*word;
+	int				i;
+	int				j;
+	int				in_quotes;
+	char			quote_type;
+	char			*temp;
+	int				escaped;
+}	t_get_word_token;
+
+typedef struct t_parse_simple_cmd
+{
+	t_cmd_node		*cmd;
+	char			**args;
+	int				arg_count;
+	int				i;
+	char			*filename;
+	char			*last_input;
+	char			*last_output;
+	int				sflag;
+	int				last_output_is_append;
+	char			**heredoc_delimiter;
+	int				heredoc_count;
+}	t_parse_simple_cmd;
+
+typedef struct t_parse_pipeline
+{
+	t_cmd_node		*first_cmd;
+	t_cmd_node		*current_cmd;
+	t_cmd_node		*next_cmd;
+	int				pipe_count;
+	t_token			*start_token;
+	int				sflag;
+	int				fd;
+	int				is_append;
+}	t_parse_pipeline;
+
 #endif

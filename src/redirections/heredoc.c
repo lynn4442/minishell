@@ -29,25 +29,65 @@ static int	prepare_heredoc_file(char **f_name, t_exec *exec)
 	return (fd);
 }
 
+static int	child_read_heredoc_content(const char *delimiter, t_exec *exec, int fd)
+{
+	char	*line;
+	char	*expanded;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!line)
+			return (130); // EOF (Ctrl+D) treated like interrupt for heredoc
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		expanded = process_heredoc_quotes(line, exec->env_list, exec);
+		free(line);
+		if (!expanded)
+			return (-1);
+		write(fd, expanded, ft_strlen(expanded));
+		write(fd, "\n", 1);
+	}
+	return (0);
+}
+
 int	create_and_read_heredoc(char *delimiter, t_exec *exec, t_cmd_node *cmd)
 {
 	char	*f_name;
 	int		fd;
-	int		result;
+	pid_t	pid;
+	int		status;
+	int		res;
 
 	fd = prepare_heredoc_file(&f_name, exec);
 	if (fd == -1)
 		return (-1);
-	result = read_heredoc_content(delimiter, exec, fd);
-	close(fd);
-	if (result == 130)
+	pid = fork();
+	if (pid == -1)
 	{
+		close(fd);
 		unlink(f_name);
-		exec->exit_status = 130;
-		return (130);
-	}
-	if (result == -1)
 		return (-1);
+	}
+	if (pid == 0)
+	{
+		setup_heredoc_child_signals();
+		int child_ret = child_read_heredoc_content(delimiter, exec, fd);
+		close(fd);
+		if (child_ret == 130)
+			exit(130);
+		if (child_ret == -1)
+			exit(1);
+		exit(0);
+	}
+	close(fd);
+	waitpid(pid, &status, 0);
+	res = process_heredoc_status(status, f_name, exec);
+	if (res != 0)
+		return (res);
 	cmd->in = f_name;
 	exec->heredoc_counter++;
 	return (0);

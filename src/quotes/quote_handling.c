@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 23:12:22 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 00:44:32 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,15 @@ static int	process_var_length(const char *str, t_quote_check *var,
 	int		end;
 	char	*var_name;
 	char	*var_value;
+
+	/* Handle the special case of $? first */
+	if (str[var->i + 1] == '?')
+	{
+		/* reserve enough space for any 32-bit int (10 digits) plus sign */
+		var->len += 12;
+		var->i += 2;
+		return (var->len);
+	}
 
 	start = var->i + 1;
 	end = get_end(str, start);

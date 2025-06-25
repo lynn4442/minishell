@@ -60,4 +60,7 @@ void	create_file_for_redir(char *filename, char *arg, int pos);
 int		create_and_read_heredoc(char *delimiter, t_exec *exec, t_cmd_node *cmd);
 int		read_heredoc_content(const char *delimiter, t_exec *exec, int fd);
 int		create_heredoc_temp_file(char *f_name);
+int		process_heredoc_status(int status, char *f_name, t_exec *exec);
+void	setup_heredoc_child_signals(void);
+
 #endif

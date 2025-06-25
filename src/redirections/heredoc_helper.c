@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_helper.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 21:10:56 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 21:43:51 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/26 00:56:36 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,26 +25,8 @@ int	create_heredoc_temp_file(char *f_name)
 	return (fd);
 }
 
-static void	heredoc_sigint_handler(int sig)
-{
-	(void)sig;
-	g_signal_received = 130;
-	write(1, "\n", 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-static int	handle_heredoc_interrupt(void (*old_handler)(int), char *line)
-{
-	signal(SIGINT, old_handler);
-	if (line)
-		free(line);
-	return (130);
-}
-
 static int	process_and_write_heredoc_line(char *line, const char *delimiter,
-		t_exec *exec, int fd)
+						t_exec *exec, int fd)
 {
 	char	*expanded;
 
@@ -68,25 +50,52 @@ static int	process_and_write_heredoc_line(char *line, const char *delimiter,
 int	read_heredoc_content(const char *delimiter, t_exec *exec, int fd)
 {
 	char	*line;
-	void	(*old_handler)(int);
 	int		status;
 
-	old_handler = signal(SIGINT, heredoc_sigint_handler);
-	g_signal_received = 0;
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || g_signal_received == 130)
-			return (handle_heredoc_interrupt(old_handler, line));
+		if (!line)
+			return (130);
 		status = process_and_write_heredoc_line(line, delimiter, exec, fd);
 		if (status == 1)
 			break ;
 		if (status == -1)
+			return (-1);
+	}
+	return (0);
+}
+
+void	setup_heredoc_child_signals(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
+
+int	process_heredoc_status(int status, char *f_name, t_exec *exec)
+{
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		write(1, "\n", 1);
+		unlink(f_name);
+		exec->exit_status = 130;
+		return (130);
+	}
+	if (WIFEXITED(status))
+	{
+		int child_exit = WEXITSTATUS(status);
+		if (child_exit == 130)
 		{
-			signal(SIGINT, old_handler);
+			write(1, "\n", 1);
+			unlink(f_name);
+			exec->exit_status = 130;
+			return (130);
+		}
+		else if (child_exit != 0)
+		{
+			unlink(f_name);
 			return (-1);
 		}
 	}
-	signal(SIGINT, old_handler);
 	return (0);
 }

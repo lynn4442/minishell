@@ -60,7 +60,6 @@ char	*ft_substr(char const *s, unsigned int start, size_t len, t_gc *gc);
 char	**ft_split(char const *s, char c, t_gc *free);
 
 void	*ft_malloc(t_gc *gc, size_t size);
-void	*ft_calloc(size_t count, size_t size);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 
 #endif

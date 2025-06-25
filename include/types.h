@@ -13,7 +13,8 @@
 #ifndef TYPES_H
 # define TYPES_H
 
-#include "minishell.h"
+# include <stdbool.h>
+# include <sys/types.h>
 
 /*                            MEMORY MANAGEMENT                              */
 
@@ -46,6 +47,8 @@ typedef enum e_token_type
 	TOKEN_EOF
 }	t_token_type;
 
+//core structures
+typedef struct s_exec	t_exec;
 
 typedef struct s_env_var
 {

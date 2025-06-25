@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 16:31:37 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 16:50:53 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <signal.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
+# include <sys/types.h>
 # include <errno.h>
 # include <unistd.h>
 # include <sys/wait.h>

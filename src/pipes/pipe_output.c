@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_output.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 18:44:10 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 13:14:43 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 23:17:01 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void	print_output_error(t_cmd_node *cmd)
 	exit(1);
 }
 
-static	void	handle_tee_child(int file_fd, int next_pipe_fd, int read_end, t_gc *gc)
+static	void	handle_tee_child(int file_fd, int next_pipe_fd,
+					int read_end, t_gc *gc)
 {
 	char	buffer[4096];
 	ssize_t	n;

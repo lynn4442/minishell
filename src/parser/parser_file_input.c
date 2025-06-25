@@ -32,7 +32,7 @@ char	*process_input_filename(t_token *current, t_parser *parser)
 	return (filename);
 }
 
-int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
+int parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 		t_parser *parser)
 {
 	char	*filename;
@@ -40,14 +40,14 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	filename = process_input_filename(current, parser);
 	if (!filename)
 		return (0);
-	// if (access(filename, F_OK) != 0)
-	// {
-	// 	ft_putstr_fd("minishell: ", 2);
-	// 	ft_putstr_fd(filename, 2);
-	// 	ft_putstr_fd(": No such file or directory\n", 2);
-	// 	parser->exec->exit_status = 1;
-	// 	return (1);
-	// }
+	if (access(filename, F_OK) != 0)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(filename, 2);
+		ft_putstr_fd(": No such file or directory hbuu\n", 2);
+		parser->exec->exit_status = 1;
+		return (1);
+	}
 	parse->last_input = filename;
 	return (0);
 }

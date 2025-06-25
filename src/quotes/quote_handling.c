@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 21:54:26 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/25 23:12:22 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static int	get_end(const char *str, int start)
 	return (end);
 }
 
-static int	process_var_length(const char *str, t_quote_check *var, t_env_var *env, t_gc *gc)
+static int	process_var_length(const char *str, t_quote_check *var,
+				t_env_var *env, t_gc *gc)
 {
 	int		start;
 	int		end;

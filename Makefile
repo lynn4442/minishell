@@ -117,4 +117,7 @@ fclean: clean
 
 re: fclean all
 
+norm:
+	@norminette | grep Error || true
+
 .PHONY: all clean fclean re

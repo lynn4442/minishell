@@ -27,8 +27,14 @@ command not found
 //things that are currently not working
 echo "test" | grep "t" > grep1.txt > grep2.txt
 cat file.txt | grep "pattern" | wc -l > count1.txt > count2.txt
+
+
+
+
 ls -la | grep "txt" > txt_files1.txt | wc -l > count.txt
 cat < input.txt | grep "pattern" > output1.txt | wc -l > output2.txt
+
+
 echo "hello" > file1.txt | cat file1.txt > file2.txt | cat file2.txt > file3.txt
 ls -la > ls.txt | grep "txt" > grep.txt | sort -r > sort.txt
 echo "hello" > file1.txt > nonexistent_directory/file2.txt > file3.txt

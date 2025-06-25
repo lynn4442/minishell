@@ -43,7 +43,10 @@ int	cd_change_directory(const char *path, t_exec *exec)
 
 int	cd_validate_args(t_cmd_node *cmd, t_exec *exec)
 {
-	if (cmd && cmd->arr[2] != NULL)
+	int i = 0;
+	while (cmd && cmd->arr[i])
+		i++;
+	if (i > 2)
 	{
 		ft_putstr_fd("bash: cd: too many arguments\n", 2);
 		exec->exit_status = 1;

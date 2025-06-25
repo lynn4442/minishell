@@ -51,7 +51,10 @@ static void	process_word_token(t_token *current, t_parse_simple_cmd *parse,
 {
 	if (!should_skip_token(current, parser))
 	{
-		parse->args[parse->i++] = process_quoted_token(current->value, parser);
+		if (parse->i == 0)
+			parse->args[parse->i++] = ft_strdup(&parser->exec->gc, current->value);
+		else
+			parse->args[parse->i++] = process_quoted_token(current->value, parser);
 	}
 }
 
@@ -72,5 +75,5 @@ void	parse_simple_command_loop_2(t_token *current,
 ///* Moved from parser_cmd_quotes.c */
 char	*process_quoted_token(char *val, t_parser *parser)
 {
-	return (ft_strdup(&parser->exec->gc, val));
+	return (process_quotes(val, parser->exec->env_list, parser->exec));
 }

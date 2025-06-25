@@ -57,5 +57,7 @@ int		is_redirection(const char *str);
 int		find_redir_pos(const char *arg, char *redir_type);
 void	print_split_debug(char *cmd, char *redir, char *file);
 void	create_file_for_redir(char *filename, char *arg, int pos);
+int		create_and_read_heredoc(char *delimiter, t_exec *exec, t_cmd_node *cmd);
+int		read_heredoc_content(const char *delimiter, t_exec *exec, int fd);
+int		create_heredoc_temp_file(char *f_name);
 #endif
-

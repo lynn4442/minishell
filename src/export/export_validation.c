@@ -49,13 +49,9 @@ static int	validate_key_part(const char *arg, char *equal_pos, t_exec *exec)
 		key = ft_strndup(&exec->gc, arg, key_len);
 	}
 	else
-	{
 		key = ft_strdup(&exec->gc, arg);
-	}
-	
 	if (!key)
 		return (0);
-	
 	result = is_valid_variable_name(key);
 	if (!result)
 	{
@@ -64,7 +60,6 @@ static int	validate_key_part(const char *arg, char *equal_pos, t_exec *exec)
 		ft_putstr_fd("': not a valid identifier\n", 2);
 		exec->exit_status = 1;
 	}
-	
 	return (result);
 }
 
@@ -75,12 +70,14 @@ int	validate_export_argument(const char *arg, t_exec *exec)
 	if (!arg || !*arg)
 	{
 		ft_putstr_fd("minishell: export: `", 2);
-		ft_putstr_fd(arg ? arg : "", 2);
+		if (arg)
+			ft_putstr_fd(arg, 2);
+		else
+			ft_putstr_fd("", 2);
 		ft_putstr_fd("': not a valid identifier\n", 2);
 		exec->exit_status = 1;
 		return (0);
 	}
-	
 	if (arg[0] == '=')
 	{
 		ft_putstr_fd("minishell: export: `", 2);
@@ -89,7 +86,6 @@ int	validate_export_argument(const char *arg, t_exec *exec)
 		exec->exit_status = 1;
 		return (0);
 	}
-	
 	equal_pos = ft_strchr(arg, '=');
 	return (validate_key_part(arg, equal_pos, exec));
 }

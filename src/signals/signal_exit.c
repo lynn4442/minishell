@@ -21,5 +21,3 @@ void	handle_eof_signal(t_exec *exec)
 	ft_free_all(&exec->gc);
 	exit(0);
 }
-
-

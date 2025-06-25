@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 17:11:26 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 20:23:39 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,13 @@ int					process_redirection_token(t_parse_pipeline *parse,
 int					check_syntax(t_cmd_node *cmd_list, t_exec *exec);
 int					validate_syntax(char *input, t_token *tokens, t_exec *exec);
 int					check_pipe_syntax_errors(t_token *tokens, t_exec *exec);
-int					check_redirection_syntax_errors(t_token *tokens, t_exec *exec);
+int					check_redirection_syntax_errors(t_token *tokens,
+						t_exec *exec);
 int					check_quote_syntax_errors(char *input, t_exec *exec);
+int					is_invalid_pipe(t_token *current, t_exec *exec);
+int					print_redirection_error(t_token_type type, t_exec *exec);
+void				update_quote_state(char c, int *single_q,
+						int *double_q, int *escaped);
 
 // input processing
 

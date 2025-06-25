@@ -29,6 +29,11 @@ void	report_cmd_failure(t_exec *exec, const char *cmd, int error_type);
 int		handle_lost_command(t_exec *exec, const char *expanded_cmd);
 int		prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd,
 			char **expanded_cmd, char **cmd_path);
+void	print_error(const char *filename, const char *error_msg);
+int		validate_directory_for_write(t_exec *exec, const char *filename);
+int		validate_file_exists(t_exec *exec, const char *filename);
+int		validate_file_readable(t_exec *exec, const char *filename);
+int		validate_not_directory_for_read(t_exec *exec, const char *filename);
 
 //child process execution
 void	execute_child_process(t_cmd_node *cmd, char *cmd_path,
@@ -53,7 +58,8 @@ void	cleanup_heredoc_files(t_cmd_node *cmd);
 void	ft_free_all(t_gc *gc);
 int		handle_builtin_command(t_exec *exec, t_cmd_node *cmd);
 void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list);
-int		setup_redirections(t_cmd_node *cmd, int *original_in, int *original_out);
+int		setup_redirections(t_cmd_node *cmd,
+			int *original_in, int *original_out);
 void	restore_og_redirections(int original_in, int original_out);
 
 #endif

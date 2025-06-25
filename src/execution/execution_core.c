@@ -36,8 +36,6 @@ void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 	execute_command_with_redirect(exec, cmd, original_in, original_out);
 }
 
-
-
 void	parse_and_execute(t_exec *exec, t_cmd_node *cmd)
 {
 	if (!exec || !cmd || !cmd->arr)

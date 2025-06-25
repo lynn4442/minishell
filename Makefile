@@ -29,9 +29,11 @@ SRCS = 	src/cd/cd_core.c \
 		src/execution/command_preparation.c \
 		src/execution/execution_core.c \
 		src/execution/execution_error_handling.c \
+		src/execution/execution_error_handling2.c \
 		src/execution/path_handling.c \
 		src/execution/path_handling2.c \
 		src/exit/exit.c \
+		src/exit/exit_helper.c \
 		src/export/export.c \
 		src/export/export_cmd.c \
 		src/export/export_display.c \
@@ -46,6 +48,8 @@ SRCS = 	src/cd/cd_core.c \
 		src/parser/parser_pipeline.c \
 		src/parser/parser_pipeline_redirections.c \
 		src/parser/parser_utils.c \
+		src/parser/parser_utils2.c \
+		src/parser/parser_error_handling_helper.c\
 		src/parser/parser_cmd_core.c \
 		src/parser/parser_cmd_utils.c \
 		src/parser/parser_cmd_redirections.c \
@@ -62,6 +66,7 @@ SRCS = 	src/cd/cd_core.c \
 		src/quotes/quote_handling_2.c \
 		src/quotes/quote_handling_helper.c \
 		src/redirections/heredoc.c \
+		src/redirections/heredoc_helper.c \
 		src/redirections/redirection_args.c \
 		src/redirections/redirection_handling.c \
 		src/redirections/redirection_input.c \

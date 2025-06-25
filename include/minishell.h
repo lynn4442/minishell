@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 17:13:59 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 21:45:18 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@
 # include "../src/quotes/quotes.h"
 # include "../src/redirections/redirections.h"
 # include "../src/signals/signals.h"
-
 
 extern int	g_signal_received;
 

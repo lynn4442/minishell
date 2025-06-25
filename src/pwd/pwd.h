@@ -19,7 +19,7 @@
 t_env_var	*get_env_var(t_exec *exec, const char *key);
 
 /* PWD builtin functionality */
-char	*get_current_directory(t_exec *exec);
-void	ft_pwd(t_exec *exec);
+char		*get_current_directory(t_exec *exec);
+void		ft_pwd(t_exec *exec);
 
 #endif

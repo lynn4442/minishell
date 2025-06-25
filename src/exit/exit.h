@@ -16,5 +16,9 @@
 # include "../../include/minishell.h"
 
 void	ft_exit(char **args, int last_exit_status, t_exec *exec);
+void	print_numeric_error(const char *arg);
+void	print_too_many_args_error(void);
+int		normalize_exit_code(int exit_code);
+void	handle_no_arguments(t_exec *exec);
 
 #endif

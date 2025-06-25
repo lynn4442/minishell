@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_5.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:14:33 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 15:28:32 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 20:37:02 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,3 @@ char	**filter_command_args(t_cmd_node *cmd, char **args)
 	copy_non_redirection_args(filtered, args);
 	return (filtered);
 }
-
-

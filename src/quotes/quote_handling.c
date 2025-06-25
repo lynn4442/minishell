@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:35:07 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 12:27:45 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/25 21:54:26 by hhussein         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,14 @@ static int	get_end(const char *str, int start)
 	return (end);
 }
 
-static int	process_var_length(const char *str, int *i,
-							int max_len, t_env_var *env, t_gc *gc)
+static int	process_var_length(const char *str, t_quote_check *var, t_env_var *env, t_gc *gc)
 {
 	int		start;
 	int		end;
 	char	*var_name;
 	char	*var_value;
 
-	start = *i + 1;
+	start = var->i + 1;
 	end = get_end(str, start);
 	if (end > start)
 	{
@@ -39,39 +38,38 @@ static int	process_var_length(const char *str, int *i,
 			return (-1);
 		var_value = get_env_value(env, var_name);
 		if (var_value)
-			max_len += ft_strlen(var_value);
-		*i = end;
+			var->len += ft_strlen(var_value);
+		var->i = end;
 	}
 	else
 	{
-		max_len++;
-		(*i)++;
+		var->len++;
+		var->i++;
 	}
-	return (max_len);
+	return (var->len);
 }
 
 int	calculate_max_result_length(const char *str, t_env_var *env, t_gc *gc)
 {
-	int	i;
-	int	max_len;
+	t_quote_check	var;
 
-	i = 0;
-	max_len = 0;
-	while (str[i])
+	var.i = 0;
+	var.len = 0;
+	while (str[var.i])
 	{
-		if (str[i] == '$')
+		if (str[var.i] == '$')
 		{
-			max_len = process_var_length(str, &i, max_len, env, gc);
-			if (max_len < 0)
+			var.len = process_var_length(str, &var, env, gc);
+			if (var.len < 0)
 				return (-1);
 		}
 		else
 		{
-			max_len++;
-			i++;
+			var.len++;
+			var.i++;
 		}
 	}
-	return (max_len + 1);
+	return (var.len + 1);
 }
 
 char	*process_quotes(const char *str, t_env_var *env, t_exec *exec)

@@ -382,3 +382,11 @@ ls -R / | grep bin | sort -r | head -n 5 | tee output.txt
 # Mixed operations
 echo "test" > file.txt | cat file.txt | grep test > output.txt | wc -l
 cat < input.txt | grep "pattern" > temp.txt | sort temp.txt > final.txt
+
+
+
+//cat << t1 << t2 < t3 << t4 (t3 not found)
+no such file or directory and all heredocs should open t1, t2 and t4
+
+cat > t1 > t2 < t3 > t4 (t3 not found)
+t3 no such file or directory and ONLY t1 and t2 hould be created (don't forget to delete the files before testing everytime)

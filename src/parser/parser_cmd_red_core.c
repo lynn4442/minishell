@@ -6,14 +6,14 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 20:45:55 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/03/25 12:48:28 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 06:30:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
 static int	handle_cmd_redirection_token(t_token *current,
-			t_parse_simple_cmd *parse, t_parser *parser)
+				t_parse_simple_cmd *parse, t_parser *parser)
 {
 	if ((current->type == TOKEN_REDIR_OUT
 			|| current->type == TOKEN_REDIR_APPEND) && parse->sflag == 0)
@@ -24,7 +24,7 @@ static int	handle_cmd_redirection_token(t_token *current,
 	else if (current->type == TOKEN_REDIR_IN)
 	{
 		if (parse_simple_command_input(current, parse, parser) == 1)
-			return (0);
+			return (2);
 	}
 	else if (current->type == TOKEN_REDIR_HEREDOC
 		&& current->next && current->next->type == TOKEN_WORD)
@@ -36,24 +36,33 @@ static int	handle_cmd_redirection_token(t_token *current,
 }
 
 void	parse_simple_command_analyze_token(t_token *current,
-		t_parse_simple_cmd *parse, t_parser *parser)
+					 t_parse_simple_cmd *parse, t_parser *parser)
 {
+	int	i;
+
 	while (current && current->type != TOKEN_EOF && current->type != TOKEN_PIPE)
 	{
+		i = handle_cmd_redirection_token(current, parse, parser);
 		if (current->type == TOKEN_WORD)
 			parse_simple_command_token_word(current, parse, parser);
-		else if (handle_cmd_redirection_token(current, parse, parser) == 1)
+		else if (i == 1)
 		{
 			parser->error = 1;
 			parse->sflag = 1;
 			break ;
+		}
+		else if (i == 2)
+		{
+			parse->sflag = 2;
+			current = current->next;
+			continue ;
 		}
 		current = current->next;
 	}
 }
 
 void	set_command_redirections(t_cmd_node *cmd, t_parse_simple_cmd *parse,
-		t_parser *parser)
+				 t_parser *parser)
 {
 	if (parse->last_input)
 		cmd->in = ft_strdup(&parser->exec->gc, parse->last_input);
@@ -72,12 +81,12 @@ void	set_command_redirections(t_cmd_node *cmd, t_parse_simple_cmd *parse,
 t_cmd_node	*parse_simple_command(t_parser *parser)
 {
 	t_parse_simple_cmd	parse;
-	t_token				*current;
+	t_token			*current;
 
 	init_parse_simple_cmd_struct(&parse);
 	current = parser->current_token;
 	parse_simple_command_analyze_token(current, &parse, parser);
-	if (parse.sflag)
+	if (parse.sflag == 1)
 	{
 		parser->error = 1;
 		advance_parser_position(parser);
@@ -91,4 +100,4 @@ t_cmd_node	*parse_simple_command(t_parser *parser)
 		return (parser->error = 1, NULL);
 	set_command_redirections(parse.cmd, &parse, parser);
 	return (parse.cmd);
-}
+} 

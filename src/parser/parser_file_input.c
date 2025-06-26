@@ -40,6 +40,7 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 	filename = process_input_filename(current, parser);
 	if (!filename)
 		return (0);
+	parse->last_input = filename;
 	if (access(filename, F_OK) != 0)
 	{
 		ft_putstr_fd("minishell: ", 2);
@@ -48,7 +49,6 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 		parser->exec->exit_status = 1;
 		return (1);
 	}
-	parse->last_input = filename;
 	return (0);
 }
 

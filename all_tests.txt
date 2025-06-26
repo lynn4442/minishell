@@ -384,7 +384,6 @@ echo "test" > file.txt | cat file.txt | grep test > output.txt | wc -l
 cat < input.txt | grep "pattern" > temp.txt | sort temp.txt > final.txt
 
 
-
 //cat << t1 << t2 < t3 << t4 (t3 not found)
 no such file or directory and all heredocs should open t1, t2 and t4
 

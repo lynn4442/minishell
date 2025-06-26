@@ -1,21 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal_exit.c                                      :+:      :+:    :+:   */
+/*   unset_core.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/28 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/05/26 23:13:07 by marvin           ###   ########.fr       */
+/*   Created: 2025/05/24 10:22:43 by marvin            #+#    #+#             */
+/*   Updated: 2025/05/24 10:22:43 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "signals.h"
+#include "unset.h"
 
-void	handle_eof_signal(t_exec *exec)
+void	ft_unset(t_exec *exec, char **args)
 {
-	printf("exit\n");
-	exec->exit_status = 0;
-	ft_free_all(&exec->gc);
-	exit(0);
+	if (!exec || !args)
+		return ;
+	if (!args[1])
+	{
+		exec->exit_status = 0;
+		return ;
+	}
+	process_all_vars(exec, args);
+}
+
+void	unset_env_var(t_exec *exec, const char *name)
+{
+	if (!exec || !name)
+		return ;
+	if (!is_valid_var_name(name))
+	{
+		print_unset_error(name, exec);
+		return ;
+	}
+	remove_env_var(exec, name);
 }

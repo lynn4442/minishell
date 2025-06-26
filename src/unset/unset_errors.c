@@ -45,27 +45,3 @@ void	process_all_vars(t_exec *exec, char **args)
 	}
 	exec->exit_status = had_error;
 }
-
-void	unset_env_var(t_exec *exec, const char *name)
-{
-	if (!exec || !name)
-		return ;
-	if (!is_valid_var_name(name))
-	{
-		print_unset_error(name, exec);
-		return ;
-	}
-	remove_env_var(exec, name);
-}
-
-void	ft_unset(t_exec *exec, char **args)
-{
-	if (!exec || !args)
-		return ;
-	if (!args[1])
-	{
-		exec->exit_status = 0;
-		return ;
-	}
-	process_all_vars(exec, args);
-}

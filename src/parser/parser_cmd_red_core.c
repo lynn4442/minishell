@@ -36,7 +36,7 @@ static int	handle_cmd_redirection_token(t_token *current,
 }
 
 void	parse_simple_command_analyze_token(t_token *current,
-					 t_parse_simple_cmd *parse, t_parser *parser)
+					t_parse_simple_cmd *parse, t_parser *parser)
 {
 	int	i;
 
@@ -62,7 +62,7 @@ void	parse_simple_command_analyze_token(t_token *current,
 }
 
 void	set_command_redirections(t_cmd_node *cmd, t_parse_simple_cmd *parse,
-				 t_parser *parser)
+				t_parser *parser)
 {
 	if (parse->last_input)
 		cmd->in = ft_strdup(&parser->exec->gc, parse->last_input);
@@ -81,7 +81,7 @@ void	set_command_redirections(t_cmd_node *cmd, t_parse_simple_cmd *parse,
 t_cmd_node	*parse_simple_command(t_parser *parser)
 {
 	t_parse_simple_cmd	parse;
-	t_token			*current;
+	t_token				*current;
 
 	init_parse_simple_cmd_struct(&parse);
 	current = parser->current_token;
@@ -100,4 +100,4 @@ t_cmd_node	*parse_simple_command(t_parser *parser)
 		return (parser->error = 1, NULL);
 	set_command_redirections(parse.cmd, &parse, parser);
 	return (parse.cmd);
-} 
+}

@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Heredoc_quotes_handling.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/21 19:16:31 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 12:41:31 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/26 18:27:34 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "quotes.h"
-//this should be changed to heredoc_quotes_handling.c
+
 static void	init_heredoc_state(t_quote_check *st, char *result)
 {
 	st->i = 0;

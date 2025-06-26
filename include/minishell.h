@@ -3,33 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 21:45:18 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/26 03:31:28 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
 # include <stdlib.h>
-# include <string.h>
-# include <stdbool.h>
-# include <ctype.h>
-# include <limits.h>
 # include <fcntl.h>
 # include <signal.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
 # include <sys/types.h>
-# include <errno.h>
-# include <unistd.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
-//all headers 
+//all headers
 # include "../libft/libft.h"
 # include "types.h"
 # include "../src/env/env.h"

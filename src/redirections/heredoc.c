@@ -29,7 +29,8 @@ static int	prepare_heredoc_file(char **f_name, t_exec *exec)
 	return (fd);
 }
 
-static int	child_read_heredoc_content(const char *delimiter, t_exec *exec, int fd)
+static int	child_read_heredoc_content(const char *delimiter,
+				t_exec *exec, int fd)
 {
 	char	*line;
 	char	*expanded;
@@ -38,7 +39,7 @@ static int	child_read_heredoc_content(const char *delimiter, t_exec *exec, int f
 	{
 		line = readline("> ");
 		if (!line)
-			return (130); // EOF (Ctrl+D) treated like interrupt for heredoc
+			return (130);
 		if (ft_strcmp(line, delimiter) == 0)
 		{
 			free(line);
@@ -61,6 +62,7 @@ int	create_and_read_heredoc(char *delimiter, t_exec *exec, t_cmd_node *cmd)
 	pid_t	pid;
 	int		status;
 	int		res;
+	int		child_ret;
 
 	fd = prepare_heredoc_file(&f_name, exec);
 	if (fd == -1)
@@ -75,7 +77,7 @@ int	create_and_read_heredoc(char *delimiter, t_exec *exec, t_cmd_node *cmd)
 	if (pid == 0)
 	{
 		setup_heredoc_child_signals();
-		int child_ret = child_read_heredoc_content(delimiter, exec, fd);
+		child_ret = child_read_heredoc_content(delimiter, exec, fd);
 		close(fd);
 		if (child_ret == 130)
 			exit(130);
@@ -115,7 +117,7 @@ void	cleanup_heredoc_files(t_cmd_node *cmd)
 {
 	if (!cmd || !cmd->in)
 		return ;
-	if (strncmp(cmd->in, "/tmp/heredoc_", 14) == 0)
+	if (ft_strncmp(cmd->in, "/tmp/heredoc_", 14) == 0)
 	{
 		if (unlink(cmd->in) == -1)
 			ft_putstr_fd("error removing file", 2);

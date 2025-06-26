@@ -32,7 +32,7 @@ char	*process_input_filename(t_token *current, t_parser *parser)
 	return (filename);
 }
 
-int parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
+int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 		t_parser *parser)
 {
 	char	*filename;

@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 20:59:04 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 23:32:16 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 02:31:53 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	debug_print_cmd(t_exec *exec, t_cmd_node *cmd, int index)
 	}
 	ft_putstr_fd("\n", 2);
 }
+
 void	debug_pipeline_commands(t_exec *exec,
 	t_cmd_node *cmd_list, int cmd_count)
 {

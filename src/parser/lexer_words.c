@@ -63,7 +63,7 @@ int	get_word_token_escaped(t_lexer *lexer, t_get_word_token *norm)
 
 int	get_word_token_testcase(t_lexer *lexer, t_get_word_token *norm)
 {
-	if (!norm->in_quotes && (is_whitespace(lexer->input[norm->i])
+	if (!norm->in_quotes && (ft_isspace(lexer->input[norm->i])
 			|| lexer->input[norm->i] == '|' || lexer->input[norm->i] == '>'
 			|| lexer->input[norm->i] == '<'))
 	{

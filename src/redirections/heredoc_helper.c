@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_helper.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 21:10:56 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/26 00:56:36 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/26 01:57:26 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void	setup_heredoc_child_signals(void)
 
 int	process_heredoc_status(int status, char *f_name, t_exec *exec)
 {
+	int	child_exit;
+
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -81,9 +83,9 @@ int	process_heredoc_status(int status, char *f_name, t_exec *exec)
 		exec->exit_status = 130;
 		return (130);
 	}
-	if (WIFEXITED(status))
+	if (WIFEXITED (status))
 	{
-		int child_exit = WEXITSTATUS(status);
+		child_exit = WEXITSTATUS(status);
 		if (child_exit == 130)
 		{
 			write(1, "\n", 1);
@@ -92,10 +94,7 @@ int	process_heredoc_status(int status, char *f_name, t_exec *exec)
 			return (130);
 		}
 		else if (child_exit != 0)
-		{
-			unlink(f_name);
-			return (-1);
-		}
+			return (unlink(f_name), -1);
 	}
 	return (0);
 }

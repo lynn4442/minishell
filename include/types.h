@@ -13,10 +13,8 @@
 #ifndef TYPES_H
 # define TYPES_H
 
-# include <stdbool.h>
 # include <sys/types.h>
-
-/*                            MEMORY MANAGEMENT                              */
+# include <stdbool.h>
 
 typedef struct s_mem_node
 {
@@ -29,7 +27,6 @@ typedef struct s_garbage_collector
 	t_mem_node	*head;
 }	t_gc;
 
-//ENUMERATIONS
 typedef enum e_type
 {
 	PIPE,
@@ -60,7 +57,6 @@ typedef struct s_env_var
 	struct s_env_var	*prev;
 }	t_env_var;
 
-/* Command node structure */
 typedef struct s_cmd_node
 {
 	char				**arr;
@@ -74,7 +70,6 @@ typedef struct s_cmd_node
 	struct s_cmd_node	*next;
 }	t_cmd_node;
 
-/* Execution context structure */
 typedef struct s_exec
 {
 	t_cmd_node	*cmd_list;
@@ -93,7 +88,7 @@ typedef struct s_token
 	struct s_token	*prev;
 }	t_token;
 
-/* Lexer structure */
+// lexing structs
 typedef struct s_lexer
 {
 	char			*input;
@@ -102,7 +97,7 @@ typedef struct s_lexer
 	int				error;
 }	t_lexer;
 
-/* Parser structure */
+// parsing struct
 typedef struct s_parser
 {
 	t_token			*current_token;
@@ -111,7 +106,7 @@ typedef struct s_parser
 	int				error;
 }	t_parser;
 
-/* Quote checking structure */
+// quotes parser
 typedef struct s_quote_check
 {
 	int		i;
@@ -138,7 +133,7 @@ typedef struct s_redirect_norm
 	char	redir_type;
 }	t_redir_norm;
 
-/* Pipe execution variables */
+// pipes expention var
 typedef struct s_r_variables
 {
 	int		i;
@@ -154,7 +149,7 @@ typedef struct s_r_variables
 	pid_t	pids[1024];
 }	t_r_variables;
 
-/* Parser helper structures */
+// parser helper struct
 typedef struct t_get_word_token
 {
 	char			*word;

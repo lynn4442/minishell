@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/25 23:19:20 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 03:13:14 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,10 @@ static int	process_all_heredocs(t_exec *exec, t_cmd_node *cmd_list)
 	return (0);
 }
 
-static void	handle_single_command(t_exec *exec, t_cmd_node *cmd_list)
-{
-	execute_command_supreme(exec, cmd_list);
-}
+//static void	handle_single_command(t_exec *exec, t_cmd_node *cmd_list)
+//{
+//	execute_command_supreme(exec, cmd_list);
+//}
 
 static int	setup_pipeline_execution(t_exec *exec, t_r_variables *var,
 	char ***env_array)
@@ -86,7 +86,7 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 		debug_pipeline_commands(exec, cmd_list, var.cmd_count);
 	if (var.cmd_count == 1)
 	{
-		handle_single_command(exec, cmd_list);
+		execute_command_supreme(exec, cmd_list);
 		return ;
 	}
 	if (!setup_pipeline_execution(exec, &var, &env_array))

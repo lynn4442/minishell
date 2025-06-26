@@ -57,3 +57,45 @@ t_token	*get_next_token(t_lexer *lexer, t_gc *gc)
 	}
 	return (get_word_token(lexer, gc));
 }
+
+t_lexer	*init_lexer(char *input, t_gc *gc)
+{
+	t_lexer	*lexer;
+
+	lexer = ft_malloc(gc, sizeof(t_lexer));
+	if (!lexer)
+		return (NULL);
+	lexer->input = input;
+	lexer->position = 0;
+	lexer->gc = gc;
+	lexer->error = 0;
+	return (lexer);
+}
+
+void	skip_whitespace(t_lexer *lexer)
+{
+	while (lexer->input[lexer->position]
+		&& ft_isspace(lexer->input[lexer->position]))
+		lexer->position++;
+}
+
+char	*copy_input_string(char *input, t_gc *gc)
+{
+	int		i;
+	int		j;
+	int		len;
+	char	*copied;
+
+	i = 0;
+	j = 0;
+	len = ft_strlen(input);
+	copied = ft_malloc(gc, len + 1);
+	if (!copied)
+		return (input);
+	while (input[i])
+	{
+		copied[j++] = input[i++];
+	}
+	copied[j] = '\0';
+	return (copied);
+}

@@ -24,7 +24,7 @@ static int	handle_cmd_redirection_token(t_token *current,
 	else if (current->type == TOKEN_REDIR_IN)
 	{
 		if (parse_simple_command_input(current, parse, parser) == 1)
-			return (1);
+			return (0);
 	}
 	else if (current->type == TOKEN_REDIR_HEREDOC
 		&& current->next && current->next->type == TOKEN_WORD)
@@ -46,8 +46,7 @@ void	parse_simple_command_analyze_token(t_token *current,
 		{
 			parser->error = 1;
 			parse->sflag = 1;
-			current = current->next;
-			continue ;
+			break ;
 		}
 		current = current->next;
 	}

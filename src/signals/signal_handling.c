@@ -13,8 +13,6 @@
 #include "signals.h"
 #include "minishell.h"
 
-extern int	g_signal_received;
-
 void	handle_sigint(int sig)
 {
 	(void)sig;

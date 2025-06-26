@@ -55,71 +55,43 @@ static int	child_read_heredoc_content(const char *delimiter,
 	return (0);
 }
 
-int	create_and_read_heredoc(char *delimiter, t_exec *exec, t_cmd_node *cmd)
+static int	handle_fork_error(int fd, char *f_name)
+{
+	close(fd);
+	unlink(f_name);
+	return (-1);
+}
+
+static void	execute_heredoc_child(const char *delimiter,
+					t_exec *exec, int fd)
+{
+	int	child_ret;
+
+	setup_heredoc_child_signals();
+	child_ret = child_read_heredoc_content(delimiter, exec, fd);
+	close(fd);
+	if (child_ret == 130)
+		exit(130);
+	if (child_ret == -1)
+		exit(1);
+	exit(0);
+}
+
+int	create_and_read_heredoc(char *delimiter,
+			t_exec *exec, t_cmd_node *cmd)
 {
 	char	*f_name;
 	int		fd;
 	pid_t	pid;
-	int		status;
-	int		res;
-	int		child_ret;
 
 	fd = prepare_heredoc_file(&f_name, exec);
 	if (fd == -1)
 		return (-1);
 	pid = fork();
 	if (pid == -1)
-	{
-		close(fd);
-		unlink(f_name);
-		return (-1);
-	}
+		return (handle_fork_error(fd, f_name));
 	if (pid == 0)
-	{
-		setup_heredoc_child_signals();
-		child_ret = child_read_heredoc_content(delimiter, exec, fd);
-		close(fd);
-		if (child_ret == 130)
-			exit(130);
-		if (child_ret == -1)
-			exit(1);
-		exit(0);
-	}
+		execute_heredoc_child(delimiter, exec, fd);
 	close(fd);
-	waitpid(pid, &status, 0);
-	res = process_heredoc_status(status, f_name, exec);
-	if (res != 0)
-		return (res);
-	cmd->in = f_name;
-	exec->heredoc_counter++;
-	return (0);
-}
-
-int	handle_heredoc(t_cmd_node *cmd, t_exec *exec)
-{
-	int		i;
-	int		status;
-
-	if (!cmd->heredoc_delimiter)
-		return (0);
-	i = 0;
-	while (cmd->heredoc_delimiter[i])
-	{
-		status = create_and_read_heredoc(cmd->heredoc_delimiter[i], exec, cmd);
-		if (status != 0)
-			return (status);
-		i++;
-	}
-	return (0);
-}
-
-void	cleanup_heredoc_files(t_cmd_node *cmd)
-{
-	if (!cmd || !cmd->in)
-		return ;
-	if (ft_strncmp(cmd->in, "/tmp/heredoc_", 14) == 0)
-	{
-		if (unlink(cmd->in) == -1)
-			ft_putstr_fd("error removing file", 2);
-	}
+	return (finalize_heredoc_parent(pid, f_name, exec, cmd));
 }

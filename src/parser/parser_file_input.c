@@ -46,7 +46,7 @@ int	parse_simple_command_input(t_token *current, t_parse_simple_cmd *parse,
 		ft_putstr_fd(filename, 2);
 		ft_putstr_fd(": No such file or directory hbuu\n", 2);
 		parser->exec->exit_status = 1;
-		//return (1);
+		return (1);
 	}
 	parse->last_input = filename;
 	return (0);

@@ -46,6 +46,8 @@ void	preprocess_attached_redirs(t_cmd_node *cmd, char ***args);
 void	process_input_redirection(t_cmd_node *cmd, char **args);
 void	process_output_redirection(t_cmd_node *cmd, char **args);
 char	**filter_command_args(t_cmd_node *cmd, char **args);
+int		finalize_heredoc_parent(pid_t pid, char *f_name,
+			t_exec *exec, t_cmd_node *cmd);
 
 char	**process_attached_redirections(char **args, t_gc *gc, int *position);
 char	**extract_redirection_files(

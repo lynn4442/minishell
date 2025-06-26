@@ -51,7 +51,6 @@ SRCS = 	src/cd/cd_core.c \
 		src/parser/parser_error_handling_helper.c\
 		src/parser/parser_cmd_utils.c \
 		src/parser/parser_cmd_red_core.c \
-		src/pipes/debug_pipe.c \
 		src/pipes/pipe_execution.c \
 		src/pipes/pipe_input.c \
 		src/pipes/pipe_output.c \
@@ -63,7 +62,9 @@ SRCS = 	src/cd/cd_core.c \
 		src/quotes/quote_handling.c \
 		src/quotes/quote_handling_2.c \
 		src/quotes/quote_handling_helper.c \
+		src/quotes/quote_var_utils.c \
 		src/redirections/heredoc.c \
+		src/redirections/heredoc_extra.c \
 		src/redirections/heredoc_helper.c \
 		src/redirections/redirection_args.c \
 		src/redirections/redirection_handling.c \

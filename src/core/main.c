@@ -14,7 +14,6 @@
 
 int	g_signal_received = 0;
 
-/* Initialize execution environment */
 static t_exec	*initialize_shell(t_gc *gc, char **envp)
 {
 	t_exec	*exec;
@@ -32,7 +31,6 @@ static t_exec	*initialize_shell(t_gc *gc, char **envp)
 	return (exec);
 }
 
-/* Process and execute a single command line */
 static void	process_command_line(t_exec *exec, char *input)
 {
 	char		*copied_input;
@@ -55,7 +53,6 @@ static void	process_command_line(t_exec *exec, char *input)
 	setup_interactive_signals();
 }
 
-/* Handle user input and basic validation */
 static int	handle_user_input(t_exec *exec, char **input)
 {
 	*input = readline("minihell> ");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 03:13:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/26 02:16:36 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 04:24:36 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void		execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list);
 // pipe parsing
 
 void		setup_pipe_input(t_cmd_node *cmd, int prev_pipe_fd);
-int			is_debug_enabled(t_exec *exec);
 void		redirect_to_pipe(int next_pipe_fd, t_gc *gc);
 void		redirect_to_file(int file_fd, t_gc *gc);
 void		setup_tee_pipe(int file_fd, int next_pipe_fd, t_gc *gc);
@@ -44,14 +43,6 @@ int			wait_for_all_commands(t_exec *exec, pid_t *pids, int cmd_count);
 void		fork_and_exec_commands(t_exec *exec, t_cmd_node *cmd_list,
 				t_r_variables *var, char **env_array);
 
-//debugging
-void		print_parent_debug(t_exec *exec, int i, int cmd_count);
-void		print_child_debug(t_cmd_node *current);
-void		debug_print_cmd(t_exec *exec, t_cmd_node *cmd, int index);
-void		debug_pipeline_commands(t_exec *exec,
-				t_cmd_node *cmd_list, int cmd_count);
-void		print_wait_debug(t_exec *exec, int i, int status);
-void		print_redirection_debug_info(t_cmd_node *cmd);
-void		print_command_debug_info(t_cmd_node *cmd);
-int			is_debug_enabled(t_exec *exec);
+// debug functions removed
+
 #endif

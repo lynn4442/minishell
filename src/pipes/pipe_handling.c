@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/26 03:13:14 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 04:24:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ static void	cleanup_and_wait(t_exec *exec, t_r_variables *var)
 {
 	close_all_pipes(var->pipe_count, var->pipes);
 	exec->exit_status = wait_for_all_commands(exec, var->pids, var->cmd_count);
-	if (is_debug_enabled(exec))
-		ft_putstr_fd("minishell: pipeline execution complete\n", 2);
 }
 
 void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
@@ -82,8 +80,6 @@ void	execute_with_pipes(t_exec *exec, t_cmd_node *cmd_list)
 	heredoc_result = process_all_heredocs(exec, cmd_list);
 	if (heredoc_result != 0)
 		return ;
-	if (is_debug_enabled(exec))
-		debug_pipeline_commands(exec, cmd_list, var.cmd_count);
 	if (var.cmd_count == 1)
 	{
 		execute_command_supreme(exec, cmd_list);

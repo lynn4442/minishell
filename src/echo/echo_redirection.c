@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "echo.h"
-#include "minishell.h"
 
 int	handle_echo_redirection(t_cmd_node *cmd, int *original_stdout, t_exec *exec)
 {

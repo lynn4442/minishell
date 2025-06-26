@@ -45,7 +45,6 @@ void	add_token(t_token **head, t_token *new_token)
 	new_token->prev = current;
 }
 
-/* Moved from parser_tokenizer.c */
 t_token	*tokenize(char *input, t_gc *gc)
 {
 	t_lexer	*lexer;

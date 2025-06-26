@@ -22,7 +22,7 @@ int	cd_change_directory(const char *path, t_exec *exec)
 	}
 	if (access(path, F_OK) != 0)
 	{
-		printf("minihell: cd: %s: No such file or directory 2\n", path);
+		printf("minihell: cd: %s: No such file or directory\n", path);
 		exec->exit_status = 1;
 		return (1);
 	}
@@ -50,7 +50,7 @@ int	cd_validate_args(t_cmd_node *cmd, t_exec *exec)
 		i++;
 	if (i > 2)
 	{
-		ft_putstr_fd("bash: cd: too many arguments\n", 2);
+		ft_putstr_fd("minihell: cd: too many arguments\n", 2);
 		exec->exit_status = 1;
 		return (1);
 	}

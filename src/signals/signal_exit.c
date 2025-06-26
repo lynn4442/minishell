@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "signals.h"
-#include "minishell.h"
-#include "../utils/utils.h"
 
 void	handle_eof_signal(t_exec *exec)
 {

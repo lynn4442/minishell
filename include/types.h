@@ -116,9 +116,6 @@ typedef struct s_quote_check
 	int		escaped;
 }	t_quote_check;
 
-// utils struct
-
-/* Token element structure for parsing */
 typedef struct s_elem
 {
 	char			*token;
@@ -126,14 +123,12 @@ typedef struct s_elem
 	struct s_elem	*next;
 }	t_elem;
 
-/* Redirection normalization structure */
 typedef struct s_redirect_norm
 {
 	int		redir_pos;
 	char	redir_type;
 }	t_redir_norm;
 
-// pipes expention var
 typedef struct s_r_variables
 {
 	int		i;
@@ -149,7 +144,6 @@ typedef struct s_r_variables
 	pid_t	pids[1024];
 }	t_r_variables;
 
-// parser helper struct
 typedef struct t_get_word_token
 {
 	char			*word;

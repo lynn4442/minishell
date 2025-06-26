@@ -32,7 +32,7 @@ static int	validate_filename(t_exec *exec, const char *filename)
 {
 	if (!filename || !*filename)
 	{
-		print_error("", ": No such file or directory SFFQ\n");
+		print_error("", ": No such file or directory\n");
 		exec->exit_status = 1;
 		return (1);
 	}

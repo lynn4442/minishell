@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_1.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:13:20 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 14:31:46 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/26 15:04:24 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "redirections.h"
 #include "../utils/utils.h"
 
-/* Display error message for file operations and exit */
 void	display_file_error(const char *file, const char *message, t_gc *gc)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -28,7 +27,6 @@ void	display_file_error(const char *file, const char *message, t_gc *gc)
 	exit(1);
 }
 
-/* Check if a string is or contains a redirection operator */
 int	is_redirection(const char *str)
 {
 	int	len;
@@ -69,17 +67,6 @@ int	find_redir_pos(const char *arg, char *redir_type)
 	return (-1);
 }
 
-void	print_split_debug(char *cmd, char *redir, char *file)
-{
-	ft_putstr_fd("DEBUG - Split into: [", 2);
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd("] [", 2);
-	ft_putstr_fd(redir, 2);
-	ft_putstr_fd("] [", 2);
-	ft_putstr_fd(file, 2);
-	ft_putstr_fd("]\n", 2);
-}
-
 void	create_file_for_redir(char *filename, char *arg, int pos)
 {
 	int	flags;
@@ -92,9 +79,6 @@ void	create_file_for_redir(char *filename, char *arg, int pos)
 		flags |= O_APPEND;
 	else
 		flags |= O_TRUNC;
-	ft_putstr_fd("DEBUG - Creating file for attached redirection: ", 2);
-	ft_putstr_fd(filename, 2);
-	ft_putstr_fd("\n", 2);
 	fd = open(filename, flags, 0644);
 	if (fd >= 0)
 		close(fd);

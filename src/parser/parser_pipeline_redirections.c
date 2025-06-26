@@ -35,7 +35,7 @@ static int	handle_pipeline_input_redirection(t_parse_pipeline *parse,
 	return (0);
 }
 
-// << 
+// <<
 static int	handle_pipeline_heredoc_redirection(t_parse_pipeline *parse,
 			t_parser *parser)
 {
@@ -49,7 +49,6 @@ static int	handle_pipeline_heredoc_redirection(t_parse_pipeline *parse,
 	return (0);
 }
 
-/* Process redirection tokens in pipeline */
 int	process_redirection_token(t_parse_pipeline *parse, t_parser *parser)
 {
 	if (parser->current_token->type == TOKEN_REDIR_OUT

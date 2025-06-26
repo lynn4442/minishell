@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "echo.h"
-#include "minishell.h"
 
 void	print_single_arg(char *arg, t_env_var *env, t_exec *exec)
 {
@@ -21,8 +20,6 @@ void	print_single_arg(char *arg, t_env_var *env, t_exec *exec)
 		return ;
 	printf("%s", arg);
 }
-
-// fprintf(stderr, "DEBUG: Raw arg: [%s]\n", arg);
 
 int	parse_echo_options(char **args, int *i)
 {

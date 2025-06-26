@@ -12,9 +12,6 @@
 
 #include "env.h"
 
-// External function declaration
-void	handle_export(t_gc *gc, t_env_var **env_list, char *arg);
-
 static void	parse_and_add_env_var(t_exec *exec, char *env_var)
 {
 	char	*equal_sign;
@@ -59,7 +56,7 @@ void	ft_env(t_exec *exec, char **args)
 		return ;
 	if (args && args[1])
 	{
-		printf("env: '%s': No such file or directory 1\n", args[1]);
+		printf("env: '%s': No such file or directory\n", args[1]);
 		exec->exit_status = 1;
 		return ;
 	}

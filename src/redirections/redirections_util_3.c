@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_3.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:13:57 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 14:32:15 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/26 15:03:29 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@ char	**process_attached_redirections(char **args, t_gc *gc, int *position)
 	t_redir_norm	red;
 
 	arg = args[*position];
-	ft_putstr_fd("DEBUG - Processing attached redirection: [", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putstr_fd("]\n", 2);
 	len = ft_strlen(arg);
 	if (len <= 1 || ft_strcmp(arg, ">") == 0 || ft_strcmp(arg, "<") == 0
 		|| ft_strcmp(arg, ">>") == 0 || ft_strcmp(arg, "<<") == 0)
@@ -31,10 +28,6 @@ char	**process_attached_redirections(char **args, t_gc *gc, int *position)
 		return (args);
 	return (handle_redir_case(args, gc, position, &red));
 }
-/*
- * Find and extract all redirection files from command arguments
- * This is a helper function to get all the files that are redirection targets
- */
 
 static int	count_redirections(char **args)
 {

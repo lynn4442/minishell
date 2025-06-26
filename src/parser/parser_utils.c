@@ -68,7 +68,6 @@ int	check_syntax(t_cmd_node *cmd_list, t_exec *exec)
 	return (0);
 }
 
-/* Main parse function for external call */
 t_cmd_node	*parse_command_line(char *input, t_exec *exec)
 {
 	t_cmd_node	*cmd_list;

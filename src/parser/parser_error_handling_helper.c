@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_error_handling_helper.c                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 20:14:51 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 20:30:35 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/26 14:57:57 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	update_quote_state(char c, int *single_q, int *double_q, int *escaped)
 		*double_q = !*double_q;
 }
 
-///* Moved from parser_cmd_quotes.c */
 char	*process_quoted_token(char *val, t_parser *parser)
 {
 	return (process_quotes(val, parser->exec->env_list, parser->exec));

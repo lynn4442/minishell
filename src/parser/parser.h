@@ -6,7 +6,7 @@
 /*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:41:12 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/26 02:23:21 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/26 14:59:44 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,10 @@
 # include "../../include/minishell.h"
 
 // lexer
-
 t_lexer				*init_lexer(char *input, t_gc *gc);
 void				skip_whitespace(t_lexer *lexer);
 
 //tokenization
-
 t_token				*create_token(t_token_type type, char *value, t_gc *gc);
 void				add_token(t_token **head, t_token *new_token);
 t_token				*get_word_token(t_lexer *lexer, t_gc *gc);
@@ -37,13 +35,6 @@ int					get_word_token_escaped(t_lexer *lexer,
 						t_get_word_token *norm);
 int					get_word_token_testcase(t_lexer *lexer,
 						t_get_word_token *norm);
-t_token				*get_next_token_pipe(t_lexer *lexer, t_gc *gc,
-						char *current);
-t_token				*input_error(t_lexer *lexer, t_gc *gc);
-t_token				*get_next_token_input_r(t_lexer *lexer, t_gc *gc,
-						char *current);
-t_token				*get_next_token_output(t_lexer *lexer, t_gc *gc,
-						char *current);
 
 // parser
 t_parser			*init_parser(t_token *tokens, t_exec *exec);

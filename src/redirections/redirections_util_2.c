@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:13:37 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/06 17:45:33 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/26 15:04:40 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static char	**handle_redir_end(t_gc *gc, char *arg, int redir_pos)
 	tokens = ft_malloc(gc, sizeof(char *) * 4);
 	if (!tokens)
 		return (NULL);
-	ft_putstr_fd("DEBUG - Case 1: Command with redirection at end\n", 2);
 	tokens[0] = ft_strndup(gc, arg, redir_pos);
 	tokens[1] = ft_strndup(gc, &arg[redir_pos], 1);
 	tokens[2] = NULL;
@@ -61,7 +60,6 @@ static char	**handle_redir_start(t_gc *gc, char *arg, char redir_type)
 	tokens = ft_malloc(gc, sizeof(char *) * 4);
 	if (!tokens)
 		return (NULL);
-	ft_putstr_fd("DEBUG - Case 2: Redirection at start\n", 2);
 	if (arg[1] == redir_type)
 	{
 		tokens[1] = ft_strndup(gc, arg, 2);
@@ -85,7 +83,6 @@ static char	**handle_redir_middle(t_gc *gc, char *arg,
 	tokens = ft_malloc(gc, sizeof(char *) * 4);
 	if (!tokens)
 		return (NULL);
-	ft_putstr_fd("DEBUG - Case 3: Redirection in middle\n", 2);
 	tokens[0] = ft_strndup(gc, arg, redir_pos);
 	if (arg[redir_pos + 1] == redir_type)
 	{
@@ -116,8 +113,6 @@ char	**handle_redir_case(char **args, t_gc *gc, int *pos,
 		tokens = handle_redir_middle(gc, arg, red->redir_pos, red->redir_type);
 	if (!tokens)
 		return (args);
-	if (tokens[0] && tokens[1] && tokens[2])
-		print_split_debug(tokens[0], tokens[1], tokens[2]);
 	if (red->redir_type == '>' && tokens[2])
 		create_file_for_redir(tokens[2], arg, red->redir_pos);
 	return (build_new_args(args, gc, tokens, pos));

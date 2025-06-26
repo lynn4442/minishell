@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_handling.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 10:00:00 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/26 04:24:48 by marvin           ###   ########.fr       */
+/*   Updated: 2025/06/26 15:00:14 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,6 @@ static int	process_all_heredocs(t_exec *exec, t_cmd_node *cmd_list)
 	}
 	return (0);
 }
-
-//static void	handle_single_command(t_exec *exec, t_cmd_node *cmd_list)
-//{
-//	execute_command_supreme(exec, cmd_list);
-//}
 
 static int	setup_pipeline_execution(t_exec *exec, t_r_variables *var,
 	char ***env_array)

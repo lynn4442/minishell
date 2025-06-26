@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   redirection_input.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/23 01:15:30 by marvin            #+#    #+#             */
-/*   Updated: 2025/06/23 01:15:30 by marvin           ###   ########.fr       */
+/*   Created: 2025/06/26 15:01:27 by lyoussef          #+#    #+#             */
+/*   Updated: 2025/06/26 15:01:27 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "redirections.h"
 
-/* Open input file for reading */
 static int	open_input_file(t_cmd_node *cmd)
 {
 	int	fd;
@@ -24,13 +23,12 @@ static int	open_input_file(t_cmd_node *cmd)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->in, 2);
-		ft_putstr_fd(": No such file or directory 8\n", 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
 		return (-1);
 	}
 	return (fd);
 }
 
-/* Setup input redirection using dup2 */
 static int	redirect_input(int fd, int *original_fd)
 {
 	*original_fd = dup(STDIN_FILENO);
@@ -63,7 +61,6 @@ int	setup_input_redirection(t_cmd_node *cmd, int *original_fd)
 	return (fd);
 }
 
-/* Restore stdin to its original state */
 int	restore_input_redirection(int original_fd)
 {
 	if (original_fd != -1)

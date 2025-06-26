@@ -12,7 +12,6 @@
 
 #include "redirections.h"
 
-/* Count non-redirection arguments */
 static int	count_non_redirection_args(char **args)
 {
 	int	i;
@@ -38,7 +37,6 @@ static int	count_non_redirection_args(char **args)
 	return (arg_count);
 }
 
-/* Create new argument array without redirection operators */
 static char	**create_filtered_args(t_cmd_node *cmd, char **args, int arg_count)
 {
 	char	**new_args;
@@ -66,7 +64,6 @@ static char	**create_filtered_args(t_cmd_node *cmd, char **args, int arg_count)
 	return (new_args);
 }
 
-/* Process command arguments and extract redirection operators */
 void	process_and_update_args(t_cmd_node *cmd, char **args)
 {
 	int		arg_count;

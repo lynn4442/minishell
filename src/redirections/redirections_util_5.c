@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   redirections_util_5.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 15:14:33 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 20:37:02 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/26 15:04:03 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "redirections.h"
 
 static int	is_redirection_token(char *token)
 {

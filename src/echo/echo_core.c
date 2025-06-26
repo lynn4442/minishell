@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "echo.h"
-#include "minishell.h"
 
 void	ft_echo(t_cmd_node *cmd, t_env_var *env, t_exec *exec)
 {

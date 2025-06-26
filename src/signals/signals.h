@@ -20,9 +20,8 @@ void	handle_sigint(int sig);
 void	setup_interactive_signals(void);
 void	setup_child_signals(void);
 void	setup_parent_signals(void);
-void	setup_signal_handlers(int sigint_action, int sigquit_action);
 
 // signal_exit.c
 void	handle_eof_signal(t_exec *exec);
 
-#endif 
+#endif

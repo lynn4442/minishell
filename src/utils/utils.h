@@ -15,7 +15,6 @@
 
 # include "../../include/minishell.h"
 
-/* Memory management utilities */
 void	*ft_malloc(t_gc *gc, size_t size);
 void	ft_free_all(t_gc *gc);
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execution_error_handling3.c                        :+:      :+:    :+:   */
+/*   execution_error_handling2.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hhussein <hhussein@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 19:10:20 by hhussein          #+#    #+#             */
-/*   Updated: 2025/06/25 19:19:35 by hhussein         ###   ########.fr       */
+/*   Updated: 2025/06/26 15:01:05 by lyoussef         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	validate_file_exists(t_exec *exec, const char *filename)
 {
 	if (access(filename, F_OK) != 0)
 	{
-		print_error(filename, ": No such file or directory QSCQFQ\n");
+		print_error(filename, ": No such file or directory\n");
 		exec->exit_status = 1;
 		return (1);
 	}

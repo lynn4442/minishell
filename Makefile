@@ -34,7 +34,6 @@ SRCS = 	src/cd/cd_core.c \
 		src/execution/path_handling2.c \
 		src/exit/exit.c \
 		src/exit/exit_helper.c \
-		src/export/export.c \
 		src/export/export_cmd.c \
 		src/export/export_display.c \
 		src/export/export_validation.c \
@@ -78,8 +77,7 @@ SRCS = 	src/cd/cd_core.c \
 		src/redirections/redirections_util_5.c \
 		src/signals/signal_exit.c \
 		src/signals/signal_handling.c \
-		src/unset/unset_core.c \
-		src/unset/unset_errors.c \
+		src/unset/unset_core_errors.c \
 		src/unset/unset_operations.c \
 		src/utils/utils.c
 

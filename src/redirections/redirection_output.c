@@ -30,7 +30,6 @@ int	handle_output_redirection(t_cmd_node *cmd)
 	return (fd);
 }
 
-/* Open output file with appropriate flags */
 static int	open_output_file(t_cmd_node *cmd)
 {
 	int	fd;
@@ -49,7 +48,6 @@ static int	open_output_file(t_cmd_node *cmd)
 	return (fd);
 }
 
-/* Setup output redirection using dup2 */
 static int	redirect_output(int fd, int *original_fd)
 {
 	*original_fd = dup(STDOUT_FILENO);
@@ -82,7 +80,6 @@ int	setup_output_redirection(t_cmd_node *cmd, int *original_fd)
 	return (fd);
 }
 
-/* Restore stdout to its original state */
 int	restore_output_redirection(int original_fd)
 {
 	if (original_fd != -1)

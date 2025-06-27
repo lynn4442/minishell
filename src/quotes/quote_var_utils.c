@@ -67,13 +67,22 @@ int	calculate_max_result_length(const char *str,
 
 	var.i = 0;
 	var.len = 0;
+	var.quote_type = '\0';
 	while (str[var.i])
 	{
-		if (str[var.i] == '$')
+		if (str[var.i] == '\'' || str[var.i] == '"')
 		{
-			var.len = process_var_length(str, &var, env, gc);
-			if (var.len < 0)
+			if (var.quote_type == '\0')
+				var.quote_type = str[var.i];
+			else if (var.quote_type == str[var.i])
+				var.quote_type = '\0';
+		}
+		if (str[var.i] == '$' && var.quote_type != '\'')
+		{
+			int added = process_var_length(str, &var, env, gc);
+			if (added < 0)
 				return (-1);
+			var.len += added;
 		}
 		else
 		{

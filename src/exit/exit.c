@@ -25,6 +25,7 @@ static void	handle_too_many_arguments(const char *first_arg, t_exec *exec)
 	{
 		print_too_many_args_error();
 		exec->exit_status = 1;
+		exit(1);
 	}
 	else
 		handle_non_numeric_argument(first_arg, exec);

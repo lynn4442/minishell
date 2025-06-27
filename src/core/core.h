@@ -34,4 +34,10 @@ int			handle_exit(t_exec *exec, t_cmd_node *cmd);
 void		process_and_update_args(t_cmd_node *cmd, char **args);
 char		*copy_input_string(char *input, t_gc *gc);
 
+//main_utils
+t_exec		*initialize_shell(t_gc *gc, char **envp);
+void		process_command_line(t_exec *exec, char *input);
+int			handle_user_input(t_exec *exec, char **input);
+int			is_empty_input(char *input);
+
 #endif

@@ -1,108 +1,66 @@
+
+#Redirections
+ls > output.txt
+cat < input.txt
+ls >> output.txt
+cat < input.txt > output.txt
+ls > /dev/null
+cat < /dev/null
+ls > /nonexistent/dir/file.txt
+
+#Multiple Pipes
+ls | grep .c | wc -l
+cat file.txt | grep "pattern" | sort | uniq
+ls | grep .c | xargs cat | wc -l
+ps aux | grep bash | awk '{print $2}'
+
+#Expansions
+echo $HOME
+echo $USER:$HOME - Multiple environment variables
+echo "Hello $USER" - Environment variable in quoted string
+echo 'Hello $USER' - No expansion in single quotes
+echo "Hello \$USER" - Escaped variable
+
+#Combined Tests
+ls | grep .c > output.txt
+cat < input.txt | grep "pattern" > output.txt
+ls | grep .c | wc -l > count.txt
+cat < input.txt | grep "pattern" | sort | uniq > output.txt
+echo $PATH | tr ':' '\n' | sort > sorted_path.txt
+echo "Current user: $USER" > user.txt
+cat < /dev/null | grep "pattern" > output.txt
 cat < input.txt | grep "pattern" | sort -r > output.txt | wc -l
-ma aam tezbat l 0
-
-
-//////Do that/////////////
-
-lyoussef@c2r6s9:~/mini_tested_without_norme$ env -i bash
-lyoussef@c2r6s9:/home/lyoussef/mini_tested_without_norme$ export
-declare -x OLDPWD
-declare -x PWD="/home/lyoussef/mini_tested_without_norme"
-declare -x SHLVL="1"
-lyoussef@c2r6s9:/home/lyoussef/mini_tested_without_norme$ env
-PWD=/home/lyoussef/mini_tested_without_norme
-SHLVL=1
-_=/usr/bin/env
-lyoussef@c2r6s9:/home/lyoussef/mini_tested_without_norme$
-
-//NB: THIS SHOULD WORK --> env -i ./minishell
-
-
-"e"'c'"ho" "'test'"
-'test'
-"e"'c'"h"'"o"' test
-command not found
-
-
-//things that are currently not working
 echo "test" | grep "t" > grep1.txt > grep2.txt
 cat file.txt | grep "pattern" | wc -l > count1.txt > count2.txt
-
-
-
-
 ls -la | grep "txt" > txt_files1.txt | wc -l > count.txt
 cat < input.txt | grep "pattern" > output1.txt | wc -l > output2.txt
-
-
 echo "hello" > file1.txt | cat file1.txt > file2.txt | cat file2.txt > file3.txt
 ls -la > ls.txt | grep "txt" > grep.txt | sort -r > sort.txt
 echo "hello" > file1.txt > nonexistent_directory/file2.txt > file3.txt
-> input.txt
-
-#Test Cases for Mini Shell
--->not working
-
-things that are not currently working
-1- shlvl
-2- multiple > or multiple <
-3- echo $$
-echo $? - Exit status expansion
-ls | grep .c |
-| ls | grep .c
-
-
-#Basic Commands
-ls
-pwd
-echo hello world
-echo $PATH
-echo $?
-
-#Redirections
-#ls > output.txt
-#cat < input.txt
-#ls >> output.txt
-#cat < input.txt > output.txt
-#ls > /dev/null
-#cat < /dev/null
-#ls > /nonexistent/dir/file.txt
-
-#Multiple Pipes
-#ls | grep .c | wc -l
-#cat file.txt | grep "pattern" | sort | uniq
-#ls | grep .c | xargs cat | wc -l
-#ps aux | grep bash | awk '{print $2}'
-
-#Expansions
-#echo $HOME
-#echo $USER:$HOME - Multiple environment variables
-#echo "Hello $USER" - Environment variable in quoted string
-#echo 'Hello $USER' - No expansion in single quotes
-#echo "Hello \$USER" - Escaped variable
-
-#Combined Tests
-#ls | grep .c > output.txt - Pipe with output redirection
-#cat < input.txt | grep "pattern" > output.txt - Input redirection, pipe, and output redirection
-#ls | grep .c | wc -l > count.txt - Multiple pipes with output redirection
-#cat < input.txt | grep "pattern" | sort | uniq > output.txt - Complex pipeline with redirections
-#echo $PATH | tr ':' '\n' | sort > sorted_path.txt - Environment variable expansion with pipes and redirection
-#echo "Current user: $USER" > user.txt - Environment variable expansion with output redirection
-#cat < /dev/null | grep "pattern" > output.txt - Special file with pipe and redirection
+cat < nonexistent.txt
+echo "Test" > /root/test.txt
+echo "hello" > file1.txt > file2.txt > file3.txt
+echo $HOME > home1.txt > home2.txt > home3.txt
+ls -la > ls1.txt > ls2.txt > ls3.txt
+cat < file1.txt < file2.txt < file3.txt
+cat < input.txt > output1.txt > output2.txt
+cat file.txt | grep "pattern" | wc -l > count1.txt > count2.txt
+ls -la | grep "txt" > txt_files1.txt | wc -l > count.txt
+cat < input.txt | grep "pattern" > output1.txt | wc -l > output2.txt
+echo "hello" > file1.txt | cat file1.txt > file2.txt | cat file2.txt > file3.txt
+ls -la > ls.txt | grep "txt" > grep.txt | sort -r > sort.txt
+cat < input.txt | grep "pattern" | sort -r > output.txt | wc -l
 
 #Edge Cases
-#ls | > output.txt - Empty command in pipe
-#ls > output.txt | grep .c - Redirection before pipe
-#ls | grep .c < input.txt - Input redirection after pipe
-#echo $NONEXISTENT_VAR - Non-existent environment variable
-#echo $? after a failed command - Exit status of failed command
-
-
+> input.txt
+ls | > output.txt
+ls > output.txt | grep .c
+ls | grep .c < input.txt
+echo $NONEXISTENT_VAR
 
 echo "Test" > file1.txt > file2.txt
 cat file1.txt
 cat file2.txt
-
 
 echo "First" > file1.txt
 echo "Second" > file2.txt
@@ -111,7 +69,6 @@ cat < file1.txt < file2.txt
 echo "Hello" > input.txt
 cat < input.txt > output.txt
 cat output.txt
-
 
 echo "Line 1" > append.txt
 echo "Line 2" >> append.txt
@@ -123,152 +80,96 @@ echo "Second" >> mixed.txt
 echo "Third" > mixed.txt
 cat mixed.txt
 
-
 echo "Hello World" | grep "Hello" > hello.txt
 echo "Goodbye World" | grep "Goodbye" >> hello.txt
 cat hello.txt
-
 
 echo "Line 1" > chain1.txt
 echo "Line 2" >> chain1.txt
 cat < chain1.txt | grep "Line" > chain2.txt
 cat chain2.txt
 
-
-
 echo $HOME > home.txt
 echo $PATH >> home.txt
 cat home.txt
-
-
 
 echo "Hello > World" > special.txt
 echo "Hello >> World" >> special.txt
 cat special.txt
 
-
-
 echo 'Hello "World"' > quotes.txt
 echo "Hello 'World'" >> quotes.txt
 cat quotes.txt
-
-
-cat < nonexistent.txt
-
-echo "Test" > /root/test.txt
-
-echo "hello" > file1.txt > file2.txt > file3.txt
-
-echo $HOME > home1.txt > home2.txt > home3.txt
-
-ls -la > ls1.txt > ls2.txt > ls3.txt
-
-cat < file1.txt < file2.txt < file3.txt
-
-cat < input.txt > output1.txt > output2.txt
-
-
-cat file.txt | grep "pattern" | wc -l > count1.txt > count2.txt
-
-ls -la | grep "txt" > txt_files1.txt | wc -l > count.txt
-
-cat < input.txt | grep "pattern" > output1.txt | wc -l > output2.txt
-
-echo "hello" > file1.txt | cat file1.txt > file2.txt | cat file2.txt > file3.txt
-
-ls -la > ls.txt | grep "txt" > grep.txt | sort -r > sort.txt
 
 cat < nonexistent.txt > output.txt
 
 echo "test" > /root/forbidden.txt
 
 cat<<a>z | grep hello<z
- cat << '$USER' > out
- CTRL C in heredoc
- CTRL C in multiple minishells
- change PWD in env
- cat CTRL C exit code and general CTRL C exit code
- CTRL + C with old value
- cat < file1 | echo "hello world | file1 > file 2" > file2
- "cat"
- "<"
- "file1"
- "|"
- "echo"
- "hello world | file1 > file 2"
- ">"
- "file2"
- Basic Pipe Commands
- ls | wc
- echo hello | cat
- ps aux | grep bash
- who | wc -l
- cat /etc/passwd | grep root
- Pipes with Multiple Commands
- ls -l | grep '^d' | wc -l
- cat file1 | sort | uniq | wc -l
- ps aux | grep httpd | awk '{print $2}'
- find . -type f | xargs wc -l | sort -n
- ls -la | grep '^-' | sort -k 5 -n
- Pipes with Redirection
- cat file1.txt | grep 'pattern' > output.txt
- ls | tee file1.txt | wc -l
- echo "data" | tee file1.txt file2.txt | cat -n
- cat < input.txt | grep 'pattern' | sort > output.txt
- grep "error" < file1.txt | sort | uniq > output.txt ********
- Pipes with Quotes and Special Characters
- echo "hello | world" | cat
- echo 'single | quotes' | cat
- echo "|start and end|" | cat
- echo 'ls | wc' | bash
- echo 'ps aux | grep "httpd"' | sh
- Complex Commands with Pipes, Redirection, and Quotes
- cat file1 < file2 | grep 'pattern' > output.txt
- echo "pattern" | grep "pattern" | tee file.txt
- ls -la | grep '^d' | sort | uniq | wc -l
- cat file1.txt file2.txt | grep -v '^#' | sort | uniq > output.txt
- echo "content" | cat > file1.txt | wc -l
+cat << '$USER' > out
+CTRL C in heredoc
+CTRL C in multiple minishells
+change PWD in env
+cat CTRL C exit code and general CTRL C exit code
+CTRL + C with old value
+cat < file1 | echo "hello world | file1 > file 2" > file2
+"cat"
+"<"
+"file1"
+"|"
+"echo"
+"hello world | file1 > file 2"
+">"
+"file2"
+
+Basic Pipe Commands
+ls | wc
+echo hello | cat
+ps aux | grep bash
+who | wc -l
+cat /etc/passwd | grep root
+
+Pipes with Multiple Commands
+ls -l | grep '^d' | wc -l
+cat file1 | sort | uniq | wc -l
+ps aux | grep httpd | awk '{print $2}'
+find . -type f | xargs wc -l | sort -n
+ls -la | grep '^-' | sort -k 5 -n
+
+Pipes with Redirection
+cat file1.txt | grep 'pattern' > output.txt
+ls | tee file1.txt | wc -l
+echo "data" | tee file1.txt file2.txt | cat -n
+cat < input.txt | grep 'pattern' | sort > output.txt
+grep "error" < file1.txt | sort | uniq > output.txt ********
+
+Pipes with Quotes and Special Characters
+echo "hello | world" | cat
+echo 'single | quotes' | cat
+echo "|start and end|" | cat
+echo 'ls | wc' | bash
+echo 'ps aux | grep "httpd"' | sh
+
+Complex Commands with Pipes, Redirection, and Quotes
+cat file1 < file2 | grep 'pattern' > output.txt
+echo "pattern" | grep "pattern" | tee file.txt
+ls -la | grep '^d' | sort | uniq | wc -l
+cat file1.txt file2.txt | grep -v '^#' | sort | uniq > output.txt
+echo "content" | cat > file1.txt | wc -l
+
 Edge Cases
- cat file1 < file2 < file3 > file4 | grep "pattern" > file5
- cat <file1 | grep "pattern" | sort | uniq | wc -l
- echo "start" | tee >(grep "pattern" > file1.txt) >(sort > file2.txt)
- find . -type f -name "*.c" | xargs grep -H "main" | sort > results.txt
- cat <(ls | grep "^a") <(ls | grep "^b")
- Commands Mixing Pipes with Errors
- ls non_existing_file | wc -l
- grep "pattern" | sort | non_existing_command
- cat < non_existing_file | wc -l
- echo "hello" | non_existing_command
- non_existing_command | grep "pattern"
+cat file1 < file2 < file3 > file4 | grep "pattern" > file5
+cat <file1 | grep "pattern" | sort | uniq | wc -l
+echo "start" | tee >(grep "pattern" > file1.txt) >(sort > file2.txt)
+find . -type f -name "*.c" | xargs grep -H "main" | sort > results.txt
+cat <(ls | grep "^a") <(ls | grep "^b")
 
-
-
-======================================== NOT WORKING =========================================
-
-cat < input.txt | grep "pattern" | sort -r > output.txt | wc -l
-
-
-
-# working
-echo "hello\nworld" >file.txt
-
-# Simple commands
-ls
-echo test
-pwd
-
-# Multiple arguments
-ls -la /tmp
-echo hello world
-cp file1 file2 file3
-
-# Mixed quotes
-echo "Hello 'there' world"
-echo 'Hello "there" world'
-
-# Empty quotes
-echo ""
-echo ''
+Commands Mixing Pipes with Errors
+ls non_existing_file | wc -l
+grep "pattern" | sort | non_existing_command
+cat < non_existing_file | wc -l
+echo "hello" | non_existing_command
+non_existing_command | grep "pattern"
 
 # Spaces in quotes
 echo "   multiple   spaces   "
@@ -384,7 +285,9 @@ echo "test" > file.txt | cat file.txt | grep test > output.txt | wc -l
 cat < input.txt | grep "pattern" > temp.txt | sort temp.txt > final.txt
 
 
-//cat << t1 << t2 < t3 << t4 (t3 not found)
+//during overnight
+
+cat << t1 << t2 < t3 << t4 (t3 not found)
 no such file or directory and all heredocs should open t1, t2 and t4
 
 cat > t1 > t2 < t3 > t4 (t3 not found)

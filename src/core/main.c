@@ -14,81 +14,11 @@
 
 int	g_signal_received = 0;
 
-static t_exec	*initialize_shell(t_gc *gc, char **envp)
+static void	shell_loop(t_exec *exec)
 {
-	t_exec	*exec;
-
-	exec = ft_malloc(gc, sizeof(t_exec));
-	if (!exec)
-	{
-		perror("malloc");
-		return (NULL);
-	}
-	init_exec(exec);
-	init_env(exec, envp);
-	update_shlvl(exec);
-	setup_interactive_signals();
-	return (exec);
-}
-
-static void	process_command_line(t_exec *exec, char *input)
-{
-	char		*copied_input;
-	t_cmd_node	*cmd_list;
-
-	copied_input = copy_input_string(input, &exec->gc);
-	if (!copied_input)
-	{
-		exec->exit_status = 1;
-		return ;
-	}
-	cmd_list = parse_command_line(copied_input, exec);
-	if (!cmd_list)
-		return ;
-	setup_parent_signals();
-	if (cmd_list->type == PIPE || cmd_list->next)
-		execute_with_pipes(exec, cmd_list);
-	else
-		parse_and_execute(exec, cmd_list);
-	setup_interactive_signals();
-}
-
-static int	handle_user_input(t_exec *exec, char **input)
-{
-	*input = readline("minihell> ");
-	if (!*input)
-	{
-		handle_eof_signal(exec);
-		return (0);
-	}
-	if (g_signal_received)
-	{
-		exec->exit_status = g_signal_received;
-		free(*input);
-		return (1);
-	}
-	if (ft_strlen(*input) == 0)
-	{
-		free(*input);
-		return (1);
-	}
-	add_history(*input);
-	return (2);
-}
-
-int	main(int ac, char **av, char **envp)
-{
-	t_gc	hello;
-	t_exec	*exec;
 	char	*input;
 	int		input_status;
 
-	(void)ac;
-	(void)av;
-	ft_memset(&hello, 0, sizeof(t_gc));
-	exec = initialize_shell(&hello, envp);
-	if (!exec)
-		return (1);
 	while (1)
 	{
 		g_signal_received = 0;
@@ -97,9 +27,28 @@ int	main(int ac, char **av, char **envp)
 			break ;
 		if (input_status == 1)
 			continue ;
+		if (is_empty_input(input))
+		{
+			free(input);
+			continue ;
+		}
 		process_command_line(exec, input);
 		free(input);
 	}
+}
+
+int	main(int ac, char **av, char **envp)
+{
+	t_gc	hello;
+	t_exec	*exec;
+
+	(void)ac;
+	(void)av;
+	ft_memset(&hello, 0, sizeof(t_gc));
+	exec = initialize_shell(&hello, envp);
+	if (!exec)
+		return (1);
+	shell_loop(exec);
 	clear_history();
 	ft_free_all(&exec->gc);
 	return (exec->exit_status);

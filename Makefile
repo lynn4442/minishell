@@ -16,6 +16,7 @@ SRCS = 	src/cd/cd_core.c \
 		src/core/check_builtins.c \
 		src/core/init_data.c \
 		src/core/main.c \
+		src/core/main_utils.c \
 		src/echo/echo_core.c \
 		src/echo/echo_redirection.c \
 		src/echo/echo_utils.c \

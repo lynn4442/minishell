@@ -59,7 +59,7 @@ int	handle_lost_command(t_exec *exec, const char *expanded_cmd)
 int	prep_cmd_for_launch(t_exec *exec, t_cmd_node *cmd,
 	char **expanded_cmd, char **cmd_path)
 {
-	*expanded_cmd = process_quotes(cmd->arr[0], exec->env_list, exec);
+	*expanded_cmd = cmd->arr[0];
 	if (!*expanded_cmd)
 	{
 		report_cmd_failure(exec, cmd->arr[0], 1);

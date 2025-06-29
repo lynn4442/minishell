@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lyoussef <lyoussef@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/27 09:27:44 by lyoussef          #+#    #+#             */
-/*   Updated: 2025/06/27 09:31:18 by lyoussef         ###   ########.fr       */
+/*   Updated: 2025/06/29 15:22:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,12 @@ int	handle_user_input(t_exec *exec, char **input)
 	if (g_signal_received)
 	{
 		exec->exit_status = g_signal_received;
-		free(*input);
-		return (1);
+		g_signal_received = 0;
+		if (ft_strlen(*input) == 0)
+		{
+			free(*input);
+			return (1);
+		}
 	}
 	if (ft_strlen(*input) == 0)
 	{

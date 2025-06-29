@@ -12,8 +12,26 @@
 
 #include "execution.h"
 
+void	expand_command_arguments(t_exec *exec, t_cmd_node *cmd)
+{
+	int		idx;
+	char	*expanded;
+
+	if (!cmd || !cmd->arr)
+		return ;
+	idx = 0;
+	while (cmd->arr[idx])
+	{
+		expanded = process_quotes(cmd->arr[idx], exec->env_list, exec);
+		if (expanded)
+			cmd->arr[idx] = expanded;
+		idx++;
+	}
+}
+
 void	execute_command_supreme(t_exec *exec, t_cmd_node *cmd)
 {
+	expand_command_arguments(exec, cmd);
 	int	original_in;
 	int	original_out;
 

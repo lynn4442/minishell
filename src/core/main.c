@@ -21,7 +21,6 @@ static void	shell_loop(t_exec *exec)
 
 	while (1)
 	{
-		g_signal_received = 0;
 		input_status = handle_user_input(exec, &input);
 		if (input_status == 0)
 			break ;

@@ -12,7 +12,7 @@ Minishell is a command-line interpreter that replicates the basic functionality 
 - **Interactive Command Line Interface** with prompt and command history
 - **Command Execution** with PATH resolution
 - **Environment Variable Management** (get, set, unset)
-- **Signal Handling** (Ctrl+C, Ctrl+D, Ctrl+\)
+- **Signal Handling** (Ctrl+C, Ctrl+D, Ctrl+\\)
 
 ### 🔧 Built-in Commands
 - `echo` - Display text with optional `-n` flag

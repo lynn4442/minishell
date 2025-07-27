@@ -38,9 +38,8 @@ Minishell is a command-line interpreter that replicates the basic functionality 
 
 - **Operating System**: Linux/Unix-like system
 - **Compiler**: GCC with C99 standard
-- **Libraries**: 
+- **Librarie**: 
   - `readline` - For command line editing
-  - `ncurses` - Terminal manipulation library
 
 ### Installing Dependencies
 
